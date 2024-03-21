@@ -6,7 +6,6 @@ import 'package:sy_nav/features/navigation/screens/home/controllers/home_control
 class HomeBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put<TextInputFieldController>(TextInputFieldController());
     Get.put<HomeController>(HomeController());
   }
 }
