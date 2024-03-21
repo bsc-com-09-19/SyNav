@@ -16,6 +16,7 @@ class Home extends StatelessWidget {
       //every scaffold has to use this key
       key: DrawerManager.drawerKey,
       // appBar: AppBar(title: const Text("SyNav")),
+      drawer: const KDrawer(),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -34,9 +35,12 @@ class Home extends StatelessWidget {
           ),
         ),
       ),
-
-      drawer: const KDrawer(),
+      bottomNavigationBar: BottomNavBar(),
     );
+  }
+
+  BottomNavigationBar BottomNavBar() {
+    return BottomNavigationBar(items: []);
   }
 
   void handleMic() {
