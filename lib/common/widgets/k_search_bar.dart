@@ -5,12 +5,15 @@ import 'package:sy_nav/features/navigation/screens/home/controllers/home_control
 class KSearchBar extends StatelessWidget {
   final TextEditingController controller;
   final VoidCallback? onSuffixTap;
+  final VoidCallback? onMenuTap;
+
   final String hintText;
   const KSearchBar(
       {super.key,
       required this.controller,
       this.onSuffixTap,
-      required this.hintText});
+      required this.hintText,
+      this.onMenuTap});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +32,7 @@ class KSearchBar extends StatelessWidget {
       child: Row(
         children: [
           IconButton(
-            onPressed: homeController.openDrawer,
+            onPressed: homeController.handleOpenDrawer,
             icon: const Icon(Icons.menu),
           ),
           Expanded(
