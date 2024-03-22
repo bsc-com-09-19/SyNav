@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sy_nav/features/navigation/screens/home/controllers/home_controller.dart';
+import 'package:sy_nav/utils/constants/k_sizes.dart';
 
 class KSearchBar extends StatelessWidget {
   final TextEditingController controller;
@@ -21,10 +22,10 @@ class KSearchBar extends StatelessWidget {
     final homeController = Get.find<HomeController>();
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: KSizes.defaultSpace),
       decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20.0),
+          borderRadius: BorderRadius.circular(KSizes.borderRadiusMd),
           border: Border.all(
             color: Colors.grey,
             width: 1.0,
