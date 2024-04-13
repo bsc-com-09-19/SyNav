@@ -36,34 +36,7 @@ class Home extends StatelessWidget {
           ),
         ),
       ),
-      // bottomNavigationBar: bottomNavBar(),
-    );
-  }
-
-
-
-  ClipRRect bottomNavBar(BuildContext context) {
-    return ClipRRect(
-      borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(0),
-          topRight: Radius.circular(0),
-          bottomLeft: Radius.circular(0),
-          bottomRight: Radius.circular(0)),
-      child: BottomNavigationBar(
-        backgroundColor: AppColors.secondaryColor,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.explore), label: "Exolore"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.bookmark_rounded), label: "Bookmarks"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.navigation_rounded), label: "Navigate"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.notifications_rounded), label: "Notifications"),
-        ],
-        selectedItemColor: AppColors.primaryColor,
-        unselectedItemColor: AppColors.secondaryColor,
-        elevation: 12.0,
-      ),
+      bottomNavigationBar: KBottomNavigationBar(),
     );
   }
 
@@ -73,7 +46,12 @@ class Home extends StatelessWidget {
 }
 
 class KBottomNavigationBar extends StatelessWidget {
-  final List<String> navigationRoutes = ['explore', 'bookmarks', 'navigate', 'notifications']; // Route names
+  final List<String> navigationRoutes = [
+    'explore',
+    'bookmarks',
+    'navigate',
+    'notifications'
+  ]; // Route names
 
   KBottomNavigationBar({super.key});
 
@@ -87,14 +65,22 @@ class KBottomNavigationBar extends StatelessWidget {
         bottomRight: Radius.circular(30.0),
       ),
       child: BottomNavigationBar(
+        showUnselectedLabels: true,
         backgroundColor: AppColors.secondaryColor,
-        items: const  [
-          BottomNavigationBarItem(icon: Icon(Icons.explore), label: "Explore"),
-          BottomNavigationBarItem(
+        items: [
+          const BottomNavigationBarItem(
+              icon: Icon(Icons.explore), label: "Explore"),
+          const BottomNavigationBarItem(
               icon: Icon(Icons.bookmark_rounded), label: "Bookmarks"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.navigation_rounded), label: "Navigate"),
-          BottomNavigationBarItem(
+              icon: Transform.rotate(
+                angle: 0.785398,
+                child: const Icon(
+                  Icons.navigation,
+                ),
+              ),
+              label: "Navigate"),
+          const BottomNavigationBarItem(
               icon: Icon(Icons.notifications_rounded), label: "Notifications"),
         ],
         selectedItemColor: AppColors.primaryColor,
