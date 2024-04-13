@@ -3,6 +3,7 @@ class KSizes {
   static const double defaultSpace = 24.0;
   static const double spaceBtwItems = 16.0;
   static const double spaceBtwSections = 12.0;
+  static const double spaceSmall = 8.0;
 
   // Border Radius
   static const double borderRadiusSm = 4.0;
