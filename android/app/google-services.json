@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "674222803730",
+    "project_id": "sy-nav",
+    "storage_bucket": "sy-nav.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:674222803730:android:b7f77279333bd22b37c1cb",
+        "android_client_info": {
+          "package_name": "com.example.sy_nav"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADpi23LeN-8pI4uCHHHuYbvKEEKAr_Oek"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
