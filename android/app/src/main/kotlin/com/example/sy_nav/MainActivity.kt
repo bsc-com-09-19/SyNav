@@ -49,7 +49,7 @@ class MainActivity: FlutterActivity() {
         println("mumber of wifi: "+results.size);
 
         // return results.map { "${it.SSID} - RSSI: ${it.level}" }
-        return results.map { result ->
+        return results.filter { it.level >= -70 }.map { result ->
             "SSID: ${result.SSID}, " +
             "BSSID: ${result.BSSID}, " +
             "RSSI: ${result.level}dBm, " 
