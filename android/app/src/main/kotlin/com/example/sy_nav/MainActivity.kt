@@ -43,17 +43,29 @@ class MainActivity: FlutterActivity() {
         }
     }
 
+    /**
+    * This function retrieves a list of nearby WiFi networks and returns their details as a dictionary.
+    * 
+    * It filters the results to only include networks with a signal strength (RSSI) greater than or equal to 
+    * the specified threshold (-70dBm by default). You can adjust this threshold as needed.
+    *
+    * @return A map of key-value pairs for each WiFi network, containing:
+    *   - "SSID": The network name
+    *   - "BSSID": The network's MAC address
+    *   - "RSSI": The signal strength in decibel-milliwatts (dBm)
+    */
     private fun getWifiList(): List<String> {
         val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         val results = wifiManager.scanResults
         println("mumber of wifi: "+results.size);
 
-        // return results.map { "${it.SSID} - RSSI: ${it.level}" }
         return results.filter { it.level >= -70 }.map { result ->
-            "SSID: ${result.SSID}, " +
-            "BSSID: ${result.BSSID}, " +
-            "RSSI: ${result.level}dBm, " 
-        }
+            mapOf(
+              "SSID" to result.SSID,
+              "BSSID" to result.BSSID,
+              "RSSI" to "${result.level}dBm"
+          )
+        }.flatten() //Combine multiple maps into a single one
     }
 }
 
