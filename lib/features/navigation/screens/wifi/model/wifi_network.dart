@@ -1,25 +1,32 @@
-class WifiNetwork {
+class AccessPoint {
   final String bssid;
   final double latitude;
   final double longitude;
+  final String frequency;
 
-  WifiNetwork({required this.bssid, required this.latitude, required this.longitude});
+  AccessPoint(
+      {required this.frequency,
+      required this.bssid,
+      required this.latitude,
+      required this.longitude});
 
-  // Convert a WifiNetwork object into a Map for Firebase.
+  // Convert a AccessPoint object into a Map for Firebase.
   Map<String, dynamic> toJson() {
     return {
       'bssid': bssid,
       'latitude': latitude,
       'longitude': longitude,
+      'frequency': frequency,
     };
   }
 
-  // Create a WifiNetwork object from a Map (Firebase snapshot).
-  factory WifiNetwork.fromJson(Map<String, dynamic> json) {
-    return WifiNetwork(
+  // Create a AccessPoint object from a Map (Firebase snapshot).
+  factory AccessPoint.fromJson(Map<String, dynamic> json) {
+    return AccessPoint(
       bssid: json['bssid'],
       latitude: json['latitude'],
       longitude: json['longitude'],
+      frequency: json['frequency'],
     );
   }
 }
