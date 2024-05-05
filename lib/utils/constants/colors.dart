@@ -5,6 +5,7 @@ class AppColors {
   static const Color secondaryColor = Color(0xFF967613);
   static const Color backgroundColor = Color(0xFFFFFFFF);
   static const Color white = Color(0xFFFFFFFF);
+  static const Color red = Color.fromRGBO(200, 11, 11, 1);
 
   // Define a custom color swatch for the golden color
   // Define a custom color swatch for the golden color

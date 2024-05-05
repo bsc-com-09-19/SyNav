@@ -6,6 +6,10 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import android.content.Context
 import android.net.wifi.WifiManager
+import android.net.wifi.ScanResult
+import android.content.BroadcastReceiver
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import androidx.core.app.ActivityCompat
 import android.Manifest
@@ -13,7 +17,9 @@ import android.content.pm.PackageManager
 
 class MainActivity: FlutterActivity() {
     private val WIFI_CHANNEL = "com.example.sy_nav/wifi"
-    private val BLUETOOTH_CHANNEL = "com.example.sy_nav/bluetooth"
+    // private val BLUETOOTH_CHANNEL = "com.example.sy_nav/bluetooth"
+    private lateinit var wifiScanReceiver: WifiScanReceiver
+
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -35,12 +41,22 @@ class MainActivity: FlutterActivity() {
             }
         }
 
-        // Setting up the Bluetooth channel
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, BLUETOOTH_CHANNEL).setMethodCallHandler {
-            call, result ->
-            result.success("Unimplemented function to handle this bluetooth channel")
-            // Handle Bluetooth related method calls
+
+        // Register BroadcastReceiver for Wi-Fi scan results
+        wifiScanReceiver = WifiScanReceiver()
+        wifiScanReceiver.setWifiListUpdateListener { wifiList ->
+            // Send updated Wi-Fi list to Flutter UI
+            MethodChannel(flutterEngine.dartExecutor.binaryMessenger, WIFI_CHANNEL).invokeMethod("updateWifiList", wifiList)
         }
+        registerReceiver(wifiScanReceiver, IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION))
+
+
+        // // Setting up the Bluetooth channel
+        // MethodChannel(flutterEngine.dartExecutor.binaryMessenger, BLUETOOTH_CHANNEL).setMethodCallHandler {
+        //     call, result ->
+        //     result.success("Unimplemented function to handle this bluetooth channel")
+        //     // Handle Bluetooth related method calls
+        // }
     }
 
     /**
@@ -59,13 +75,42 @@ class MainActivity: FlutterActivity() {
         val results = wifiManager.scanResults
         println("mumber of wifi: "+results.size);
 
-        return results.filter { it.level >= -70 }.map { result ->
-            mapOf(
-              "SSID" to result.SSID,
-              "BSSID" to result.BSSID,
-              "RSSI" to "${result.level}dBm"
-          )
-        }.flatten() //Combine multiple maps into a single one
+
+        val wifiList=  results.filter { it.level >= -80 }.map { result ->
+            "${result.BSSID} " +
+            "${result.level}" //RSSI
+        }
+
+        if(wifiList.size ==0){
+            return listOf("Failed No wifi Available")
+        }
+        return wifiList;
+
+    }
+    inner class WifiScanReceiver : BroadcastReceiver() {
+        private var wifiListUpdateListener: ((List<String>) -> Unit)? = null
+
+        fun setWifiListUpdateListener(listener: (List<String>) -> Unit) {
+            wifiListUpdateListener = listener
+        }
+
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            if (action == WifiManager.SCAN_RESULTS_AVAILABLE_ACTION) {
+                val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
+                val results = wifiManager.scanResults
+                val wifiList = results.filter { it.level >= -80 }.map { result ->
+                        "${result.BSSID} " +
+                        "${result.level}" //RSSI
+                }
+                if(wifiList.size ==0){
+                    wifiListUpdateListener?.invoke(listOf("Failed No wifi Available"))
+                        return
+                }
+                wifiListUpdateListener?.invoke(wifiList)
+            }
+        
+        }
     }
 }
 
