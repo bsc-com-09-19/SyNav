@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/model/wifi_network.dart';
 
 class WifiNetworkService {
-
   static Future<void> addWifiNetwork(AccessPoint wifiNetwork) async {
     await firestore()
         .collection('wifiNetworks')
@@ -25,7 +24,16 @@ class WifiNetworkService {
         .where((wifi) => filteredBssids.contains(wifi.bssid))
         .toList();
   }
-   static FirebaseFirestore firestore() {
+
+  static FirebaseFirestore firestore() {
     return FirebaseFirestore.instance;
+  }
+
+  Stream<List<AccessPoint>> listenToAccessPoints() {
+    return firestore().collection('wifiNetworks').snapshots().map((snapshot) =>
+        snapshot.docs
+            .map((doc) =>
+                AccessPoint.fromJson(doc.data() as Map<String, dynamic>))
+            .toList());
   }
 }
