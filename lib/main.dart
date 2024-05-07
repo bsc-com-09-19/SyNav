@@ -11,6 +11,7 @@ import 'package:sy_nav/features/navigation/screens/nofications/notifications_scr
 import 'package:sy_nav/features/navigation/screens/wifi/wifi_screen.dart';
 import 'package:sy_nav/firebase_options.dart';
 import 'package:sy_nav/utils/themes/theme.dart';
+import 'dart:async';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,25 +37,48 @@ void _handleCommand(Map<String, dynamic> commandData) {
   String command = commandData['command'];
   switch (command) {
     case 'Home':
-      Get.toNamed('/'); // Navigate to Home screen
+      Get.toNamed('/');
+      _playText("Your in the Explore screen");
       break;
-    case 'Direction':
-      Get.toNamed('/bookmarks'); // Navigate to Direction screen
+    case 'Bookmarks':
+      Get.toNamed('/bookmarks');
+      _playText("Your in the Bookmarks screen");
       break;
-    case 'Profile':
-      Get.toNamed('/bookmarks'); // Navigate to Profile screen
+    case 'Navigate':
+      Get.toNamed('/navigate');
+      _playText("Your in the Navigate screen");
+      break;
+    case 'Notifications':
+      Get.toNamed('/notifications');
+      _playText("Your in the notifications screen");
       break;
     case 'Explore':
-      Get.toNamed('/notifications'); // Navigate to Explore screen
+      Get.toNamed('/explore');
+      _playText("Your in the Explore screen");
       break;
     default:
-      _playText("please, go to Profile, Home, or Direction");
+      _playText(
+          "you can tell me to: go to Bookmarks, Home, Notifications, Navigate, or Explore");
       break;
   }
+
+  // Wait for 3 seconds before closing the connection
+  Timer(Duration(seconds: 6), () {
+    _closeAlanConnection();
+  });
+
+  // Ask if the user needs something else
+  _playText("Do you need something else?");
 }
+
 // Play text via Alan Voice
 void _playText(String text) {
   AlanVoice.playText(text);
+}
+
+// Close Alan connection
+void _closeAlanConnection() {
+  AlanVoice.deactivate();
 }
 
 class SyNavApp extends StatelessWidget {
