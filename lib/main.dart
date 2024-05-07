@@ -1,3 +1,4 @@
+import 'package:alan_voice/alan_voice.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,20 @@ void main() async {
   ///Enables local caching
   FirebaseDatabase.instance.setPersistenceEnabled(true);
   runApp(SyNavApp());
+  _initAlan();
+}
+
+void _initAlan() {
+  AlanVoice.addButton(
+    "3e8015e10c102cb7e6efd807edc44b782e956eca572e1d8b807a3e2338fdd0dc/stage",
+    buttonAlign: AlanVoice.BUTTON_ALIGN_LEFT,
+  );
+  AlanVoice.callbacks.add((command) => _handleCommand(command.data));
+}
+
+void _handleCommand(Map<String, dynamic> commandData) {
+  String command = commandData['command'];
+  
 }
 
 class SyNavApp extends StatelessWidget {
