@@ -34,7 +34,23 @@ void _initAlan() {
 
 void _handleCommand(Map<String, dynamic> commandData) {
   String command = commandData['command'];
-  
+  switch (command) {
+    case 'Home':
+      Get.toNamed('/'); // Navigate to Home screen
+      break;
+    case 'Direction':
+      Get.toNamed('/bookmarks'); // Navigate to Direction screen
+      break;
+    case 'Profile':
+      Get.toNamed('/bookmarks'); // Navigate to Profile screen
+      break;
+    case 'Explore':
+      Get.toNamed('/notifications'); // Navigate to Explore screen
+      break;
+    default:
+      // _playText("please, go to Profile, Home, or Direction");
+      break;
+  }
 }
 
 class SyNavApp extends StatelessWidget {
