@@ -48,9 +48,13 @@ void _handleCommand(Map<String, dynamic> commandData) {
       Get.toNamed('/notifications'); // Navigate to Explore screen
       break;
     default:
-      // _playText("please, go to Profile, Home, or Direction");
+      _playText("please, go to Profile, Home, or Direction");
       break;
   }
+}
+// Play text via Alan Voice
+void _playText(String text) {
+  AlanVoice.playText(text);
 }
 
 class SyNavApp extends StatelessWidget {
