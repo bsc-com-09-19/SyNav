@@ -71,7 +71,6 @@ class WifiScreen extends StatelessWidget {
   }
 
   void saveWifi() async {
-    final wifiNetworkService = WifiNetworkService();
     AccessPoint newAccessPoint = AccessPoint(
       bssid: '00:0a:95:9d:68:16',
       latitude: 37.422,
