@@ -41,6 +41,7 @@ dependencies:
   cloud_firestore: ^4.15.8
   firebase_core: ^2.27.0
   firebase_database: ^10.4.9
+  alan_voice: ^3.0.0
   shared_preferences: ^2.2.3
 
 dev_dependencies:
