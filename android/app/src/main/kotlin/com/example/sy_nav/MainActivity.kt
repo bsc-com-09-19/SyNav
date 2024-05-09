@@ -77,8 +77,9 @@ class MainActivity: FlutterActivity() {
 
 
         val wifiList=  results.filter { it.level >= -80 }.map { result ->
-            "${result.BSSID} " +
-            "${result.level}" //RSSI
+            "${result.BSSID}#" +
+            "${result.level}#" +//RSSI
+            "${result.SSID}" 
         }
 
         if(wifiList.size ==0){
