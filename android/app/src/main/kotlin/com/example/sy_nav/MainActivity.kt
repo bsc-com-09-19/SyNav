@@ -74,9 +74,19 @@ class MainActivity: FlutterActivity() {
         val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         val results = wifiManager.scanResults
         println("mumber of wifi: "+results.size);
+        //TODO: store these in a variable and in flutter side
+        val allowedBssids = listOf(
+                "ce:eb:bd:58:9b:01",
+                "ce:eb:bd:57:d2:2f",
+                "ce:eb:bd:7e:27:39",
+                "de:ba:ef:7d:57:a5",
+                "de:ba:ef:b8:69:d7"
+            )
 
 
-        val wifiList=  results.filter { it.level >= -80 }.map { result ->
+        val wifiList=  results.filter { it.level >= -80 }
+        .filter { allowedBssids.contains(it.BSSID) }
+        .map { result ->
             "${result.BSSID}#" +
             "${result.level}#" +//RSSI
             "${result.SSID}" 
@@ -97,12 +107,23 @@ class MainActivity: FlutterActivity() {
 
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
+            val allowedBssids = listOf(
+                "ce:eb:bd:58:9b:01",
+                "ce:eb:bd:57:d2:2f",
+                "ce:eb:bd:7e:27:39",
+                "de:ba:ef:7d:57:a5",
+                "de:ba:ef:b8:69:d7"
+            )
+
             if (action == WifiManager.SCAN_RESULTS_AVAILABLE_ACTION) {
                 val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
                 val results = wifiManager.scanResults
-                val wifiList = results.filter { it.level >= -80 }.map { result ->
-                        "${result.BSSID} " +
-                        "${result.level}" //RSSI
+                val wifiList = results.filter { it.level >= -80 }
+                .filter { allowedBssids.contains(it.BSSID) }
+                .map { result ->
+                    "${result.BSSID}#" +
+                    "${result.level}#" +//RSSI
+                    "${result.SSID}" 
                 }
                 if(wifiList.size ==0){
                     wifiListUpdateListener?.invoke(listOf("Failed No wifi Available"))
