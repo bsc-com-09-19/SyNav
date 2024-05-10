@@ -3,5 +3,5 @@ class WifiConstants {
   static const referenceSignalStrength =
       -30.0; // Reference signal strength at reference distance (in dBm)
   static const referenceDistance = 1.0; // Reference distance (in meters)
-  static const pathLossExponent = 2.0; // Path loss exponent
+  static const pathLossExponent = 3.5; // Path loss exponent
 }
