@@ -1,7 +1,7 @@
 import 'package:sy_nav/features/navigation/screens/wifi/model/wifi_network.dart';
 
 class Dummy {
-  final accessPoints = [
+  static final accessPoints = [
     // node 1
     AccessPoint(
       bssid: "de:ba:ef:7d:57:a5",
