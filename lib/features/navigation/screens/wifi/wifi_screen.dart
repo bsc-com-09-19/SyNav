@@ -9,7 +9,7 @@ import 'package:sy_nav/utils/helpers/wifi_algorithms.dart';
 class WifiScreen extends StatelessWidget {
   WifiScreen({Key? key}) : super(key: key);
 
-  final WifiController wifiController = Get.put(WifiController());
+  final wifiController = Get.find<WifiController>();
 
   @override
   Widget build(BuildContext context) {

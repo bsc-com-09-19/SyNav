@@ -30,4 +30,12 @@ class WifiController extends GetxController {
       }
     });
   }
+
+  List<String> getTrilaterationWifi() {
+    if (wifiList.isNotEmpty && wifiList.length >= 3) {
+      return wifiList.take(5).toList();
+    } else {
+      return [];
+    }
+  }
 }

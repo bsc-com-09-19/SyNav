@@ -7,11 +7,11 @@ class Dummy {
       bssid: "de:ba:ef:7d:57:a5",
       latitude: 0.0,
       longitude: 10.0,
-      frequency: "5 GHz", // Or any other frequency value
+      frequency: "2.4 GHz", // Or any other frequency value
     ),
     // node 2
     AccessPoint(
-      bssid: "ce:eb:bd:7e:27:39",
+      bssid: "de:ba:ef:b8:80:e5",
       latitude: 0.0,
       longitude: 0.0,
       frequency: "2.4 GHz",

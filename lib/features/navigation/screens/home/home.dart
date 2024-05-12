@@ -4,14 +4,18 @@ import 'package:sy_nav/common/widgets/drawer/drawer_manager.dart';
 import 'package:sy_nav/common/widgets/drawer/k_drawer.dart';
 import 'package:sy_nav/common/widgets/k_search_bar.dart';
 import 'package:sy_nav/features/navigation/screens/home/controllers/home_controller.dart';
+import 'package:sy_nav/features/navigation/screens/wifi/controllers/wifi_controller.dart';
 import 'package:sy_nav/utils/constants/colors.dart';
+import 'package:sy_nav/utils/helpers/wifi_algorithms.dart';
+import 'package:sy_nav/utils/widgets/k_snack_bar.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<HomeController>();
+    final homeController = Get.find<HomeController>();
+    final wifiController = Get.find<WifiController>();
 
     return Scaffold(
       //every scaffold has to use this key
@@ -24,7 +28,7 @@ class Home extends StatelessWidget {
           child: Column(
             children: [
               KSearchBar(
-                controller: controller.textEditingController.value,
+                controller: homeController.textEditingController.value,
                 hintText: "Enter here",
               ),
               const SizedBox(
@@ -32,9 +36,26 @@ class Home extends StatelessWidget {
               ),
               const Text("University of Malawi Campus Navigation",
                   textAlign: TextAlign.center),
+              Obx(() => Card(
+                    child: Text(
+                        "Your location is: ${homeController.location.value.x}, ${homeController.location.value.y} "),
+                  ))
             ],
           ),
         ),
+      ),
+      floatingActionButton: IconButton(
+        icon: const Icon(Icons.location_pin),
+        onPressed: () async {
+          if (wifiController.wifiList.length < 3) {
+            showErrorSnackBAr(context,
+                "You dont have enough registered accesspoints around you. (${wifiController.wifiList.length}) APs  ");
+          } else {
+            List<String> wifiList = await wifiController.getTrilaterationWifi();
+            homeController.location.value =
+                WifiAlgorithms.getEstimatedLocation(wifiList);
+          }
+        },
       ),
       bottomNavigationBar: KBottomNavigationBar(),
     );
