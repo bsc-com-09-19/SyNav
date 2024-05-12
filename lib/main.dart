@@ -8,6 +8,7 @@ import 'package:sy_nav/bindings/home_binding.dart';
 import 'package:sy_nav/features/navigation/screens/home/home.dart';
 import 'package:sy_nav/features/navigation/screens/navigation/navigationScreen.dart';
 import 'package:sy_nav/features/navigation/screens/nofications/notifications_screen.dart';
+import 'package:sy_nav/features/navigation/screens/wifi/controllers/wifi_controller.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/wifi_screen.dart';
 import 'package:sy_nav/firebase_options.dart';
 import 'package:sy_nav/utils/themes/theme.dart';
@@ -23,6 +24,12 @@ void main() async {
   FirebaseDatabase.instance.setPersistenceEnabled(true);
   runApp(SyNavApp());
   _initAlan();
+  _initWifi();
+}
+
+void _initWifi() async {
+  final wifiController = Get.put<WifiController>(WifiController());
+  await wifiController.getWifiList();
 }
 
 void _initAlan() {
