@@ -6,7 +6,7 @@ class Dummy {
     AccessPoint(
       bssid: "de:ba:ef:7d:57:a5",
       latitude: 0.0,
-      longitude: 10.0,
+      longitude: 8.0,
       frequency: "2.4 GHz", // Or any other frequency value
     ),
     // node 2
@@ -19,22 +19,22 @@ class Dummy {
     // node 3
     AccessPoint(
       bssid: "ce:eb:bd:58:9b:01",
-      latitude: 12.0,
-      longitude: 10.0,
+      latitude: 7.0,
+      longitude: 6.0,
       frequency: "2.4 GHz", // Or any other frequency value
     ),
     // node 5
     AccessPoint(
       bssid: "de:ba:ef:b8:69:d7",
-      latitude: 10.0,
-      longitude: 10.0,
+      latitude: 6.0,
+      longitude: 5.0,
       frequency: "5 GHz",
     ),
     // node 6
     AccessPoint(
       bssid: "ce:eb:bd:57:d2:2f",
-      latitude: 10.0,
-      longitude: 0.0,
+      latitude: 6.0,
+      longitude: 0.3,
       frequency: "2.4 GHz",
     ),
   ];

@@ -63,12 +63,12 @@ class WifiAlgorithms {
     // Extract distances from locationMap (assuming keys are BSSIDs)
     final distancesList = locationMap.values.toList();
 
+    return dynamicWeightedTrilateration(accessPointList, distancesList);
+
     // Call the trilateration function with filtered access points and distances
-    var trilaterationWithWeights2 = trilaterationWithWeights(
-        accessPointList, distancesList, 0.7, 0.7, 0.7);
-    return trilaterationWithWeights2;
-
-
+    // var trilaterationWithWeights2 =
+    //     trilaterationWithWeights(accessPointList, distancesList, 0.7, 0.7, 0.7);
+    // return trilaterationWithWeights2;
   }
 
   static Point<double> dynamicWeightedTrilateration(

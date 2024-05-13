@@ -5,14 +5,12 @@ import 'package:sy_nav/utils/constants/k_sizes.dart';
 
 class KSearchBar extends StatelessWidget {
   final TextEditingController controller;
-  final VoidCallback? onSuffixTap;
   final VoidCallback? onMenuTap;
 
   final String hintText;
   const KSearchBar(
       {super.key,
       required this.controller,
-      this.onSuffixTap,
       required this.hintText,
       this.onMenuTap});
 
@@ -53,7 +51,6 @@ class KSearchBar extends StatelessWidget {
                 ),
               ),
             ),
-            IconButton(onPressed: () => {}, icon: const Icon(Icons.mic))
           ],
         ),
       ),
