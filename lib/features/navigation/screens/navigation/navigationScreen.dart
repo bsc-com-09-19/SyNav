@@ -18,48 +18,64 @@ class NavigationScreen extends StatelessWidget {
 class BuildingsScreen extends StatelessWidget {
   final List<Building> buildings = [
     Building('Main Hall', 'hostel'),
-    Building('International House', 'hostel'),
-    Building('Lakeside Residence', 'hostel'),
-    Building('North Quad', 'hostel'),
-    Building('The Hub', 'hostel'),
-    Building('Engineering Building', 'room'),
-    Building('Science Center', 'room'),
+    Building('Beit Trust', 'hostel'),
+    Building('Kenyata', 'hostel'),
+    Building('Chirunga', 'hostel'),
+    Building('Kanjeza', 'hostel'),
+    Building('Chikowi', 'room'),
+    Building('Wadonda', 'room'),
     Building('Library Wing', 'room'),
     Building('Performing Arts Center', 'room'),
     Building('Athletic Complex', 'room'),
-    Building('Health Center', 'room'),
-    Building('Administration Building', 'room'),
-    Building('Faculty Apartments', 'room'),
+    Building('Sports Complex', 'room'),
+    Building('Cartographics lab', 'room'),
+    Building('Lab X', 'room'),
   ];
 
   BuildingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: Get.back,
-          icon: const Icon(Icons.arrow_back, color: AppColors.primaryColor),
+    return ListView(
+      padding: const EdgeInsets.symmetric(horizontal: KSizes.defaultSpace),
+      children: [
+        BuildingSection(
+          sectionTitle: 'Rooms',
+          buildings: buildings.where((b) => b.type == 'room').toList(),
+          tag: 'Rooms',
         ),
-        title: const Text('Buildings'),
-        centerTitle: true,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: KSizes.defaultSpace),
-        children: [
-          BuildingSection(
-            sectionTitle: 'Rooms',
-            buildings: buildings.where((b) => b.type == 'room').toList(),
-            tag: 'Rooms',
-          ),
-          BuildingSection(
-            sectionTitle: 'Hostels',
-            buildings: buildings.where((b) => b.type == 'hostel').toList(),
-            tag: 'Hostels',
-          ),
-        ],
-      ),
+        BuildingSection(
+          sectionTitle: 'Hostels',
+          buildings: buildings.where((b) => b.type == 'hostel').toList(),
+          tag: 'Hostels',
+        ),
+      ],
     );
+
+    // return Scaffold(
+    //   appBar: AppBar(
+    //     leading: IconButton(
+    //       onPressed: Get.back,
+    //       icon: const Icon(Icons.arrow_back, color: AppColors.primaryColor),
+    //     ),
+    //     title: const Text('Buildings'),
+    //     centerTitle: true,
+    //   ),
+    //   body: ListView(
+    //     padding: const EdgeInsets.symmetric(horizontal: KSizes.defaultSpace),
+    //     children: [
+    //       BuildingSection(
+    //         sectionTitle: 'Rooms',
+    //         buildings: buildings.where((b) => b.type == 'room').toList(),
+    //         tag: 'Rooms',
+    //       ),
+    //       BuildingSection(
+    //         sectionTitle: 'Hostels',
+    //         buildings: buildings.where((b) => b.type == 'hostel').toList(),
+    //         tag: 'Hostels',
+    //       ),
+    //     ],
+    //   ),
+    // );
   }
 }
