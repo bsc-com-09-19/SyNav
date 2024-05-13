@@ -3,8 +3,11 @@ import 'package:get/get.dart';
 import 'package:sy_nav/common/widgets/drawer/drawer_manager.dart';
 import 'package:sy_nav/common/widgets/drawer/k_drawer.dart';
 import 'package:sy_nav/common/widgets/k_search_bar.dart';
+import 'package:sy_nav/features/navigation/screens/buildings/building.dart';
 import 'package:sy_nav/features/navigation/screens/home/controllers/home_controller.dart';
+import 'package:sy_nav/features/navigation/screens/nofications/notifications_screen.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/controllers/wifi_controller.dart';
+import 'package:sy_nav/features/navigation/screens/wifi/wifi_screen.dart';
 import 'package:sy_nav/utils/constants/colors.dart';
 import 'package:sy_nav/utils/helpers/wifi_algorithms.dart';
 import 'package:sy_nav/utils/widgets/k_snack_bar.dart';
@@ -17,33 +20,19 @@ class Home extends StatelessWidget {
     final homeController = Get.find<HomeController>();
     final wifiController = Get.find<WifiController>();
 
+    final pages = [
+      ExploreWidget(),
+      WifiScreen(),
+      const BuildingsScreen(),
+      const NotificationsScreen(),
+    ];
+
     return Scaffold(
       //every scaffold has to use this key
       key: DrawerManager.drawerKey,
       // appBar: AppBar(title: const Text("SyNav")),
       drawer: const KDrawer(),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              KSearchBar(
-                controller: homeController.textEditingController.value,
-                hintText: "Enter here",
-              ),
-              const SizedBox(
-                height: kTextTabBarHeight,
-              ),
-              const Text("University of Malawi Campus Navigation",
-                  textAlign: TextAlign.center),
-              Obx(() => Card(
-                    child: Text(
-                        "Your location is: ${homeController.location.value.x}, ${homeController.location.value.y} "),
-                  ))
-            ],
-          ),
-        ),
-      ),
+      body: Obx(() => pages[homeController.currentIndex.value]),
       floatingActionButton: IconButton(
         icon: const Icon(Icons.location_pin),
         onPressed: () async {
@@ -66,12 +55,48 @@ class Home extends StatelessWidget {
   }
 }
 
+class ExploreWidget extends StatelessWidget {
+  ExploreWidget({
+    super.key,
+  });
+
+  final HomeController homeController = Get.find<HomeController>();
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            KSearchBar(
+              controller: homeController.textEditingController.value,
+              hintText: "Enter here",
+            ),
+            const SizedBox(
+              height: kTextTabBarHeight,
+            ),
+            const Text("University of Malawi Campus Navigation",
+                textAlign: TextAlign.center),
+            Obx(() => Card(
+                  child: Text(
+                      "Your location is: ${homeController.location.value.x}, ${homeController.location.value.y} "),
+                ))
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class KBottomNavigationBar extends StatelessWidget {
+  final homeController = Get.find<HomeController>();
+
   final List<String> navigationRoutes = [
-    'explore',
-    'bookmarks',
-    'navigate',
-    'notifications'
+    'Explore',
+    'Bookmarks',
+    'Navigate',
+    'Notifications'
   ]; // Route names
 
   KBottomNavigationBar({super.key});
@@ -110,6 +135,7 @@ class KBottomNavigationBar extends StatelessWidget {
         onTap: (index) {
           if (index == 1 || index == 2 || index == 3) {
             // Handle navigation for first three items
+            homeController.currentIndex.value = index;
             Get.toNamed(navigationRoutes[index]);
           }
         },
