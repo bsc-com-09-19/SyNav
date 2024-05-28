@@ -5,6 +5,7 @@ import 'package:sy_nav/common/widgets/drawer/k_drawer.dart';
 import 'package:sy_nav/common/widgets/k_search_bar.dart';
 import 'package:sy_nav/features/navigation/screens/buildings/building.dart';
 import 'package:sy_nav/features/navigation/screens/home/controllers/home_controller.dart';
+import 'package:sy_nav/features/navigation/screens/navigation/navigationScreen.dart';
 import 'package:sy_nav/features/navigation/screens/nofications/notifications_screen.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/controllers/wifi_controller.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/wifi_screen.dart';
@@ -23,23 +24,39 @@ class Home extends StatelessWidget {
     final pages = [
       ExploreWidget(),
       WifiScreen(),
-      const BuildingsScreen(),
+      const NavigationScreen(),
       const NotificationsScreen(),
     ];
 
     return Scaffold(
       //every scaffold has to use this key
       key: DrawerManager.drawerKey,
-      // appBar: AppBar(title: const Text("SyNav")),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: homeController.handleOpenDrawer,
+        ),
+        title: Obx(
+          () => Text(homeController.appBarTitle.value),
+        ),
+        centerTitle: true,
+        actions: [Obx(() => homeController.iconButton.value)],
+      ),
+
       drawer: const KDrawer(),
       body: Obx(() => pages[homeController.currentIndex.value]),
       floatingActionButton: IconButton(
         icon: const Icon(Icons.location_pin),
+        style: const ButtonStyle(
+            backgroundColor:
+                MaterialStatePropertyAll(AppColors.secondaryColor)),
         onPressed: () async {
+          homeController.currentIndex.value = 0;
           if (wifiController.wifiList.length < 3) {
             showErrorSnackBAr(context,
-                "You dont have enough registered accesspoints around you. (${wifiController.wifiList.length}) APs  ");
+                "You dont have enough registered accesspoints around you( ${wifiController.wifiList.length} APs) ");
           } else {
+            homeController.currentIndex.value = 0;
             List<String> wifiList = await wifiController.getTrilaterationWifi();
             homeController.location.value =
                 WifiAlgorithms.getEstimatedLocation(wifiList);
@@ -74,13 +91,14 @@ class ExploreWidget extends StatelessWidget {
               hintText: "Enter here",
             ),
             const SizedBox(
-              height: kTextTabBarHeight,
+              height: kTextTabBarHeight + 30,
             ),
-            const Text("University of Malawi Campus Navigation",
-                textAlign: TextAlign.center),
             Obx(() => Card(
-                  child: Text(
-                      "Your location is: ${homeController.location.value.x}, ${homeController.location.value.y} "),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                        "Your location is: ${homeController.location.value.x}, ${homeController.location.value.y} "),
+                  ),
                 ))
           ],
         ),
@@ -91,12 +109,13 @@ class ExploreWidget extends StatelessWidget {
 
 class KBottomNavigationBar extends StatelessWidget {
   final homeController = Get.find<HomeController>();
+  final wificontroller = Get.find<WifiController>();
 
   final List<String> navigationRoutes = [
     'Explore',
     'Bookmarks',
-    'Navigate',
-    'Notifications'
+    'Buildings',
+    'Notifications',
   ]; // Route names
 
   KBottomNavigationBar({super.key});
@@ -133,11 +152,18 @@ class KBottomNavigationBar extends StatelessWidget {
         unselectedItemColor: AppColors.secondaryColor,
         elevation: 12.0,
         onTap: (index) {
-          if (index == 1 || index == 2 || index == 3) {
-            // Handle navigation for first three items
-            homeController.currentIndex.value = index;
-            Get.toNamed(navigationRoutes[index]);
-          }
+          homeController.currentIndex.value = index;
+          homeController.appBarTitle.value = navigationRoutes[index];
+          //sets the actoins icon for refreshing
+          if (index == 1) {
+            homeController.iconButton.value = IconButton(
+                onPressed: wificontroller.getWifiList,
+                icon: const Icon(Icons.refresh));
+          } else {}
+          // if (index == 1 || index == 2 || index == 3) {
+          //   // Handle navigation for first three items
+          //   // Get.toNamed(navigationRoutes[index]);
+          // }
         },
       ),
     );

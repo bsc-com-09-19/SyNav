@@ -10,8 +10,8 @@ class NavigationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return const BuildingsScreen();
-    return const Placeholder();
+    return BuildingsScreen();
+    // return const Placeholder();
   }
 }
 

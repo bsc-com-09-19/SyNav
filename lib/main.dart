@@ -3,7 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:sy_nav/bindings/home_binding.dart';
+import 'package:sy_nav/features/navigation/screens/home/controllers/home_controller.dart';
 // import 'package:sy_nav/features/navigation/screens/bookmarks/bookmarks.dart';
 import 'package:sy_nav/features/navigation/screens/home/home.dart';
 import 'package:sy_nav/features/navigation/screens/navigation/navigationScreen.dart';
@@ -41,26 +43,35 @@ void _initAlan() {
 }
 
 void _handleCommand(Map<String, dynamic> commandData) {
+  HomeController homeController = Get.find<HomeController>();
+
   String command = commandData['command'];
   switch (command) {
     case 'Home':
-      Get.toNamed('/');
+      homeController.currentIndex.value = 0;
       _playText("Your in the Explore screen");
       break;
     case 'Bookmarks':
-      Get.toNamed('/bookmarks');
+      homeController.currentIndex.value = 1;
+      homeController.appBarTitle.value = "Bookmarks";
       _playText("Your in the Bookmarks screen");
       break;
     case 'Navigate':
-      Get.toNamed('/navigate');
+      homeController.appBarTitle.value = "Buildings";
+
+      homeController.currentIndex.value = 2;
       _playText("Your in the Navigate screen");
       break;
     case 'Notifications':
-      Get.toNamed('/notifications');
+      homeController.appBarTitle.value = "Notifications";
+
+      // Get.toNamed('/notifications');
+      homeController.currentIndex.value = 3;
       _playText("Your in the notifications screen");
       break;
     case 'Explore':
-      Get.toNamed('/explore');
+      // Get.toNamed('/explore');
+
       _playText("Your in the Explore screen");
       break;
     default:
@@ -70,7 +81,7 @@ void _handleCommand(Map<String, dynamic> commandData) {
   }
 
   // Wait for 3 seconds before closing the connection
-  Timer(Duration(seconds: 6), () {
+  Timer(const Duration(seconds: 6), () {
     _closeAlanConnection();
   });
 

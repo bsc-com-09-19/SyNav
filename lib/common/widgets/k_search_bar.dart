@@ -33,10 +33,10 @@ class KSearchBar extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            IconButton(
-              onPressed: homeController.handleOpenDrawer,
-              icon: const Icon(Icons.menu),
-            ),
+            // IconButton(
+            //   onPressed: homeController.handleOpenDrawer,
+            //   icon: const Icon(Icons.menu),
+            // ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(top: 10),
@@ -44,7 +44,7 @@ class KSearchBar extends StatelessWidget {
                   controller: controller,
                   decoration: InputDecoration(
                     // labelText: hintText,
-                    hintText: hintText,
+                    hintText: "Where do you want to go",
                     semanticCounterText: hintText,
                     border: InputBorder.none,
                   ),
