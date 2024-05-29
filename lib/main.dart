@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:alan_voice/alan_voice.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -97,11 +99,14 @@ void _handleCommand(Map<String, dynamic> commandData) async {
         _playText("You dont have enough registered accesspoints around you");
         showErrorSnackBAr(context!,
             "You dont have enough registered accesspoints around you( ${wifiController.wifiList.length} APs) ");
-      } else {
+      }
+      else {
         // homeController.currentIndex.value = 0;
         List<String> wifiList = await wifiController.getTrilaterationWifi();
-        homeController.location.value =
+        Point<double> estimatedLocation =
             WifiAlgorithms.getEstimatedLocation(wifiList);
+        homeController.location.value = estimatedLocation;
+        _playText("Your estimated location is $estimatedLocation");
       }
       // _playText("You are at the conner, walk 2m too youre desination");
       break;
