@@ -39,7 +39,15 @@ void main() async {
 
 void _initWifi() async {
   final wifiController = Get.put<WifiController>(WifiController());
+  final homeController = Get.put<HomeController>(HomeController());
   await wifiController.getWifiList();
+
+  Timer.periodic(const Duration(seconds: 3), (timer) async {
+    
+            List<String> wifiList = await wifiController.getTrilaterationWifi();
+            homeController.location.value =
+                WifiAlgorithms.getEstimatedLocation(wifiList);
+  });
 }
 
 void _initAlan() async {

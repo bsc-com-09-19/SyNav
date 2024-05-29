@@ -130,6 +130,7 @@ class KBottomNavigationBar extends StatelessWidget {
         bottomRight: Radius.circular(30.0),
       ),
       child: BottomNavigationBar(
+        currentIndex: homeController.currentIndex.value,
         showUnselectedLabels: true,
         backgroundColor: AppColors.secondaryColor,
         items: [

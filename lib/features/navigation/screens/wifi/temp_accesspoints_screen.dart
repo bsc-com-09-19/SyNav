@@ -22,7 +22,7 @@ class AccessPointsScreen extends StatelessWidget {
       ),
       body: Obx(
         () => _accessPoints.isEmpty
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(child: Text("No Wifi Available"),)
             : ListView.builder(
                 itemCount: _accessPoints.length,
                 itemBuilder: (context, index) {

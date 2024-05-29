@@ -31,6 +31,9 @@ class WifiController extends GetxController {
     });
   }
 
+  ///GEts the first 5 access points from the available APs to be used for trilateration. 
+  ///Only works if the number of available of APs is atleast 3. 
+  ///if the number of APs is less than 5, either 3 or 4 it will still return thos
   List<String> getTrilaterationWifi() {
     if (wifiList.isNotEmpty && wifiList.length >= 3) {
       return wifiList.take(5).toList();
