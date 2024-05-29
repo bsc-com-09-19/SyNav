@@ -8,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:sy_nav/bindings/home_binding.dart';
 import 'package:sy_nav/features/navigation/screens/home/controllers/home_controller.dart';
-// import 'package:sy_nav/features/navigation/screens/bookmarks/bookmarks.dart';
 import 'package:sy_nav/features/navigation/screens/home/home.dart';
 import 'package:sy_nav/features/navigation/screens/navigation/navigationScreen.dart';
 import 'package:sy_nav/features/navigation/screens/nofications/notifications_screen.dart';
@@ -45,8 +44,9 @@ void _initWifi() async {
 void _initAlan() async {
   AlanVoice.addButton(
     "3e8015e10c102cb7e6efd807edc44b782e956eca572e1d8b807a3e2338fdd0dc/stage",
-    buttonAlign: AlanVoice.BUTTON_ALIGN_LEFT,
-    // draggable: false,
+    buttonAlign:
+        AlanVoice.BUTTON_ALIGN_LEFT // Prevents Alan button from aligning
+    // draggable: false, // Uncomment this line if the Alan SDK provides such an option
   );
   AlanVoice.callbacks.add((command) => _handleCommand(command.data));
   // Enable the wake word
@@ -68,55 +68,46 @@ void _handleCommand(Map<String, dynamic> commandData) async {
   switch (command) {
     case 'Home':
       homeController.currentIndex.value = 0;
-      _playText("Your in the Explore screen");
+      _playText("You're in the Explore screen");
       break;
     case 'Bookmarks':
       homeController.currentIndex.value = 1;
       homeController.appBarTitle.value = "Bookmarks";
-      _playText("Your in the Bookmarks screen");
+      _playText("You're in the Bookmarks screen");
       break;
     case 'Navigate':
       homeController.appBarTitle.value = "Buildings";
-
       homeController.currentIndex.value = 2;
-      _playText("Your in the Navigate screen");
+      _playText("You're in the Navigate screen");
       break;
     case 'Notifications':
       homeController.appBarTitle.value = "Notifications";
-
-      // Get.toNamed('/notifications');
       homeController.currentIndex.value = 3;
-      _playText("Your in the notifications screen");
+      _playText("You're in the notifications screen");
       break;
     case 'Explore':
-      // Get.toNamed('/explore');
-
-      _playText("Your in the Explore screen");
+      _playText("You're in the Explore screen");
       break;
     case 'Location':
-      // homeController.currentIndex.value = 0;
       if (wifiController.wifiList.length < 3) {
-        _playText("You dont have enough registered accesspoints around you");
+        _playText("You don't have enough registered access points around you");
         showErrorSnackBAr(context!,
-            "You dont have enough registered accesspoints around you( ${wifiController.wifiList.length} APs) ");
-      }
-      else {
-        // homeController.currentIndex.value = 0;
+            "You don't have enough registered access points around you (${wifiController.wifiList.length} APs)");
+      } else {
         List<String> wifiList = await wifiController.getTrilaterationWifi();
         Point<double> estimatedLocation =
             WifiAlgorithms.getEstimatedLocation(wifiList);
         homeController.location.value = estimatedLocation;
         _playText("Your location is $estimatedLocation");
       }
-      // _playText("You are at the conner, walk 2m too youre desination");
       break;
     default:
       _playText(
-          "you can tell me to: go to Bookmarks, Home, Notifications, Navigate, or Explore");
+          "You can tell me to: go to Bookmarks, Home, Notifications, Navigate, or Explore");
       break;
   }
 
-  // Wait for 3 seconds before closing the connection
+  // Wait for 10 seconds before closing the connection
   Timer(const Duration(seconds: 10), () {
     _closeAlanConnection();
   });
@@ -168,11 +159,29 @@ class SyNavApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "SyNav",
       navigatorKey: navigatorKey, // Set the global key
-      home: const Home(),
+      home: Stack(
+        children: [
+          const Home(),
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: AlanVoiceButton(),
+          ),
+        ],
+      ),
       theme: KTheme.lightTheme,
       darkTheme: KTheme.darkTheme,
       initialBinding: HomeBinding(),
       getPages: appRoutes,
     );
+  }
+}
+
+class AlanVoiceButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // This is where you would integrate the actual Alan button if necessary
+    // Since the Alan button is automatically managed by the Alan SDK, this is a placeholder
+    return SizedBox.shrink();
   }
 }
