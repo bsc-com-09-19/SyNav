@@ -13,8 +13,14 @@ import 'package:sy_nav/features/navigation/screens/nofications/notifications_scr
 import 'package:sy_nav/features/navigation/screens/wifi/controllers/wifi_controller.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/wifi_screen.dart';
 import 'package:sy_nav/firebase_options.dart';
+import 'package:sy_nav/utils/helpers/wifi_algorithms.dart';
 import 'package:sy_nav/utils/themes/theme.dart';
 import 'dart:async';
+
+import 'package:sy_nav/utils/widgets/k_snack_bar.dart';
+
+// Declare a global key
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,18 +40,29 @@ void _initWifi() async {
   await wifiController.getWifiList();
 }
 
-void _initAlan() {
+void _initAlan() async {
   AlanVoice.addButton(
     "3e8015e10c102cb7e6efd807edc44b782e956eca572e1d8b807a3e2338fdd0dc/stage",
     buttonAlign: AlanVoice.BUTTON_ALIGN_LEFT,
+    // draggable: false,
   );
   AlanVoice.callbacks.add((command) => _handleCommand(command.data));
+  // Enable the wake word
+  AlanVoice.setWakewordEnabled(true);
+
+  // Check if the wake word is enabled
+  var enabled = await AlanVoice.getWakewordEnabled();
+  print('Wake word enabled: $enabled');
 }
 
-void _handleCommand(Map<String, dynamic> commandData) {
+void _handleCommand(Map<String, dynamic> commandData) async {
   HomeController homeController = Get.find<HomeController>();
-
+  WifiController wifiController = Get.find<WifiController>();
   String command = commandData['command'];
+
+  // Access the context using the global key
+  BuildContext? context = navigatorKey.currentContext;
+
   switch (command) {
     case 'Home':
       homeController.currentIndex.value = 0;
@@ -74,6 +91,20 @@ void _handleCommand(Map<String, dynamic> commandData) {
 
       _playText("Your in the Explore screen");
       break;
+    case 'Location':
+      // homeController.currentIndex.value = 0;
+      if (wifiController.wifiList.length < 3) {
+        _playText("You dont have enough registered accesspoints around you");
+        showErrorSnackBAr(context!,
+            "You dont have enough registered accesspoints around you( ${wifiController.wifiList.length} APs) ");
+      } else {
+        // homeController.currentIndex.value = 0;
+        List<String> wifiList = await wifiController.getTrilaterationWifi();
+        homeController.location.value =
+            WifiAlgorithms.getEstimatedLocation(wifiList);
+      }
+      // _playText("You are at the conner, walk 2m too youre desination");
+      break;
     default:
       _playText(
           "you can tell me to: go to Bookmarks, Home, Notifications, Navigate, or Explore");
@@ -81,7 +112,7 @@ void _handleCommand(Map<String, dynamic> commandData) {
   }
 
   // Wait for 3 seconds before closing the connection
-  Timer(const Duration(seconds: 6), () {
+  Timer(const Duration(seconds: 10), () {
     _closeAlanConnection();
   });
 
@@ -131,6 +162,7 @@ class SyNavApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: "SyNav",
+      navigatorKey: navigatorKey, // Set the global key
       home: const Home(),
       theme: KTheme.lightTheme,
       darkTheme: KTheme.darkTheme,
