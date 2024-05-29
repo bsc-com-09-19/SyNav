@@ -106,7 +106,7 @@ void _handleCommand(Map<String, dynamic> commandData) async {
         Point<double> estimatedLocation =
             WifiAlgorithms.getEstimatedLocation(wifiList);
         homeController.location.value = estimatedLocation;
-        _playText("Your estimated location is $estimatedLocation");
+        _playText("Your location is $estimatedLocation");
       }
       // _playText("You are at the conner, walk 2m too youre desination");
       break;
