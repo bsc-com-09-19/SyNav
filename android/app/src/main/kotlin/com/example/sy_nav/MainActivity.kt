@@ -81,13 +81,17 @@ class MainActivity: FlutterActivity() {
                 "ce:eb:bd:7e:27:39",
                 "de:ba:ef:7d:57:a5",
                 "de:ba:ef:b8:69:d7",
-                "de:ba:ef:b8:80:e5"
+                "de:ba:ef:b8:80:e5",
+            "de:ba:ef:98:11:73",
+            "de:ba:ef:a2:3c:df",
+            "de:ba:ef:b8:80:3b",
+            "98:a9:42:3b:29:57",
 
             )
 
 
         val wifiList=  results.filter { it.level >= -80 }
-        .filter { allowedBssids.contains(it.BSSID) }    
+        .filter { allowedBssids.contains(it.BSSID) }
         .map { result ->
             "${result.BSSID}#" +
             "${result.level}#" +//RSSI
@@ -115,7 +119,11 @@ class MainActivity: FlutterActivity() {
                 "ce:eb:bd:7e:27:39",
                 "de:ba:ef:7d:57:a5",
                 "de:ba:ef:b8:69:d7",
-                "de:ba:ef:b8:80:e5"
+                "de:ba:ef:b8:80:e5",
+                "de:ba:ef:98:11:73",
+            "de:ba:ef:a2:3c:df",
+            "de:ba:ef:b8:80:3b",
+            "98:a9:42:3b:29:57",
 
             )
 

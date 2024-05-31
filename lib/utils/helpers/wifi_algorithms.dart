@@ -73,9 +73,9 @@ class WifiAlgorithms {
 
   static Point<double> dynamicWeightedTrilateration(
       List<AccessPoint> apList, List<double> distances) {
-    if (apList.length < 3 && apList.length == distances.length) {
+    if (apList.length < 3 || apList.length != distances.length) {
       throw Exception(
-          "Number of access points is supposed to be 3 and has to be of same size with the distances array!!!");
+          "Number of access points is supposed to be 3 and/or has to be of same size with the distances array!!!");
     }
     // Constants (you can adjust these based on your scenario)
     const double weight2_4GHz = 0.7; // Weight for 2.4 GHz band

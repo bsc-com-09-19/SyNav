@@ -34,11 +34,53 @@ class Dummy {
     AccessPoint(
       bssid: "ce:eb:bd:57:d2:2f",
       latitude: 6.0,
-      longitude: 0.3,
+      longitude: 0.5,
+      frequency: "2.4 GHz",
+    ),
+    // Isulu mifi
+    AccessPoint(
+      bssid: "98:a9:42:3b:29:57",
+      latitude: 4.0,
+      longitude: 0.2,
+      frequency: "2.4 GHz",
+    ),
+
+    // LAB -MYPC
+    AccessPoint(
+      bssid: "de:ba:ef:98:0f:fb",
+      latitude: 4.0,
+      longitude: 0.0,
+      frequency: "2.4 GHz",
+    ),
+    // LAB -BRIE FAINDANI - PC
+    AccessPoint(
+      bssid: "de:ba:ef:b8:80:3b",
+      latitude: 4.0,
+      longitude: 0.0,
+      frequency: "2.4 GHz",
+    ),
+    // LAB -Bester - PC
+    AccessPoint(
+      bssid: "de:ba:ef:a2:3c:df",
+      latitude: 6.0,
+      longitude: 0.0,
+      frequency: "2.4 GHz",
+    ),
+    // LAB -3rd from bester - PC
+    AccessPoint(
+      bssid: "de:ba:ef:98:11:73",
+      latitude: 6.0,
+      longitude: 2.0,
       frequency: "2.4 GHz",
     ),
   ];
 }
+
+// "de:ba:ef:98:11:73#-42#com1"
+// "de:ba:ef:a2:3c:df#-31#sure"
+// "de:ba:ef:b8:80:3b#-46#grant"
+// "98:a9:42:3b:29:57#-22#Mr Isu"
+// "de:ba:ef:98:0f:fb#-31#midpoint"
 
 // "ce:eb:bd:58:9b:01 Node 3"
 //"ce:eb:bd:57:d2:2f node 6"

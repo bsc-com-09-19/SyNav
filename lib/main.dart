@@ -43,10 +43,15 @@ void _initWifi() async {
   await wifiController.getWifiList();
 
   Timer.periodic(const Duration(seconds: 3), (timer) async {
-    
-            List<String> wifiList = await wifiController.getTrilaterationWifi();
-            homeController.location.value =
-                WifiAlgorithms.getEstimatedLocation(wifiList);
+    await wifiController.getWifiList();
+    List<String> wifiList = await wifiController.getTrilaterationWifi();
+
+    if (wifiList.isNotEmpty) {
+      homeController.location.value =
+          WifiAlgorithms.getEstimatedLocation(wifiList);
+    } else {
+      print("wifi is empty");
+    }
   });
 }
 
@@ -107,8 +112,7 @@ void _handleCommand(Map<String, dynamic> commandData) async {
         _playText("You dont have enough registered accesspoints around you");
         showErrorSnackBAr(context!,
             "You dont have enough registered accesspoints around you( ${wifiController.wifiList.length} APs) ");
-      }
-      else {
+      } else {
         // homeController.currentIndex.value = 0;
         List<String> wifiList = await wifiController.getTrilaterationWifi();
         Point<double> estimatedLocation =

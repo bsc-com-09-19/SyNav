@@ -107,21 +107,28 @@ class ExploreWidget extends StatelessWidget {
   }
 }
 
-class KBottomNavigationBar extends StatelessWidget {
+class KBottomNavigationBar extends StatefulWidget {
+  KBottomNavigationBar({super.key});
+
+  @override
+  State<KBottomNavigationBar> createState() => _KBottomNavigationBarState();
+}
+
+class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
   final homeController = Get.find<HomeController>();
+
   final wificontroller = Get.find<WifiController>();
+  int currentIndex = 0;
 
   final List<String> navigationRoutes = [
     'Explore',
     'Bookmarks',
     'Buildings',
     'Notifications',
-  ]; // Route names
-
-  KBottomNavigationBar({super.key});
-
+  ];
   @override
   Widget build(BuildContext context) {
+    currentIndex = homeController.currentIndex.value;
     return ClipRRect(
       borderRadius: const BorderRadius.only(
         topLeft: Radius.circular(0),
@@ -153,6 +160,9 @@ class KBottomNavigationBar extends StatelessWidget {
         unselectedItemColor: AppColors.secondaryColor,
         elevation: 12.0,
         onTap: (index) {
+          setState(() {
+            currentIndex = index;
+          });
           homeController.currentIndex.value = index;
           homeController.appBarTitle.value = navigationRoutes[index];
           //sets the actoins icon for refreshing
