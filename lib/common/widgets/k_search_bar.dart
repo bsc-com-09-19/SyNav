@@ -8,11 +8,12 @@ class KSearchBar extends StatelessWidget {
   final VoidCallback? onMenuTap;
 
   final String hintText;
-  const KSearchBar(
-      {super.key,
-      required this.controller,
-      required this.hintText,
-      this.onMenuTap});
+  const KSearchBar({
+    Key? key,
+    required this.controller,
+    required this.hintText,
+    this.onMenuTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,31 +23,48 @@ class KSearchBar extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(KSizes.defaultSpace),
       child: Container(
-        // padding: const EdgeInsets.symmetric(horizontal: KSizes.spaceBtwItems),
         decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(KSizes.borderRadiusMd),
-            border: Border.all(
-              color: Colors.grey,
-              width: 1.0,
-            )),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(KSizes.borderRadiusLg),
+          border: Border.all(
+            color: Color.fromARGB(255, 70, 70, 62),
+            width: 1.0,
+          ),
+        ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // IconButton(
-            //   onPressed: homeController.handleOpenDrawer,
-            //   icon: const Icon(Icons.menu),
-            // ),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 10),
+              child: Container(
+                height: 50.0,
+                padding: const EdgeInsets.all(5),
                 child: TextField(
                   controller: controller,
+                  style: TextStyle(fontSize: 18.0),
+                  textAlignVertical: TextAlignVertical.center,
                   decoration: InputDecoration(
-                    // labelText: hintText,
                     hintText: "Where do you want to go",
                     semanticCounterText: hintText,
                     border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+                    suffixIcon: Container(
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(255, 148, 158, 232),
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(8.0),
+                          bottomRight: Radius.circular(8.0),
+                        ),
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          // Add your search logic here
+                        },
+                        icon: Icon(
+                          Icons.location_searching,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
