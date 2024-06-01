@@ -27,7 +27,7 @@ class KSearchBar extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(KSizes.borderRadiusLg),
           border: Border.all(
-            color: Color.fromARGB(255, 70, 70, 62),
+            color: Color.fromARGB(255, 23, 1, 119),
             width: 1.0,
           ),
         ),
@@ -49,10 +49,10 @@ class KSearchBar extends StatelessWidget {
                     contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
                     suffixIcon: Container(
                       decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 148, 158, 232),
+                        color: Color.fromARGB(97, 23, 18, 152),
                         borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(8.0),
-                          bottomRight: Radius.circular(8.0),
+                          topRight: Radius.circular(10.0),
+                          bottomRight: Radius.circular(10.0),
                         ),
                       ),
                       child: IconButton(
