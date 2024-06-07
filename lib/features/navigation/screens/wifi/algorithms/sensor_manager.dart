@@ -31,7 +31,6 @@ class SensorManager {
         // wifiController.accelerometerValues.value = _accelerometerValues;
       } else if (sensorData['type'] == 'gyroscope') {
         _gyroscopeValues.setAll(0, List<double>.from(sensorData['values']));
-        print()
         // wifiController.gyroscopeValues.value = _gyroscopeValues;
       }
     }
