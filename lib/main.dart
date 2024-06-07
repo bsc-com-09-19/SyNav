@@ -46,7 +46,7 @@ void _initWifi() async {
 
   await wifiController.getWifiList();
 
-  Timer.periodic(const Duration(milliseconds: 1000), (timer) async {
+  Timer.periodic(const Duration(milliseconds: 3), (timer) async {
     await wifiController.getWifiList();
     List<String> wifiList =  wifiController.getTrilaterationWifi();
 
@@ -113,7 +113,8 @@ void _handleCommand(Map<String, dynamic> commandData) async {
     case 'Location':
       // homeController.currentIndex.value = 0;
       if (wifiController.wifiList.length < 3) {
-        _playText("You dont have enough registered accesspoints around you");
+        _playText(
+            "You dont have enough registered accesspoints around you but your previous location was ${homeController.location.value}");
         showErrorSnackBAr(context!,
             "You dont have enough registered accesspoints around you( ${wifiController.wifiList.length} APs) ");
       } else {

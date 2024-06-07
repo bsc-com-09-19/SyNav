@@ -6,8 +6,8 @@ import 'package:sy_nav/utils/constants/colors.dart';
 class KDrawer extends StatelessWidget {
   const KDrawer({super.key});
 
-  static const String email = "abc@bgc.ag";
-  static const String profileName = "Don Chilcson";
+  static const String email = "synav@synav.com";
+  static const String profileName = "Don Chilcso";
 
   @override
   Widget build(BuildContext context) {
