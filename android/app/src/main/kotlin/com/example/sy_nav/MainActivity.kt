@@ -14,12 +14,41 @@ import android.os.Build
 import androidx.core.app.ActivityCompat
 import android.Manifest
 import android.content.pm.PackageManager
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
+import android.os.Bundle
 
-class MainActivity: FlutterActivity() {
+class MainActivity: FlutterActivity(), SensorEventListener {
     private val WIFI_CHANNEL = "com.example.sy_nav/wifi"
     // private val BLUETOOTH_CHANNEL = "com.example.sy_nav/bluetooth"
     private lateinit var wifiScanReceiver: WifiScanReceiver
+    private lateinit var sensorManager: SensorManager
+    private var accelerometer: Sensor? = null
+    private var gyroscope: Sensor? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        accelerometer?.also { sensor ->
+            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
+        }
+        gyroscope?.also { sensor ->
+            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sensorManager.unregisterListener(this)
+    }
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -95,13 +124,13 @@ class MainActivity: FlutterActivity() {
         .map { result ->
             "${result.BSSID}#" +
             "${result.level}#" +//RSSI
-            "${result.SSID}" 
+                    result.SSID
         }
 
         if(wifiList.size ==0){
             return listOf("Failed No wifi Available")
         }
-        return wifiList;
+        return wifiList
 
     }
     inner class WifiScanReceiver : BroadcastReceiver() {
@@ -135,7 +164,7 @@ class MainActivity: FlutterActivity() {
                 .map { result ->
                     "${result.BSSID}#" +
                     "${result.level}#" +//RSSI
-                    "${result.SSID}" 
+                            result.SSID
                 }
                 if(wifiList.size ==0){
                     wifiListUpdateListener?.invoke(listOf("Failed No wifi Available"))
@@ -145,6 +174,27 @@ class MainActivity: FlutterActivity() {
             }
         
         }
+    }
+
+    override fun onSensorChanged(event: SensorEvent?) {
+        val sensorData = when (event?.sensor?.type) {
+            Sensor.TYPE_ACCELEROMETER -> mapOf("type" to "accelerometer", "values" to event.values.toList())
+            Sensor.TYPE_GYROSCOPE -> mapOf("type" to "gyroscope", "values" to event.values.toList())
+            else -> null
+        }
+        sensorData?.let {
+            flutterEngine?.dartExecutor?.binaryMessenger?.let { it1 ->
+                MethodChannel(
+
+                    it1,
+                    "com.example.sy_nav/sensors")
+                    .invokeMethod("sensorData", it)
+            }
+        }
+    }
+
+    override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
+        TODO("Not yet implemented")
     }
 }
 

@@ -1,7 +1,13 @@
+import 'dart:math';
+
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
+import 'package:sy_nav/features/navigation/screens/wifi/algorithms/sensor_manager.dart';
 
 class WifiController extends GetxController {
+  var accelerometerValues = [0.0, 0.0, 0.0].obs;
+  var gyroscopeValues = [0.0, 0.0, 0.0].obs;
+
   var wifiList = <String>[].obs;
   static const platform = MethodChannel('com.example.sy_nav/wifi');
 
@@ -31,8 +37,8 @@ class WifiController extends GetxController {
     });
   }
 
-  ///GEts the first 5 access points from the available APs to be used for trilateration. 
-  ///Only works if the number of available of APs is atleast 3. 
+  ///GEts the first 5 access points from the available APs to be used for trilateration.
+  ///Only works if the number of available of APs is atleast 3.
   ///if the number of APs is less than 5, either 3 or 4 it will still return thos
   List<String> getTrilaterationWifi() {
     if (wifiList.isNotEmpty && wifiList.length >= 3) {
