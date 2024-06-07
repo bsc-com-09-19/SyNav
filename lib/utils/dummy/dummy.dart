@@ -40,8 +40,8 @@ class Dummy {
     // Isulu mifi
     AccessPoint(
       bssid: "98:a9:42:3b:29:57",
-      latitude: 4.0,
-      longitude: 0.2,
+      latitude: 6.0,
+      longitude: 1.0,
       frequency: "2.4 GHz",
     ),
 
@@ -70,6 +70,22 @@ class Dummy {
     AccessPoint(
       bssid: "de:ba:ef:98:11:73",
       latitude: 6.0,
+      longitude: 2.0,
+      frequency: "2.4 GHz",
+    ),
+
+     // NETGEAR
+    AccessPoint(
+      bssid: "78:D2:94:9A:B1:53",
+      latitude: 4.0,
+      longitude: 4.0,
+      frequency: "2.4 GHz",
+    ),
+
+     // tnm dlink
+    AccessPoint(
+      bssid: "3C:FA:D3:96:19:63",
+      latitude: 7.0,
       longitude: 2.0,
       frequency: "2.4 GHz",
     ),
