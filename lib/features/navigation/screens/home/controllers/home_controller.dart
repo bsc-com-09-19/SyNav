@@ -10,7 +10,6 @@ class HomeController extends GetxController {
   var textEditingController = TextEditingController().obs;
   // ignore: prefer_const_constructors
   var location = Point<double>(0, 0).obs;
-  var sensorManager = SensorManager().obs;
   var appBarTitle = KStrings.homeTitle.obs;
   var appBarSuffixActions = <Widget>[].obs;
 

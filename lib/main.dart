@@ -12,6 +12,7 @@ import 'package:sy_nav/features/navigation/screens/home/controllers/home_control
 import 'package:sy_nav/features/navigation/screens/home/home.dart';
 import 'package:sy_nav/features/navigation/screens/navigation/navigationScreen.dart';
 import 'package:sy_nav/features/navigation/screens/nofications/notifications_screen.dart';
+import 'package:sy_nav/features/navigation/screens/wifi/algorithms/sensor_manager.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/controllers/wifi_controller.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/wifi_screen.dart';
 import 'package:sy_nav/firebase_options.dart';
@@ -41,15 +42,17 @@ void _initWifi() async {
   final wifiController = Get.put<WifiController>(WifiController());
   final homeController = Get.put<HomeController>(HomeController());
 
+  final sensorManager = SensorManager(wifiController: wifiController , homeController: homeController);
+
   await wifiController.getWifiList();
 
   Timer.periodic(const Duration(milliseconds: 1000), (timer) async {
     await wifiController.getWifiList();
-    List<String> wifiList = await wifiController.getTrilaterationWifi();
+    List<String> wifiList =  wifiController.getTrilaterationWifi();
 
     if (wifiList.isNotEmpty) {
       homeController.location.value =
-          WifiAlgorithms.getEstimatedLocation(wifiList, sensorManager: homeController.sensorManager.value);
+          WifiAlgorithms.getEstimatedLocation(wifiList, sensorManager: sensorManager);
     } else {
       print("wifi is empty");
     }

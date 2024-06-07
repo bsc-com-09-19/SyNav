@@ -9,10 +9,11 @@ class SensorManager {
   static const MethodChannel _sensorChannel =
       MethodChannel('com.example.sy_nav/sensors');
 
-  WifiController wifiController = Get.find<WifiController>();
-  HomeController homeController = Get.find<HomeController>();
+  final WifiController wifiController;
+  final HomeController homeController;
 
-  SensorManager() {
+  SensorManager({required this.wifiController, required this.homeController}) {
+    //ensures that the method executed once the object has been constructed
     _sensorChannel.setMethodCallHandler(_sensorHandler);
   }
 
@@ -30,6 +31,7 @@ class SensorManager {
         // wifiController.accelerometerValues.value = _accelerometerValues;
       } else if (sensorData['type'] == 'gyroscope') {
         _gyroscopeValues.setAll(0, List<double>.from(sensorData['values']));
+        print()
         // wifiController.gyroscopeValues.value = _gyroscopeValues;
       }
     }
@@ -41,7 +43,7 @@ class SensorManager {
   void _updateLocation() {
     // Estimate the new location based on the sensor data and WiFi data
     final location = WifiAlgorithms.getEstimatedLocation(
-        wifiController.wifiList.value,
+        wifiController.getTrilaterationWifi(),
         sensorManager: this);
     homeController.updateLocation(location);
   }
