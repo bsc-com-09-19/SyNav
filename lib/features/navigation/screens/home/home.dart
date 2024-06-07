@@ -10,7 +10,7 @@ import 'package:sy_nav/features/navigation/screens/nofications/notifications_scr
 import 'package:sy_nav/features/navigation/screens/wifi/controllers/wifi_controller.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/wifi_screen.dart';
 import 'package:sy_nav/utils/constants/colors.dart';
-import 'package:sy_nav/utils/helpers/wifi_algorithms.dart';
+import 'package:sy_nav/features/navigation/screens/wifi/algorithms/wifi_algorithms.dart';
 import 'package:sy_nav/utils/widgets/k_snack_bar.dart';
 
 class Home extends StatelessWidget {

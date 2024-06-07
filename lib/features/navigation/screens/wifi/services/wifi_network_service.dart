@@ -36,4 +36,8 @@ class WifiNetworkService {
                 AccessPoint.fromJson(doc.data() as Map<String, dynamic>))
             .toList());
   }
+
+  void _calculateLocation(){
+
+  }
 }

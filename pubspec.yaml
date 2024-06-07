@@ -43,6 +43,8 @@ dependencies:
   firebase_database: ^10.4.9
   alan_voice: ^3.0.0
   shared_preferences: ^2.2.3
+  # sensors_plus: ^4.0.2
+  vector_math: ^2.1.1
 
 dev_dependencies:
   flutter_test:

@@ -4,7 +4,7 @@ import 'package:sy_nav/common/widgets/access_point_dialog.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/controllers/wifi_controller.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/model/wifi_network.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/services/wifi_network_service.dart';
-import 'package:sy_nav/utils/helpers/wifi_algorithms.dart';
+import 'package:sy_nav/features/navigation/screens/wifi/algorithms/wifi_algorithms.dart';
 
 class WifiScreen extends StatelessWidget {
   WifiScreen({Key? key}) : super(key: key);
