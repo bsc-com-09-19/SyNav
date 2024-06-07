@@ -1,5 +1,7 @@
 import 'dart:math';
 import 'package:get/get.dart';
+import 'package:sy_nav/features/navigation/screens/wifi/algorithms/position_kalman_filter.dart';
+import 'package:sy_nav/features/navigation/screens/wifi/algorithms/sensor_manager.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/model/wifi_network.dart';
 import 'package:sy_nav/utils/constants/wifi_constants.dart';
 import 'package:sy_nav/utils/dummy/dummy.dart';
@@ -28,7 +30,8 @@ class WifiAlgorithms {
   ///
   /// This function throws an exception if the provided list is empty or the first element
   /// indicates a failure.
-  static Point<double> getEstimatedLocation(List<String> wifiList) {
+  static Point<double> getEstimatedLocation(List<String> wifiList,
+      {SensorManager? sensorManager}) {
     if (wifiList.isEmpty || wifiList[0].startsWith("Failed")) {
       throw Exception("Please provide a valid list");
     }
@@ -44,6 +47,24 @@ class WifiAlgorithms {
         .where((ap) => filteredBssids.contains(ap.bssid))
         .toList();
 
+    final kalmanFilters = <String, KalmanFilter>{};
+
+    for (var wifi in wifiList) {
+      final bssid = wifi.split("#")[0];
+      final level = double.parse(wifi.split("#")[1]);
+      if (!kalmanFilters.containsKey(bssid)) {
+        kalmanFilters[bssid] = KalmanFilter();
+      }
+      kalmanFilters[bssid]!.filter(level);
+      
+
+      //will run if the user has also provided the sensor details
+      if (sensorManager != null){
+              kalmanFilters[bssid]!.updateWithSensorData(sensorManager.accelerometerValues, sensorManager.gyroscopeValues);
+
+      }
+    }
+
     // Create a map containing only valid access points and their estimated distances
     final locationMap = Map<String, double>.fromIterable(wifiList,
         key: (wifi) => wifi.split("#")[0], // Use BSSID from split string
@@ -51,7 +72,8 @@ class WifiAlgorithms {
           final bssid = wifi.split("#")[0];
           final accessPoint = accessPointMap[bssid];
           if (accessPoint != null) {
-            final level = double.parse(wifi.split("#")[1]); // Parse level
+            final level = kalmanFilters[bssid]!.filter(double.parse(
+                wifi.split("#")[1])); // Filter the noise in the signal detected
             return estimateDistance(
                 level); // Calculate distance using your function
           } else {
@@ -77,7 +99,7 @@ class WifiAlgorithms {
       throw Exception(
           "Number of access points is supposed to be 3 and/or has to be of same size with the distances array!!!");
     }
-    // Constants (you can adjust these based on your scenario)
+    // Constants they can be adjusted
     const double weight2_4GHz = 0.7; // Weight for 2.4 GHz band
     const double weight5GHz = 0.3; // Weight for 5 GHz band
 
