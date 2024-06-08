@@ -46,7 +46,7 @@ void _initWifi() async {
 
   await wifiController.getWifiList();
 
-  Timer.periodic(const Duration(milliseconds: 3), (timer) async {
+  Timer.periodic(const Duration(milliseconds: 6000), (timer) async {
     await wifiController.getWifiList();
     List<String> wifiList =  wifiController.getTrilaterationWifi();
 

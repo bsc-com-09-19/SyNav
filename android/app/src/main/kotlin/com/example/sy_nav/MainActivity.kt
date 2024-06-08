@@ -115,8 +115,8 @@ class MainActivity: FlutterActivity(), SensorEventListener {
             "de:ba:ef:a2:3c:df",
             "de:ba:ef:b8:80:3b",
             "98:a9:42:3b:29:57",
-            "78:D2:94:9A:B1:53",
-            "3C:FA:D3:96:19:63"
+            "78:d2:94:9a:b1:53",
+            "3c:fa:d3:96:19:63"
 
 
             )
@@ -156,8 +156,8 @@ class MainActivity: FlutterActivity(), SensorEventListener {
             "de:ba:ef:a2:3c:df",
             "de:ba:ef:b8:80:3b",
             "98:a9:42:3b:29:57",
-            "78:D2:94:9A:B1:53",
-            "3C:FA:D3:96:19:63"
+            "78:d2:94:9a:b1:53",
+            "3c:fa:d3:96:19:63"
 
             )
 
@@ -199,21 +199,7 @@ class MainActivity: FlutterActivity(), SensorEventListener {
     }
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
-
-
-        val sensorData = when (event?.sensor?.type) {
-            Sensor.TYPE_ACCELEROMETER -> mapOf("type" to "accelerometer", "values" to event.values.toList())
-            Sensor.TYPE_GYROSCOPE -> mapOf("type" to "gyroscope", "values" to event.values.toList())
-            else -> null
-        }
-        sensorData?.let {
-            flutterEngine?.dartExecutor?.binaryMessenger?.let { it1 ->
-                MethodChannel(it1, "com.example.sy_nav/sensors").invokeMethod("sensorData", it)
-            }
-        }
-
-
-
+        // TODO("Not yet implemented")
     }
 }
 

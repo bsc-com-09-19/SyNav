@@ -76,7 +76,7 @@ class Dummy {
 
      // NETGEAR
     AccessPoint(
-      bssid: "78:D2:94:9A:B1:53",
+      bssid: "78:d2:94:9a:b1:53",
       latitude: 4.0,
       longitude: 4.0,
       frequency: "2.4 GHz",
@@ -84,7 +84,7 @@ class Dummy {
 
      // tnm dlink
     AccessPoint(
-      bssid: "3C:FA:D3:96:19:63",
+      bssid: "3c:fa:d3:96:19:63",
       latitude: 7.0,
       longitude: 2.0,
       frequency: "2.4 GHz",
