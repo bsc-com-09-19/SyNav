@@ -4,13 +4,14 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAOMPApcX-o4JY1S4riDEzj1J-vyPkrmhE",
-    authDomain: "myapp-230eb.firebaseapp.com",
-    databaseURL: "https://myapp-230eb-default-rtdb.firebaseio.com",
-    projectId: "myapp-230eb",
-    storageBucket: "myapp-230eb.appspot.com",
-    messagingSenderId: "238202045982",
-    appId: "1:238202045982:web:71ba01092b85315ec3d00f"
+    apiKey: "AIzaSyA69iRhadZxTLAW_z7nm-dS7WYOsfE8lRo",
+  authDomain: "sy-nav.firebaseapp.com",
+  databaseURL: "https://sy-nav-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "sy-nav",
+  storageBucket: "sy-nav.appspot.com",
+  messagingSenderId: "674222803730",
+  appId: "1:674222803730:web:80659d407334d92437c1cb",
+  measurementId: "G-PPRNNTKZNR"
 };
 
 // Initialize Firebase

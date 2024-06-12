@@ -49,7 +49,8 @@ const Home = () => {
                 <th>#</th>
                 <th>Name</th>
                 <th>MAC Address</th>
-                <th>Coordinates</th>
+                <th>latitude</th>
+                <th>longitude</th>
                 <th>Actions</th>
               </tr>
             </thead>
