@@ -74,7 +74,7 @@ class Dummy {
       frequency: "2.4 GHz",
     ),
 
-     // NETGEAR
+    // NETGEAR
     AccessPoint(
       bssid: "78:d2:94:9a:b1:53",
       latitude: 4.0,
@@ -82,9 +82,9 @@ class Dummy {
       frequency: "2.4 GHz",
     ),
 
-     // tnm dlink
+    // tnm dlink
     AccessPoint(
-      bssid: "3c:fa:d3:96:19:63",
+      bssid: "3c:fa:d3:96:99:63",
       latitude: 7.0,
       longitude: 2.0,
       frequency: "2.4 GHz",
@@ -92,6 +92,7 @@ class Dummy {
   ];
 }
 
+// "3c:fa:d3:96:99:63#-50#dlink_DWR-930M_1963"// 78:d2:94:9a:b1:53 netgear
 // "de:ba:ef:98:11:73#-42#com1"
 // "de:ba:ef:a2:3c:df#-31#sure"
 // "de:ba:ef:b8:80:3b#-46#grant"

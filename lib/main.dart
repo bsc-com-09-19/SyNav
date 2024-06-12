@@ -19,7 +19,6 @@ import 'package:sy_nav/firebase_options.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/algorithms/wifi_algorithms.dart';
 import 'package:sy_nav/utils/themes/theme.dart';
 import 'dart:async';
-
 import 'package:sy_nav/utils/widgets/k_snack_bar.dart';
 
 // Declare a global key
@@ -42,7 +41,8 @@ void _initWifi() async {
   final wifiController = Get.put<WifiController>(WifiController());
   final homeController = Get.put<HomeController>(HomeController());
 
-  final sensorManager = SensorManager(wifiController: wifiController , homeController: homeController);
+  final sensorManager = SensorManager(
+      wifiController: wifiController, homeController: homeController);
 
   await wifiController.getWifiList();
 

@@ -116,7 +116,8 @@ class MainActivity: FlutterActivity(), SensorEventListener {
             "de:ba:ef:b8:80:3b",
             "98:a9:42:3b:29:57",
             "78:d2:94:9a:b1:53",
-            "3c:fa:d3:96:19:63"
+            "3c:fa:d3:96:99:63",
+            "5c:ba:ef:98:0f:fb",
 
 
             )
@@ -157,7 +158,8 @@ class MainActivity: FlutterActivity(), SensorEventListener {
             "de:ba:ef:b8:80:3b",
             "98:a9:42:3b:29:57",
             "78:d2:94:9a:b1:53",
-            "3c:fa:d3:96:19:63"
+            "3c:fa:d3:96:99:63",
+            "5c:ba:ef:98:0f:fb"
 
             )
 

@@ -36,6 +36,7 @@ class WifiAlgorithms {
       throw Exception("Please provide a valid list");
     }
 
+
     /// Generate a list of APs with their locations
     // Map BSSID to AccessPoint object (assuming BSSID is unique)
     final accessPointMap = {for (var ap in Dummy.accessPoints) ap.bssid: ap};
@@ -49,6 +50,8 @@ class WifiAlgorithms {
 
     final kalmanFilters = <String, KalmanFilter>{};
 
+
+    //extracting values 
     for (var wifi in wifiList) {
       final bssid = wifi.split("#")[0];
       final level = double.parse(wifi.split("#")[1]);
