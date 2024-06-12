@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from './firebaseConfig'; // Assuming firebaseConfig.js is in the same directory
+import './App.css'; // Import your CSS file here
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
@@ -22,32 +23,34 @@ const SignIn = () => {
   };
 
   return (
-    <div>
-      <h2>Sign In</h2>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group>
-          <Form.Label>Email address</Form.Label>
-          <Form.Control
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter email"
-          />
-        </Form.Group>
-        <Form.Group>
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-          />
-        </Form.Group>
-        {error && <p className="text-danger">{error}</p>}
-        <Button variant="primary" type="submit">
-          Sign In
-        </Button>
-      </Form>
+    <div className="signin-container">
+      <div className="signin-box">
+        <h2>Sign In</h2>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group>
+            <Form.Label>Email address</Form.Label>
+            <Form.Control
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter email"
+            />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+            />
+          </Form.Group>
+          {error && <p className="text-danger">{error}</p>}
+          <Button variant="primary" type="submit">
+            Sign In
+          </Button>
+        </Form>
+      </div>
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './App.css';
 import { Table, Button } from 'react-bootstrap';
 import { firestore } from './firebaseConfig';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';

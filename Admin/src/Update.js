@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
 import { firestore } from './firebaseConfig';
 import { doc, getDoc, updateDoc } from 'firebase/firestore'; // Import necessary Firestore methods
@@ -8,7 +8,7 @@ const Update = () => {
   const { id } = useParams();
   const [form, setForm] = useState({ SSID: '', BSSID: '', xCoordinate: '', yCoordinate: '' });
   const [error, setError] = useState(null); // State for error handling (optional)
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -89,7 +89,7 @@ const Update = () => {
               onChange={handleChange}
             />
           </Form.Group>
-          <Button variant="primary" type="submit">
+          <Button variant="primary" onClick={() => navigate('/')} type="submit"  >
             Update
           </Button>
         </Form>
