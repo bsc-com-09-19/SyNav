@@ -36,7 +36,7 @@ class PositionKalmanFilter {
   }
 }
 
-// kalman_filter.dart
+//updated version of kalman filter, with no parameters in the constructor
 class KalmanFilter {
   final double _processNoiseCovariance = 0.00001; // Process noise covariance
   final double _measurementNoiseCovariance =

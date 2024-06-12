@@ -38,7 +38,7 @@ class WifiAlgorithms {
 
 
     /// Generate a list of APs with their locations
-    // Map BSSID to AccessPoint object (assuming BSSID is unique)
+    // Map BSSID to AccessPoint object (BSSID is unique)
     final accessPointMap = {for (var ap in Dummy.accessPoints) ap.bssid: ap};
 
     // Filter access points based on BSSIDs in wifiList
