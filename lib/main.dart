@@ -48,11 +48,12 @@ void _initWifi() async {
 
   Timer.periodic(const Duration(milliseconds: 6000), (timer) async {
     await wifiController.getWifiList();
-    List<String> wifiList =  wifiController.getTrilaterationWifi();
+    List<String> wifiList = wifiController.getTrilaterationWifi();
 
     if (wifiList.isNotEmpty) {
-      homeController.location.value =
-          WifiAlgorithms.getEstimatedLocation(wifiList, sensorManager: sensorManager);
+      homeController.location.value = WifiAlgorithms.getEstimatedLocation(
+          wifiList,
+          sensorManager: sensorManager);
     } else {
       print("wifi is empty");
     }
@@ -120,8 +121,7 @@ void _handleCommand(Map<String, dynamic> commandData) async {
       } else {
         // homeController.currentIndex.value = 0;
         List<String> wifiList = await wifiController.getTrilaterationWifi();
-        Point<double> estimatedLocation =
-            WifiAlgorithms.getEstimatedLocation(wifiList);
+        Point<double> estimatedLocation = homeController.location.value;
         homeController.location.value = estimatedLocation;
         _playText("Your location is $estimatedLocation");
       }
