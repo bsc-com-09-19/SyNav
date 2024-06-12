@@ -4,7 +4,7 @@ import { firestore } from './firebaseConfig';
 import { collection, addDoc } from 'firebase/firestore'; // Import necessary Firestore methods
 
 const Add = () => {
-  const [form, setForm] = useState({ SSID: '', BSSID: '', xCoordinate: '', yCoordinate: '' });
+  const [form, setForm] = useState({ SSID: '', BSSID: '', latitude: '', longitude: '' });
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -53,8 +53,8 @@ const Add = () => {
           <Form.Label>x-Coordinate</Form.Label>
           <Form.Control
             type="text"
-            name="xCoordinate"
-            value={form.xCoordinate}
+            name="latitude"
+            value={form.latitude}
             onChange={handleChange}
           />
         </Form.Group>
@@ -63,8 +63,8 @@ const Add = () => {
           <Form.Label>y-Coordinate</Form.Label>
           <Form.Control
             type="text"
-            name="yCoordinate"
-            value={form.yCoordinate}
+            name="longitude"
+            value={form.longitude}
             onChange={handleChange}
           />
         </Form.Group>

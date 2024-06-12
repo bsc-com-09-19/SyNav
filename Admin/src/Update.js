@@ -75,8 +75,8 @@ const Update = () => {
             <Form.Label>x-Coordinate</Form.Label>
             <Form.Control
               type="text"
-              name="xCoordinate"
-              value={form.xCoordinate}
+              name="latitude"
+              value={form.latitude}
               onChange={handleChange}
             />
           </Form.Group>
@@ -84,8 +84,8 @@ const Update = () => {
             <Form.Label>y-Coordinate</Form.Label>
             <Form.Control
               type="text"
-              name="yCoordinate"
-              value={form.yCoordinate}
+              name="longitude"
+              value={form.longitude}
               onChange={handleChange}
             />
           </Form.Group>

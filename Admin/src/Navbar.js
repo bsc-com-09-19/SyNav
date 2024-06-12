@@ -5,7 +5,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 const CustomNavbar = () => {
   return (
     <Navbar bg="primary" variant="dark" expand="lg">
-      <Navbar.Brand href="/">My App</Navbar.Brand>
+      <Navbar.Brand href="/">Synav Admin</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto">

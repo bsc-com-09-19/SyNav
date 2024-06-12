@@ -49,8 +49,7 @@ const Home = () => {
                 <th>#</th>
                 <th>Name</th>
                 <th>MAC Address</th>
-                <th>latitude</th>
-                <th>longitude</th>
+                <th>Coordinates</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -59,10 +58,17 @@ const Home = () => {
                 <tr key={item.id}>
                   <td>{index + 1}</td>
                   <td>{item.SSID}</td> {/* Changed 'name' to 'SSID' to match the form */}
-                  <td>{item.BSSID}</td> {/* Changed 'mac' to 'BSSID' to match the form */}
-                  <td>{`(${item.xCoordinate}, ${item.yCoordinate})`}</td> {/* Changed 'coordinates' to 'xCoordinate' and 'yCoordinate' */}
+                  <td>{item.bssid}</td> {/* Changed 'mac' to 'BSSID' to match the form */}
+                  <td>{`(${item.latitude}, ${item.longitude})`}</td> {/* Changed 'coordinates' to 'xCoordinate' and 'yCoordinate' */}
                   <td>
-                    <Link to={`/update/${item.id}`}>Edit</Link>
+                    
+                    <Link
+                      to={`/update/${item.id}`}
+                      className="btn btn-primary"
+                      style={{ textDecoration: 'none', color: 'white' }}
+                    >
+                      Update
+                    </Link>
                     <Button variant="danger" onClick={() => handleDelete(item.id)} style={{ marginLeft: '10px' }}>
                       Delete
                     </Button>
