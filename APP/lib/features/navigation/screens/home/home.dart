@@ -11,7 +11,6 @@ import 'package:sy_nav/features/navigation/screens/wifi/controllers/wifi_control
 import 'package:sy_nav/features/navigation/screens/wifi/wifi_screen.dart';
 import 'package:sy_nav/utils/constants/colors.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/algorithms/wifi_algorithms.dart';
-import 'package:sy_nav/utils/widgets/k_snack_bar.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -98,7 +97,7 @@ class Home extends StatelessWidget {
           child: Center(
             child: Text(
               message,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 16.0,
               ),
@@ -134,6 +133,9 @@ class ExploreWidget extends StatelessWidget {
             KSearchBar(
               controller: homeController.textEditingController.value,
               hintText: "Enter here",
+              onSearchTap: () {
+                
+              },
             ),
             const SizedBox(
               height: kTextTabBarHeight + 30,
