@@ -44,7 +44,6 @@ class Grid {
                   longitude: longitude);
             }));
   }
-  
 
   /// Retrieves a specific cell from the grid.
   GridCell getCell(int row, int col) => grid[row][col];
@@ -69,5 +68,18 @@ class Grid {
       }
     }
     return 'Unknown';
+  }
+  
+  bool findCellByName(String name) {
+    for (var row in grid) {
+      for (var cell in row) {
+        if (cell.name == name) {
+          return true;
+        }
+      }
+    }
+
+    //if not found
+    return false;
   }
 }

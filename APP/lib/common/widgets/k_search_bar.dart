@@ -6,6 +6,7 @@ import 'package:sy_nav/utils/constants/k_sizes.dart';
 class KSearchBar extends StatelessWidget {
   final TextEditingController controller;
   final VoidCallback? onMenuTap;
+  final void Function(String value)? onSearchTap;
 
   final String hintText;
   const KSearchBar({
@@ -13,6 +14,7 @@ class KSearchBar extends StatelessWidget {
     required this.controller,
     required this.hintText,
     this.onMenuTap,
+    this.onSearchTap,
   }) : super(key: key);
 
   @override
@@ -27,7 +29,7 @@ class KSearchBar extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(KSizes.borderRadiusLg),
           border: Border.all(
-            color: Color.fromARGB(255, 23, 1, 119),
+            color: const Color.fromARGB(255, 23, 1, 119),
             width: 1.0,
           ),
         ),
@@ -40,15 +42,15 @@ class KSearchBar extends StatelessWidget {
                 padding: const EdgeInsets.all(5),
                 child: TextField(
                   controller: controller,
-                  style: TextStyle(fontSize: 18.0),
+                  style: const TextStyle(fontSize: 18.0),
                   textAlignVertical: TextAlignVertical.center,
                   decoration: InputDecoration(
                     hintText: "Where do you want to go",
                     semanticCounterText: hintText,
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+                    // contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
                     suffixIcon: Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Color.fromARGB(97, 23, 18, 152),
                         borderRadius: BorderRadius.only(
                           topRight: Radius.circular(10.0),
@@ -57,9 +59,9 @@ class KSearchBar extends StatelessWidget {
                       ),
                       child: IconButton(
                         onPressed: () {
-                          // Add your search logic here
+                          onSearchTap!(controller.value.text);
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.location_searching,
                           color: Colors.white,
                         ),

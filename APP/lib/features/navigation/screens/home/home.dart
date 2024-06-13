@@ -11,11 +11,13 @@ import 'package:sy_nav/features/navigation/screens/wifi/controllers/wifi_control
 import 'package:sy_nav/features/navigation/screens/wifi/wifi_screen.dart';
 import 'package:sy_nav/utils/constants/colors.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/algorithms/wifi_algorithms.dart';
+
 import 'package:sy_nav/utils/widgets/k_snack_bar.dart';
 import 'package:alan_voice/alan_voice.dart';
 
 import '../../../../utils/alan/alanutils.dart';
 // home.dart
+=======
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -56,8 +58,8 @@ class Home extends StatelessWidget {
               onPressed: () {
                 // Add your action here
               },
-              child: Icon(Icons.add),
               backgroundColor: Colors.blue,
+              child: const Icon(Icons.add),
             ),
           ),
           Positioned(
@@ -87,8 +89,8 @@ class Home extends StatelessWidget {
                   AlanVoiceUtils.playText(locationString);
                 }
               },
-              child: Icon(Icons.location_pin),
               backgroundColor: AppColors.secondaryColor,
+              child: const Icon(Icons.location_pin),
             ),
           ),
 
@@ -111,7 +113,7 @@ class Home extends StatelessWidget {
           child: Center(
             child: Text(
               message,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 16.0,
               ),
@@ -147,6 +149,11 @@ class ExploreWidget extends StatelessWidget {
             KSearchBar(
               controller: homeController.textEditingController.value,
               hintText: "Enter here",
+              onSearchTap: (name) {
+                if(homeController.gridMap.findCellByName(name)){
+                  
+                }
+              },
             ),
             const SizedBox(
               height: kTextTabBarHeight + 30,
