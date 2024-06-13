@@ -177,7 +177,7 @@ class SyNavApp extends StatelessWidget {
       page: () => BuildingsScreen(),
     ),
     GetPage(
-      name: "/notifications",
+      name: "/History",
       page: () => const NotificationsScreen(),
     )
   ];
