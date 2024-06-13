@@ -34,4 +34,6 @@ class HomeController extends GetxController {
   void updateLocation(Point<double> location) {
     this.location.value = location;
   }
+
+
 }
