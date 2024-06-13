@@ -12,6 +12,10 @@ import 'package:sy_nav/features/navigation/screens/wifi/wifi_screen.dart';
 import 'package:sy_nav/utils/constants/colors.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/algorithms/wifi_algorithms.dart';
 import 'package:sy_nav/utils/widgets/k_snack_bar.dart';
+import 'package:alan_voice/alan_voice.dart';
+
+import '../../../../utils/alan/alanutils.dart';
+// home.dart
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -20,11 +24,11 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     final homeController = Get.find<HomeController>();
     final wifiController = Get.find<WifiController>();
-
+//route definition
     final pages = [
       ExploreWidget(),
-      WifiScreen(),
-      const NavigationScreen(),
+      // WifiScreen(),
+      const NavigationScreen(), 
       const NotificationsScreen(),
     ];
 
@@ -67,18 +71,27 @@ class Home extends StatelessWidget {
                     context,
                     "You don't have enough registered access points around you (${wifiController.wifiList.length} APs)",
                   );
+                  AlanVoiceUtils.playText(
+                      "You don't have enough registered access points around you");
                 } else {
                   homeController.currentIndex.value = 0;
                   List<String> wifiList =
                       await wifiController.getTrilaterationWifi();
-                  homeController.location.value =
+                  var estimatedLocation =
                       WifiAlgorithms.getEstimatedLocation(wifiList);
+                  homeController.location.value = estimatedLocation;
+
+                  // Convert the location to a string and use Alan to announce it
+                  String locationString =
+                      "Your location is: ${estimatedLocation.x}, ${estimatedLocation.y}";
+                  AlanVoiceUtils.playText(locationString);
                 }
               },
               child: Icon(Icons.location_pin),
               backgroundColor: AppColors.secondaryColor,
             ),
           ),
+
         ],
       ),
       bottomNavigationBar: KBottomNavigationBar(),
@@ -165,10 +178,10 @@ class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
   int currentIndex = 0;
 
   final List<String> navigationRoutes = [
-    'Explore',
-    'Bookmarks',
-    'Buildings',
-    'Notifications',
+    'Home',
+    // 'Bookmarks',
+    // 'Buildings',
+    'History',
   ];
 
   @override
@@ -184,12 +197,14 @@ class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
       child: BottomNavigationBar(
         currentIndex: homeController.currentIndex.value,
         showUnselectedLabels: true,
-        backgroundColor: AppColors.secondaryColor,
+        // backgroundColor: AppColors.secondaryColor,
         items: [
           const BottomNavigationBarItem(
-              icon: Icon(Icons.explore), label: "Explore"),
-          const BottomNavigationBarItem(
-              icon: Icon(Icons.bookmark_rounded), label: "Bookmarks"),
+              icon: Icon(Icons.home_filled), label: "Home"),
+              
+          // const BottomNavigationBarItem(
+          //     icon: Icon(Icons.bookmark_rounded), label: "Bookmarks"),
+
           BottomNavigationBarItem(
               icon: Transform.rotate(
                 angle: 0.785398,
@@ -198,8 +213,9 @@ class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
                 ),
               ),
               label: "Navigate"),
+
           const BottomNavigationBarItem(
-              icon: Icon(Icons.notifications_rounded), label: "History"),
+              icon: Icon(Icons.history_outlined), label: "History"),
         ],
         selectedItemColor: AppColors.primaryColor,
         unselectedItemColor: AppColors.secondaryColor,
