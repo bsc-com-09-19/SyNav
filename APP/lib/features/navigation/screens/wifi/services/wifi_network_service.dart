@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+import 'package:sy_nav/features/navigation/screens/home/controllers/home_controller.dart';
+import 'package:sy_nav/features/navigation/screens/wifi/controllers/wifi_controller.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/model/wifi_network.dart';
 
 class WifiNetworkService {
@@ -37,7 +40,4 @@ class WifiNetworkService {
             .toList());
   }
 
-  void _calculateLocation(){
-
-  }
 }
