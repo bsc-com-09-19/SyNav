@@ -51,8 +51,8 @@ class Home extends StatelessWidget {
               onPressed: () {
                 // Add your action here
               },
-              child: Icon(Icons.add),
               backgroundColor: Colors.blue,
+              child: const Icon(Icons.add),
             ),
           ),
           Positioned(
@@ -74,8 +74,8 @@ class Home extends StatelessWidget {
                       WifiAlgorithms.getEstimatedLocation(wifiList);
                 }
               },
-              child: Icon(Icons.location_pin),
               backgroundColor: AppColors.secondaryColor,
+              child: const Icon(Icons.location_pin),
             ),
           ),
         ],
@@ -133,8 +133,10 @@ class ExploreWidget extends StatelessWidget {
             KSearchBar(
               controller: homeController.textEditingController.value,
               hintText: "Enter here",
-              onSearchTap: () {
-                
+              onSearchTap: (name) {
+                if(homeController.gridMap.findCellByName(name)){
+                  
+                }
               },
             ),
             const SizedBox(
