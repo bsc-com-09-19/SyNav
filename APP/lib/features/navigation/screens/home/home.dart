@@ -14,7 +14,7 @@ import 'package:sy_nav/features/navigation/screens/wifi/algorithms/wifi_algorith
 import 'package:sy_nav/utils/widgets/k_snack_bar.dart';
 
 class Home extends StatelessWidget {
-  const Home({super.key});
+  const Home({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,6 @@ class Home extends StatelessWidget {
     ];
 
     return Scaffold(
-      //every scaffold has to use this key
       key: DrawerManager.drawerKey,
       appBar: AppBar(
         leading: IconButton(
@@ -42,52 +41,91 @@ class Home extends StatelessWidget {
         centerTitle: true,
         actions: [Obx(() => homeController.iconButton.value)],
       ),
-
       drawer: const KDrawer(),
-      body: Obx(() => pages[homeController.currentIndex.value]),
-      floatingActionButton: IconButton(
-        icon: const Icon(
-          Icons.location_pin,
-          color: Color.fromARGB(255, 255, 255, 255),
-        ),
-        style: const ButtonStyle(
-            backgroundColor:
-                MaterialStatePropertyAll(AppColors.secondaryColor)),
-        onPressed: () async {
-          homeController.currentIndex.value = 0;
-          if (wifiController.wifiList.length < 3) {
-            showErrorSnackBAr(context,
-                "You dont have enough registered accesspoints around you( ${wifiController.wifiList.length} APs) ");
-          } else {
-            homeController.currentIndex.value = 0;
-            List<String> wifiList = await wifiController.getTrilaterationWifi();
-            homeController.location.value =
-                WifiAlgorithms.getEstimatedLocation(wifiList);
-            print(wifiController.getLocationName(
-                homeController.location.value.x,
-                homeController.location.value.y));
-            homeController.currentIndex.value = 0;
-          }
-        },
+      body: Stack(
+        children: [
+          Obx(() => pages[homeController.currentIndex.value]),
+          Positioned(
+            bottom: 16.0, // Adjust position as needed
+            right: 16.0, // Adjust position as needed
+            child: FloatingActionButton(
+              onPressed: () {
+                // Add your action here
+              },
+              child: Icon(Icons.add),
+              backgroundColor: Colors.blue,
+            ),
+          ),
+          Positioned(
+            bottom: 80.0, // Adjust position as needed
+            right: 16.0, // Adjust position as needed
+            child: FloatingActionButton(
+              onPressed: () async {
+                homeController.currentIndex.value = 0;
+                if (wifiController.wifiList.length < 3) {
+                  showErrorSnackBar(
+                    context,
+                    "You don't have enough registered access points around you (${wifiController.wifiList.length} APs)",
+                  );
+                } else {
+                  homeController.currentIndex.value = 0;
+                  List<String> wifiList =
+                      await wifiController.getTrilaterationWifi();
+                  homeController.location.value =
+                      WifiAlgorithms.getEstimatedLocation(wifiList);
+                }
+              },
+              child: Icon(Icons.location_pin),
+              backgroundColor: AppColors.secondaryColor,
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: KBottomNavigationBar(),
     );
   }
 
-  void handleMic() {
-    //TODO
+  void showErrorSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+          margin: const EdgeInsets.symmetric(horizontal: 20.0),
+          decoration: BoxDecoration(
+            color: AppColors.secondaryColor,
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: Center(
+            child: Text(
+              message,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16.0,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+        duration: Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          side: BorderSide(
+            color: Colors.transparent,
+          ),
+        ),
+      ),
+    );
   }
 }
 
 class ExploreWidget extends StatelessWidget {
-  ExploreWidget({
-    super.key,
-  });
-
-  final HomeController homeController = Get.find<HomeController>();
+  const ExploreWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final homeController = Get.find<HomeController>();
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -115,7 +153,7 @@ class ExploreWidget extends StatelessWidget {
 }
 
 class KBottomNavigationBar extends StatefulWidget {
-  KBottomNavigationBar({super.key});
+  KBottomNavigationBar({Key? key}) : super(key: key);
 
   @override
   State<KBottomNavigationBar> createState() => _KBottomNavigationBarState();
@@ -123,7 +161,6 @@ class KBottomNavigationBar extends StatefulWidget {
 
 class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
   final homeController = Get.find<HomeController>();
-
   final wificontroller = Get.find<WifiController>();
   int currentIndex = 0;
 
@@ -133,6 +170,7 @@ class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
     'Buildings',
     'Notifications',
   ];
+
   @override
   Widget build(BuildContext context) {
     currentIndex = homeController.currentIndex.value;
@@ -161,7 +199,7 @@ class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
               ),
               label: "Navigate"),
           const BottomNavigationBarItem(
-              icon: Icon(Icons.notifications_rounded), label: "Notifications"),
+              icon: Icon(Icons.notifications_rounded), label: "History"),
         ],
         selectedItemColor: AppColors.primaryColor,
         unselectedItemColor: AppColors.secondaryColor,
@@ -172,16 +210,11 @@ class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
           });
           homeController.currentIndex.value = index;
           homeController.appBarTitle.value = navigationRoutes[index];
-          //sets the actoins icon for refreshing
           if (index == 1) {
             homeController.iconButton.value = IconButton(
                 onPressed: wificontroller.getWifiList,
                 icon: const Icon(Icons.refresh));
-          } else {}
-          // if (index == 1 || index == 2 || index == 3) {
-          //   // Handle navigation for first three items
-          //   // Get.toNamed(navigationRoutes[index]);
-          // }
+          }
         },
       ),
     );
