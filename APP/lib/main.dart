@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:alan_voice/alan_voice.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -27,14 +26,41 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  ///Initializing the firebase
+  /// Initializing the firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  ///Enables local caching
+  /// Enables local caching
   FirebaseDatabase.instance.setPersistenceEnabled(true);
+
   runApp(SyNavApp());
-  _initAlan();
+
+  await _initAlan();
   _initWifi();
+}
+
+Future<void> _initAlan() async {
+  AlanVoice.addButton(
+    "3e8015e10c102cb7e6efd807edc44b782e956eca572e1d8b807a3e2338fdd0dc/stage",
+    buttonAlign: AlanVoice.BUTTON_ALIGN_LEFT,
+    // draggable: false,
+  );
+  AlanVoice.callbacks.add((command) => _handleCommand(command.data));
+
+  // Enable the wake word
+  // ignore: await_only_futures
+  AlanVoice.setWakewordEnabled(true);
+
+  // Check if the wake word is enabled
+  var enabled = await AlanVoice.getWakewordEnabled();
+  print('Wake word enabled: $enabled');
+
+  // Ensure the connection is open before speaking
+  AlanVoice.activate();
+  _voiceOut();
+}
+
+void _voiceOut() {
+  _playText("Welcome to SyNav app, I am your voice assistant!");
 }
 
 void _initWifi() async {
@@ -55,24 +81,9 @@ void _initWifi() async {
           wifiList,
           sensorManager: sensorManager);
     } else {
-      print("wifi is empty");
+      print("WiFi is empty");
     }
   });
-}
-
-void _initAlan() async {
-  AlanVoice.addButton(
-    "3e8015e10c102cb7e6efd807edc44b782e956eca572e1d8b807a3e2338fdd0dc/stage",
-    buttonAlign: AlanVoice.BUTTON_ALIGN_LEFT,
-    // draggable: false,
-  );
-  AlanVoice.callbacks.add((command) => _handleCommand(command.data));
-  // Enable the wake word
-  AlanVoice.setWakewordEnabled(true);
-
-  // Check if the wake word is enabled
-  var enabled = await AlanVoice.getWakewordEnabled();
-  print('Wake word enabled: $enabled');
 }
 
 void _handleCommand(Map<String, dynamic> commandData) async {
@@ -86,50 +97,42 @@ void _handleCommand(Map<String, dynamic> commandData) async {
   switch (command) {
     case 'Home':
       homeController.currentIndex.value = 0;
-      _playText("Your in the Explore screen");
+      _playText("You are in the Explore screen");
       break;
     case 'Bookmarks':
       homeController.currentIndex.value = 1;
       homeController.appBarTitle.value = "Bookmarks";
-      _playText("Your in the Bookmarks screen");
+      _playText("You are in the Bookmarks screen");
       break;
     case 'Navigate':
       homeController.appBarTitle.value = "Buildings";
-
       homeController.currentIndex.value = 2;
-      _playText("Your in the Navigate screen");
+      _playText("You are in the Navigate screen");
       break;
     case 'Notifications':
       homeController.appBarTitle.value = "Notifications";
-
-      // Get.toNamed('/notifications');
       homeController.currentIndex.value = 3;
-      _playText("Your in the notifications screen");
+      _playText("You are in the Notifications screen");
       break;
     case 'Explore':
-      // Get.toNamed('/explore');
-
-      _playText("Your in the Explore screen");
+      _playText("You are in the Explore screen");
       break;
     case 'Location':
-      // homeController.currentIndex.value = 0;
       if (wifiController.wifiList.length < 3) {
         _playText(
-            "You dont have enough registered accesspoints around you but your previous location was ${homeController.location.value}");
+            "You don't have enough registered access points around you but your previous location was ${homeController.location.value}");
         showErrorSnackBAr(context!,
-            "You dont have enough registered accesspoints around you( ${wifiController.wifiList.length} APs) ");
+            "You don't have enough registered access points around you (${wifiController.wifiList.length} APs)");
       } else {
-        // homeController.currentIndex.value = 0;
         List<String> wifiList = await wifiController.getTrilaterationWifi();
         Point<double> estimatedLocation = homeController.location.value;
         homeController.location.value = estimatedLocation;
         _playText("Your location is $estimatedLocation");
       }
-      // _playText("You are at the conner, walk 2m too youre desination");
       break;
     default:
       _playText(
-          "you can tell me to: go to Bookmarks, Home, Notifications, Navigate, or Explore");
+          "You can tell me to: go to Bookmarks, Home, Notifications, Navigate, or Explore");
       break;
   }
 
@@ -155,7 +158,7 @@ void _closeAlanConnection() {
 class SyNavApp extends StatelessWidget {
   SyNavApp({super.key});
 
-  ///Routes for navigation through the app
+  /// Routes for navigation through the app
   final List<GetPage> appRoutes = [
     GetPage(
       name: '/', // Home screen as the initial route
@@ -174,7 +177,7 @@ class SyNavApp extends StatelessWidget {
       page: () => BuildingsScreen(),
     ),
     GetPage(
-      name: "/notifications",
+      name: "/History",
       page: () => const NotificationsScreen(),
     )
   ];
