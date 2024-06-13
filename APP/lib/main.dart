@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -55,7 +56,9 @@ Future<void> _initAlan() async {
 
   // Check if the wake word is enabled
   var enabled = await AlanVoice.getWakewordEnabled();
-  print('Wake word enabled: $enabled');
+  if (kDebugMode) {
+    print('Wake word enabled: $enabled');
+  }
 
   // Ensure the connection is open before speaking
   AlanVoice.activate();
@@ -84,10 +87,14 @@ void _initWifi() async {
       homeController.location.value = WifiAlgorithms.getEstimatedLocation(
           wifiList,
           sensorManager: sensorManager);
-      print(wifiController.getLocationName(
+      if (kDebugMode) {
+        print(wifiController.getLocationName(
           homeController.location.value.x, homeController.location.value.y));
+      }
     } else {
-      print("WiFi is empty");
+      if (kDebugMode) {
+        print("WiFi is empty");
+      }
     }
   });
 }
@@ -276,7 +283,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
     // Check if the wake word is enabled
     var enabled = await AlanVoice.getWakewordEnabled();
-    print('Wake word enabled: $enabled');
+    if (kDebugMode) {
+      print('Wake word enabled: $enabled');
+    }
 
     // Ensure the connection is open before speaking
     AlanVoice.activate();

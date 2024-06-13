@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sy_nav/common/widgets/access_point_dialog.dart';
@@ -23,15 +24,19 @@ class WifiScreen extends StatelessWidget {
               if (wifiController.wifiList.isEmpty ||
                   (index == 0 &&
                       wifiController.wifiList[0].startsWith("Failed"))) {
-                print(
+                if (kDebugMode) {
+                  print(
                     "Index: $index value is ${wifiController.wifiList[index]}");
+                }
                 return kCenter();
               }
 
               List<String> wifiDetails =
                   wifiController.wifiList[index].split('#');
-              print(
+              if (kDebugMode) {
+                print(
                   "Number: ${itemCount}, ${wifiDetails[0]}, ${wifiDetails[1]}");
+              }
 
               String macAddress = wifiDetails[0];
               double rssi = double.parse(wifiDetails[1]);

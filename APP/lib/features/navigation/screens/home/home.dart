@@ -1,9 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:sy_nav/common/widgets/drawer/drawer_manager.dart';
 import 'package:sy_nav/common/widgets/drawer/k_drawer.dart';
 import 'package:sy_nav/common/widgets/k_search_bar.dart';
-import 'package:sy_nav/features/navigation/screens/buildings/building.dart';
 import 'package:sy_nav/features/navigation/screens/home/controllers/home_controller.dart';
 import 'package:sy_nav/features/navigation/screens/navigation/navigationScreen.dart';
 import 'package:sy_nav/features/navigation/screens/nofications/notifications_screen.dart';
@@ -124,6 +125,7 @@ class ExploreWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeController = Get.find<HomeController>();
+    final wifiController = Get.find<WifiController>();
 
     return SafeArea(
       child: Padding(
@@ -134,8 +136,23 @@ class ExploreWidget extends StatelessWidget {
               controller: homeController.textEditingController.value,
               hintText: "Enter here",
               onSearchTap: (name) {
-                if(homeController.gridMap.findCellByName(name)){
-                  
+                var destinationCell =
+                    wifiController.gridMap.findCellByName(name);
+                if (destinationCell != null) {
+                  //TODO: make alan say that the place is available
+                  var locationCell = wifiController.grid.value
+                      .findCellByCoordinates(homeController.location.value.x,
+                          homeController.location.value.y);
+
+                  if (locationCell != null) {
+                    var distance = wifiController.gridMap
+                        .calculateDistance(locationCell, destinationCell);
+                    if (kDebugMode) {
+                      print("distance: $distance");
+                    }
+                  }
+                } else {
+                  //TODO: make alan say that that place is not available
                 }
               },
             ),

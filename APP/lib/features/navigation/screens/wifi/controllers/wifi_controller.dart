@@ -17,9 +17,13 @@ class WifiController extends GetxController {
   final double cellSize = 0.8;
   final double startLatitude = 4.0;
   final double startLongitude = 3.0;
+
   late Rx<Grid> grid =
       Grid(rows: 5, cols: 5, cellSize: 0.8, startLatitude: 4, startLongitude: 4)
           .obs;
+
+    var gridMap = Grid(
+      rows: 10, cols: 10, cellSize: 0.8, startLatitude: 10, startLongitude: 10);
 
   static const platform = MethodChannel('com.example.sy_nav/wifi');
 
