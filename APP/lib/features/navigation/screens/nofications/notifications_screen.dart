@@ -7,6 +7,6 @@ class NotificationsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child:  Text(" You have no notifications"));
+    return const Center(child:  Text(" Loading histoty..."));
   }
 }
