@@ -45,8 +45,9 @@ void _initWifi() async {
       wifiController: wifiController, homeController: homeController);
 
   await wifiController.getWifiList();
+  //TODO
 
-  Timer.periodic(const Duration(milliseconds: 6000), (timer) async {
+  Timer.periodic(const Duration(milliseconds: 3000), (timer) async {
     await wifiController.getWifiList();
     List<String> wifiList = wifiController.getTrilaterationWifi();
 
@@ -54,6 +55,8 @@ void _initWifi() async {
       homeController.location.value = WifiAlgorithms.getEstimatedLocation(
           wifiList,
           sensorManager: sensorManager);
+      print(wifiController.getLocationName(
+          homeController.location.value.x, homeController.location.value.y));
     } else {
       print("wifi is empty");
     }

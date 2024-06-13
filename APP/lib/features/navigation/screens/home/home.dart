@@ -46,7 +46,10 @@ class Home extends StatelessWidget {
       drawer: const KDrawer(),
       body: Obx(() => pages[homeController.currentIndex.value]),
       floatingActionButton: IconButton(
-        icon: const Icon(Icons.location_pin,color: Color.fromARGB(255, 255, 255, 255),),
+        icon: const Icon(
+          Icons.location_pin,
+          color: Color.fromARGB(255, 255, 255, 255),
+        ),
         style: const ButtonStyle(
             backgroundColor:
                 MaterialStatePropertyAll(AppColors.secondaryColor)),
@@ -60,6 +63,10 @@ class Home extends StatelessWidget {
             List<String> wifiList = await wifiController.getTrilaterationWifi();
             homeController.location.value =
                 WifiAlgorithms.getEstimatedLocation(wifiList);
+            print(wifiController.getLocationName(
+                homeController.location.value.x,
+                homeController.location.value.y));
+            homeController.currentIndex.value = 0;
           }
         },
       ),
