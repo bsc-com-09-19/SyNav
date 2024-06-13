@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/algorithms/sensor_manager.dart';
-import 'package:sy_nav/utils/map/grid_map.dart';
+import 'package:sy_nav/features/navigation/screens/map/grid_map.dart';
 
 class WifiController extends GetxController {
   var accelerometerValues = [0.0, 0.0, 0.0].obs;
