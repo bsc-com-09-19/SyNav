@@ -17,9 +17,10 @@ import 'package:sy_nav/features/navigation/screens/wifi/wifi_screen.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/algorithms/sensor_manager.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/algorithms/wifi_algorithms.dart';
 import 'package:sy_nav/firebase_options.dart';
+import 'package:sy_nav/utils/constants/colors.dart';
 import 'package:sy_nav/utils/themes/theme.dart';
 import 'package:sy_nav/utils/widgets/k_snack_bar.dart';
-
+import 'package:sy_nav/firebase_options.dart';
 import 'features/navigation/screens/nofications/notifications_screen.dart';
 
 // Declare a global key
@@ -35,6 +36,7 @@ void main() async {
   FirebaseDatabase.instance.setPersistenceEnabled(true);
 
   runApp(SyNavApp());
+  
 }
 
 class SyNavApp extends StatelessWidget {
@@ -96,13 +98,15 @@ class _SplashScreenState extends State<SplashScreen> {
       );
       _initAlan();
       _initWifi();
+      
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(250, 67, 87, 244), // Set the background color to blue
+      backgroundColor:
+          AppColors.primaryColor, // Set the background color to blue
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -111,7 +115,7 @@ class _SplashScreenState extends State<SplashScreen> {
             Text(
               "SYNAV",
               style: TextStyle(
-                color:  Color.fromARGB(255, 248, 190, 1),
+                color: Color.fromARGB(255, 248, 190, 1),
                 fontSize: 50,
                 fontWeight: FontWeight.bold,
               ),
