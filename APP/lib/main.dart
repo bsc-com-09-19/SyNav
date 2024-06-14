@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -10,7 +11,6 @@ import 'package:sy_nav/features/navigation/screens/home/controllers/home_control
 import 'package:sy_nav/features/navigation/screens/home/home.dart';
 import 'package:sy_nav/features/navigation/screens/navigation/navigationScreen.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/controllers/wifi_controller.dart';
-import 'package:sy_nav/features/navigation/screens/wifi/wifi_screen.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/algorithms/sensor_manager.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/algorithms/wifi_algorithms.dart';
 import 'package:sy_nav/firebase_options.dart';
@@ -47,8 +47,12 @@ Future<void> _initAlan() async {
 
   // Enable the wake word
   AlanVoice.setWakewordEnabled(true);
-  bool enabled = await AlanVoice.getWakewordEnabled();
-  print('Wake word enabled: $enabled');
+
+  // Check if the wake word is enabled
+  var enabled = await AlanVoice.getWakewordEnabled();
+  if (kDebugMode) {
+    print('Wake word enabled: $enabled');
+  }
 
   AlanVoice.activate();
   AlanVoiceUtils.playText("Welcome to SyNav app, I am your voice assistant!");
@@ -71,10 +75,14 @@ void _initWifi() async {
       homeController.location.value = WifiAlgorithms.getEstimatedLocation(
           wifiList,
           sensorManager: sensorManager);
-      print(wifiController.getLocationName(
+      if (kDebugMode) {
+        print(wifiController.getLocationName(
           homeController.location.value.x, homeController.location.value.y));
+      }
     } else {
-      print("WiFi is empty");
+      if (kDebugMode) {
+        print("WiFi is empty");
+      }
     }
   });
 }

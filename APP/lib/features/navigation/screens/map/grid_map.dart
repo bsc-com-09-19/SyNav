@@ -1,3 +1,5 @@
+import 'dart:math';
+
 /// Represents a single cell in the grid map
 class GridCell {
   final int row;
@@ -45,6 +47,13 @@ class Grid {
             }));
   }
 
+  /// Calculates the Euclidean distance between two cells.
+  double calculateDistance(GridCell cell1, GridCell cell2) {
+    double deltaX = cell1.longitude - cell2.longitude;
+    double deltaY = cell1.latitude - cell2.latitude;
+    return sqrt(deltaX * deltaX + deltaY * deltaY);
+  }
+
   /// Retrieves a specific cell from the grid.
   GridCell getCell(int row, int col) => grid[row][col];
 
@@ -69,17 +78,31 @@ class Grid {
     }
     return 'Unknown';
   }
-  
-  bool findCellByName(String name) {
+
+  GridCell? findCellByCoordinates(double longitude, double latitude) {
+    for (var row in grid) {
+      for (var cell in row) {
+        if (latitude >= cell.latitude &&
+            latitude < cell.latitude + cellSize &&
+            longitude >= cell.longitude &&
+            longitude < cell.longitude + cellSize) {
+          return cell;
+        }
+      }
+    }
+    return null;
+  }
+
+  GridCell? findCellByName(String name) {
     for (var row in grid) {
       for (var cell in row) {
         if (cell.name == name) {
-          return true;
+          return cell;
         }
       }
     }
 
     //if not found
-    return false;
+    return null;
   }
 }
