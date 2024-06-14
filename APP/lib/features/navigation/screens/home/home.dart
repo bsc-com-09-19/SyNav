@@ -17,7 +17,6 @@ import 'package:alan_voice/alan_voice.dart';
 
 import '../../../../utils/alan/alanutils.dart';
 // home.dart
-=======
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
