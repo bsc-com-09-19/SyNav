@@ -12,9 +12,9 @@ class WifiController extends GetxController {
   var wifiList = <String>[].obs;
 
   //creating grid map
-  final int rows = 5;
-  final int cols = 5;
-  final double cellSize = 0.8;
+  final int rows = 10;
+  final int cols = 10;
+  final double cellSize = 1.2;
   final double startLatitude = 4.0;
   final double startLongitude = 3.0;
 

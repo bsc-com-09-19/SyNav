@@ -12,13 +12,10 @@ import 'package:sy_nav/features/navigation/screens/wifi/controllers/wifi_control
 import 'package:sy_nav/features/navigation/screens/wifi/wifi_screen.dart';
 import 'package:sy_nav/utils/constants/colors.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/algorithms/wifi_algorithms.dart';
-
 import 'package:sy_nav/utils/widgets/k_snack_bar.dart';
 import 'package:alan_voice/alan_voice.dart';
 
 import '../../../../utils/alan/alanutils.dart';
-// home.dart
-=======
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -31,7 +28,7 @@ class Home extends StatelessWidget {
     final pages = [
       ExploreWidget(),
       // WifiScreen(),
-      const NavigationScreen(), 
+      const NavigationScreen(),
       const NotificationsScreen(),
     ];
 
@@ -86,7 +83,7 @@ class Home extends StatelessWidget {
 
                   // Convert the location to a string and use Alan to announce it
                   String locationString =
-                      "Your location is: ${estimatedLocation.x}, ${estimatedLocation.y}";
+                      "Your location is: ${wifiController.grid.value.findCellNameByCoordinates(homeController.location.value.x, homeController.location.value.y)}";
                   AlanVoiceUtils.playText(locationString);
                 }
               },
@@ -94,7 +91,6 @@ class Home extends StatelessWidget {
               child: const Icon(Icons.location_pin),
             ),
           ),
-
         ],
       ),
       bottomNavigationBar: KBottomNavigationBar(),
@@ -122,11 +118,11 @@ class Home extends StatelessWidget {
             ),
           ),
         ),
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
-          side: BorderSide(
+          side: const BorderSide(
             color: Colors.transparent,
           ),
         ),
@@ -179,7 +175,7 @@ class ExploreWidget extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
-                        "Your location is: ${homeController.location.value.x}, ${homeController.location.value.y} "),
+                        "Your location is: ${wifiController.grid.value.findCellNameByCoordinates(homeController.location.value.x, homeController.location.value.y)}"),
                   ),
                 ))
           ],
@@ -204,7 +200,7 @@ class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
   final List<String> navigationRoutes = [
     'Home',
     // 'Bookmarks',
-    // 'Buildings',
+    'Navigate',
     'History',
   ];
 
@@ -225,7 +221,7 @@ class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
         items: [
           const BottomNavigationBarItem(
               icon: Icon(Icons.home_filled), label: "Home"),
-              
+
           // const BottomNavigationBarItem(
           //     icon: Icon(Icons.bookmark_rounded), label: "Bookmarks"),
 
