@@ -1,8 +1,7 @@
-// firebaseConfig.js
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
 
+import { getFirestore, collection, addDoc, getDocs } from "firebase/firestore";
 const firebaseConfig = {
     apiKey: "AIzaSyA69iRhadZxTLAW_z7nm-dS7WYOsfE8lRo",
   authDomain: "sy-nav.firebaseapp.com",
@@ -23,4 +22,7 @@ const auth = getAuth(app);
 // Initialize Cloud Firestore and get a reference to the service
 const firestore = getFirestore(app);
 
-export { auth, firestore };
+
+
+
+export { firestore, collection, addDoc, getDocs ,auth};

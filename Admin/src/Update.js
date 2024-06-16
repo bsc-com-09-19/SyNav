@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Form, Button } from 'react-bootstrap';
+import { useParams } from 'react-router-dom';
+import { Form, Button, Card } from 'react-bootstrap';
 import { firestore } from './firebaseConfig';
 import { doc, getDoc, updateDoc } from 'firebase/firestore'; // Import necessary Firestore methods
+import './App'; // Import CSS file for styling
 
 const Update = () => {
   const { id } = useParams();
   const [form, setForm] = useState({ SSID: '', BSSID: '', xCoordinate: '', yCoordinate: '' });
   const [error, setError] = useState(null); // State for error handling (optional)
-  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -47,53 +48,57 @@ const Update = () => {
   };
 
   return (
-    <div>
-      <h2>Update Item</h2>
-      {error ? (
-        <p className="text-danger">{error}</p>
-      ) : (
-        <Form onSubmit={handleSubmit}>
-          <Form.Group>
-            <Form.Label>Name</Form.Label>
-            <Form.Control
-              type="text"
-              name="SSID"
-              value={form.SSID}
-              onChange={handleChange}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>MAC Address</Form.Label>
-            <Form.Control
-              type="text"
-              name="BSSID"
-              value={form.BSSID}
-              onChange={handleChange}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>x-Coordinate</Form.Label>
-            <Form.Control
-              type="text"
-              name="latitude"
-              value={form.latitude}
-              onChange={handleChange}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>y-Coordinate</Form.Label>
-            <Form.Control
-              type="text"
-              name="longitude"
-              value={form.longitude}
-              onChange={handleChange}
-            />
-          </Form.Group>
-          <Button variant="primary" onClick={() => navigate('/')} type="submit"  >
-            Update
-          </Button>
-        </Form>
-      )}
+    <div className="d-flex align-items-center justify-content-center vh-100">
+      <Card className="shadow p-4" style={{ width: '100%', maxWidth: '500px' }}>
+        <Card.Body>
+          <h2 className="text-center">Update Item</h2>
+          {error ? (
+            <p className="text-danger">{error}</p>
+          ) : (
+            <Form onSubmit={handleSubmit}>
+              <Form.Group controlId="formSSID">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="SSID"
+                  value={form.SSID}
+                  onChange={handleChange}
+                />
+              </Form.Group>
+              <Form.Group controlId="formBSSID" className="mt-3">
+                <Form.Label>MAC Address</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="BSSID"
+                  value={form.BSSID}
+                  onChange={handleChange}
+                />
+              </Form.Group>
+              <Form.Group controlId="formXCoordinate" className="mt-3">
+                <Form.Label>x-Coordinate</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="xCoordinate"
+                  value={form.xCoordinate}
+                  onChange={handleChange}
+                />
+              </Form.Group>
+              <Form.Group controlId="formYCoordinate" className="mt-3">
+                <Form.Label>y-Coordinate</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="yCoordinate"
+                  value={form.yCoordinate}
+                  onChange={handleChange}
+                />
+              </Form.Group>
+              <Button variant="primary" type="submit" className="mt-4 w-100">
+                Update
+              </Button>
+            </Form>
+          )}
+        </Card.Body>
+      </Card>
     </div>
   );
 };
