@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
 import { Table, Button } from 'react-bootstrap';
 import { firestore } from './firebaseConfig';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
@@ -59,17 +58,10 @@ const Home = () => {
                 <tr key={item.id}>
                   <td>{index + 1}</td>
                   <td>{item.SSID}</td> {/* Changed 'name' to 'SSID' to match the form */}
-                  <td>{item.bssid}</td> {/* Changed 'mac' to 'BSSID' to match the form */}
-                  <td>{`(${item.latitude}, ${item.longitude})`}</td> {/* Changed 'coordinates' to 'xCoordinate' and 'yCoordinate' */}
+                  <td>{item.BSSID}</td> {/* Changed 'mac' to 'BSSID' to match the form */}
+                  <td>{`(${item.xCoordinate}, ${item.yCoordinate})`}</td> {/* Changed 'coordinates' to 'xCoordinate' and 'yCoordinate' */}
                   <td>
-                    
-                    <Link
-                      to={`/update/${item.id}`}
-                      className="btn btn-primary"
-                      style={{ textDecoration: 'none', color: 'white' }}
-                    >
-                      Update
-                    </Link>
+                  <Link to={`/update/${item.id}`} className="btn btn-primary">Update</Link>
                     <Button variant="danger" onClick={() => handleDelete(item.id)} style={{ marginLeft: '10px' }}>
                       Delete
                     </Button>
