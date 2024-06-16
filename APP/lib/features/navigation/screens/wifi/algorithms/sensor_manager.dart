@@ -81,7 +81,7 @@ class SensorManager {
     // gyroscopeValues = [gx, gy, gz]
     // Basic dead reckoning estimation
 
-    double deltaTime = 1; // Example time difference in seconds
+    double deltaTime = 0.6; // Example time difference in seconds
 
     double dx = (accelCurrent[0] - accelPrev[0]) * deltaTime * deltaTime * 0.5;
     double dy = (accelCurrent[1] - accelPrev[1]) * deltaTime * deltaTime * 0.5;

@@ -46,7 +46,7 @@ class KDrawer extends StatelessWidget {
             leadingIcon: Icons.wifi,
             title: "Access points",
             onTap: () => Navigator.push(
-                context, MaterialPageRoute(builder: (_) => BookMarksScreen())),
+                context, MaterialPageRoute(builder: (_) => WifiScreen())),
           ),
           KDrawerItem(
             leadingIcon: Icons.logout_outlined,

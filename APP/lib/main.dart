@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:alan_voice/alan_voice.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:sy_nav/bindings/home_binding.dart';
 import 'package:sy_nav/features/navigation/screens/home/controllers/home_controller.dart';
 import 'package:sy_nav/features/navigation/screens/home/home.dart';
@@ -67,17 +68,17 @@ void _initWifi() async {
 
   await wifiController.getWifiList();
 
-  Timer.periodic(const Duration(seconds: 3), (timer) async {
+  Timer.periodic(const Duration(seconds: 1), (timer) async {
     await wifiController.getWifiList();
     List<String> wifiList = wifiController.getTrilaterationWifi();
 
     if (wifiList.isNotEmpty) {
-      homeController.location.value = WifiAlgorithms.getEstimatedLocation(
+      homeController.updateLocation(WifiAlgorithms.getEstimatedLocation(
           wifiList,
-          sensorManager: sensorManager);
+          sensorManager: sensorManager));
       if (kDebugMode) {
         print(wifiController.getLocationName(
-          homeController.location.value.x, homeController.location.value.y));
+            homeController.location.value.x, homeController.location.value.y));
       }
     } else {
       if (kDebugMode) {
@@ -97,22 +98,57 @@ void _handleCommand(Map<String, dynamic> commandData) async {
   switch (command) {
     case 'Home':
       homeController.currentIndex.value = 0;
-      AlanVoiceUtils.playText("You are in the Explore screen");
+      AlanVoiceUtils.playText("You are in the Home screen");
       break;
     // case 'Bookmarks':
     //   homeController.currentIndex.value = 1;
     //   homeController.appBarTitle.value = "Bookmarks";
     //   AlanVoiceUtils.playText("You are in the Bookmarks screen");
     //   break;
-    // case 'Navigate':
-    //   homeController.appBarTitle.value = "Buildings";
-    //   homeController.currentIndex.value = 2;
-    //   AlanVoiceUtils.playText("You are in the Navigate screen");
-    //   break;
-    case 'History':
-      homeController.appBarTitle.value = "Notifications";
+    case 'room A':
+      AlanVoiceUtils.playText("Searching for room A");
+      var locationCell = wifiController.grid.value.findCellByName("Room A");
+      if (locationCell != null) {
+        var distance = -1.0;
+        var currentLocation = wifiController.grid.value.findCellByCoordinates(
+            homeController.location.value.x, homeController.location.value.y);
+        if (currentLocation != null) {
+          distance = wifiController.grid.value
+              .calculateDistance(currentLocation, locationCell);
+        }
+        AlanVoiceUtils.playText(
+            "room A is available ${(distance == -1) ? "" : " and the distance is $distance meters from your location"}");
+      } else {
+        AlanVoiceUtils.playText("room A is not available");
+      }
+      break;
+    case 'room X':
+      AlanVoiceUtils.playText("Searching for room X");
+      var locationCell = wifiController.grid.value.findCellByName("Room X");
+      if (locationCell != null) {
+        AlanVoiceUtils.playText("Room X is available");
+      } else {
+        AlanVoiceUtils.playText("Room X is not available");
+      }
+      break;
+    case 'room Y':
+      AlanVoiceUtils.playText("Searching for room Y");
+      var locationCell = wifiController.grid.value.findCellByName("Room Y");
+      if (locationCell != null) {
+        AlanVoiceUtils.playText("Room Y is available");
+      } else {
+        AlanVoiceUtils.playText("Room Y is not available");
+      }
+      break;
+    case 'Navigate':
+      homeController.appBarTitle.value = "Buildings";
       homeController.currentIndex.value = 1;
-      AlanVoiceUtils.playText("You are in the Notifications screen");
+      AlanVoiceUtils.playText("You are in the Navigate screen");
+      break;
+    case 'History':
+      homeController.appBarTitle.value = "History";
+      homeController.currentIndex.value = 2;
+      AlanVoiceUtils.playText("You are in the History screen");
       break;
     // case 'Explore':
     //   AlanVoiceUtils.playText("You are in the Explore screen");
@@ -127,7 +163,11 @@ void _handleCommand(Map<String, dynamic> commandData) async {
         List<String> wifiList = await wifiController.getTrilaterationWifi();
         Point<double> estimatedLocation = homeController.location.value;
         homeController.location.value = estimatedLocation;
-        AlanVoiceUtils.playText("Your location is $estimatedLocation");
+        // Convert the location to a string and use Alan to announce it
+        String locationString =
+            "Your location is: ${homeController.location.value.x}, ${homeController.location.value.y}";
+        AlanVoiceUtils.playText(locationString);
+        AlanVoiceUtils.playText(locationString);
       }
       break;
     default:
@@ -208,7 +248,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: AppColors.primaryColor,
       body: Center(
         child: Column(
