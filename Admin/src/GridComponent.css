@@ -1,0 +1,28 @@
+.grid-container {
+    display: flex;
+    flex-direction: column;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    overflow-y: auto; /* Enable vertical scrolling if needed */
+    max-height: 600px; /* Adjust the height as needed */
+  }
+  
+  .grid-row {
+    display: flex;
+    flex-wrap: nowrap; /* Ensure no wrapping of cells */
+  }
+  
+  .grid-cell {
+    background-color: #007bff; /* Set background color to blue */
+    color: white; /* Set text color to white for better readability */
+    border: 1px solid #ccc;
+    padding: 20px;
+    text-align: center;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-width: 150px; /* Ensure each cell has a minimum width */
+  }
+  
+  .grid-cell:hover {
+    background-color: #0056b3; /* Darken background color on hover */
+  }
+  
