@@ -12,8 +12,9 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const querySnapshot = await getDocs(collection(firestore, 'accessPoints'));
+        const querySnapshot = await getDocs(collection(firestore, 'AccessPoints'));
         const fetchedData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        console.log('Fetched data:', fetchedData); // Log fetched data
         setData(fetchedData);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -27,7 +28,7 @@ const Home = () => {
 
   const handleDelete = async (id) => {
     try {
-      await deleteDoc(doc(firestore, 'accessPoints', id));
+      await deleteDoc(doc(firestore, 'AccessPoints', id));
       setData(data.filter(item => item.id !== id));
       console.log('Item deleted successfully!');
     } catch (error) {
@@ -47,10 +48,9 @@ const Home = () => {
             <thead>
               <tr>
                 <th>#</th>
-                <th>Name</th>
-                <th>MAC Address</th>
-                <th>latitude</th>
-                <th>longitude</th>
+                <th>SSID</th>
+                <th>BSSID</th>
+                <th>Coordinates</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -58,11 +58,11 @@ const Home = () => {
               {data.map((item, index) => (
                 <tr key={item.id}>
                   <td>{index + 1}</td>
-                  <td>{item.SSID}</td> {/* Changed 'name' to 'SSID' to match the form */}
-                  <td>{item.BSSID}</td> {/* Changed 'mac' to 'BSSID' to match the form */}
-                  <td>{`(${item.xCoordinate}, ${item.yCoordinate})`}</td> {/* Changed 'coordinates' to 'xCoordinate' and 'yCoordinate' */}
+                  <td>{item.SSID}</td>
+                  <td>{item.BSSID}</td>
+                  <td>{`(${item.xCoordinate}, ${item.yCoordinate})`}</td>
                   <td>
-                    <Link to={`/update/${item.id}`}>Edit</Link>
+                    <Link to={`/update/${item.id}`} className="btn btn-primary">Update</Link>
                     <Button variant="danger" onClick={() => handleDelete(item.id)} style={{ marginLeft: '10px' }}>
                       Delete
                     </Button>
