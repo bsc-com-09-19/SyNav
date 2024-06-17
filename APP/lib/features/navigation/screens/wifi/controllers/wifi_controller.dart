@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/algorithms/sensor_manager.dart';
-import 'package:sy_nav/utils/map/grid_map.dart';
+import 'package:sy_nav/features/navigation/screens/map/grid_map.dart';
 
 class WifiController extends GetxController {
   var accelerometerValues = [0.0, 0.0, 0.0].obs;
@@ -12,14 +12,18 @@ class WifiController extends GetxController {
   var wifiList = <String>[].obs;
 
   //creating grid map
-  final int rows = 5;
-  final int cols = 5;
-  final double cellSize = 0.8;
-  final double startLatitude = 4.0;
-  final double startLongitude = 3.0;
+  final int rows = 9;
+  final int cols = 7;
+  final double cellSize = 1.3;
+  final double startLatitude = 1.0;
+  final double startLongitude = 1.0;
+
   late Rx<Grid> grid =
-      Grid(rows: 5, cols: 5, cellSize: 0.8, startLatitude: 4, startLongitude: 4)
+      Grid(rows: 9, cols: 7, cellSize: 1.3, startLatitude: 1, startLongitude: 1)
           .obs;
+
+  var gridMap = Grid(
+      rows: 9, cols: 7, cellSize: 1.3, startLatitude: 1, startLongitude: 1);
 
   static const platform = MethodChannel('com.example.sy_nav/wifi');
 
@@ -60,7 +64,7 @@ class WifiController extends GetxController {
       return [];
     }
   }
-
+  //TODO: fetch data from firebase
   void createGridMap(int rows, int cols, double cellSize, double startLatitude,
       double startLongitude) {
     grid.value = Grid(
@@ -69,13 +73,30 @@ class WifiController extends GetxController {
         cellSize: cellSize,
         startLatitude: startLatitude,
         startLongitude: startLongitude);
+
+    grid.value.updateCell(2, 1, isObstacle: false, name: "Room A");
+    grid.value.updateCell(3, 4, isObstacle: false, name: "Room X");
+    grid.value.updateCell(4, 5, isObstacle: false, name: "Room Y");
+    for (int i = 1; i <= 9; i++) {
+      grid.value.updateCell(1, i, isObstacle: true);
+    }
+
+    for (int i = 1; i <= 9; i++) {
+      if (i == 4 || i == 9) continue;
+      grid.value.updateCell(3, i, isObstacle: true);
+    }
+
+    for (int i = 1; i <= 9; i++) {
+      if (i == 4 || i == 9) continue;
+      grid.value.updateCell(5, i, isObstacle: true);
+    }
   }
 
   void updateGridMap() {
     ///TODO
   }
-  String getLocationName(double latitude, double longitude) {
-    String name = grid.value.findCellNameByCoordinates(latitude, longitude);
+  String getLocationName(double longitude, double latitude) {
+    String name = grid.value.findCellNameByCoordinates(longitude, latitude);
     if (name != 'Unknown') {
       return name;
     } else {

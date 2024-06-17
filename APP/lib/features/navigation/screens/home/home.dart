@@ -1,9 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:sy_nav/common/widgets/drawer/drawer_manager.dart';
 import 'package:sy_nav/common/widgets/drawer/k_drawer.dart';
 import 'package:sy_nav/common/widgets/k_search_bar.dart';
-import 'package:sy_nav/features/navigation/screens/buildings/building.dart';
 import 'package:sy_nav/features/navigation/screens/home/controllers/home_controller.dart';
 import 'package:sy_nav/features/navigation/screens/navigation/navigationScreen.dart';
 import 'package:sy_nav/features/navigation/screens/nofications/notifications_screen.dart';
@@ -12,6 +13,9 @@ import 'package:sy_nav/features/navigation/screens/wifi/wifi_screen.dart';
 import 'package:sy_nav/utils/constants/colors.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/algorithms/wifi_algorithms.dart';
 import 'package:sy_nav/utils/widgets/k_snack_bar.dart';
+import 'package:alan_voice/alan_voice.dart';
+
+import '../../../../utils/alan/alanutils.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -20,10 +24,10 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     final homeController = Get.find<HomeController>();
     final wifiController = Get.find<WifiController>();
-
+//route definition
     final pages = [
       ExploreWidget(),
-      WifiScreen(),
+      // WifiScreen(),
       const NavigationScreen(),
       const NotificationsScreen(),
     ];
@@ -52,8 +56,8 @@ class Home extends StatelessWidget {
               onPressed: () {
                 // Add your action here
               },
-              child: Icon(Icons.add),
               backgroundColor: Colors.blue,
+              child: const Icon(Icons.add),
             ),
           ),
           Positioned(
@@ -67,16 +71,24 @@ class Home extends StatelessWidget {
                     context,
                     "You don't have enough registered access points around you (${wifiController.wifiList.length} APs)",
                   );
+                  AlanVoiceUtils.playText(
+                      "You don't have enough registered access points around you");
                 } else {
                   homeController.currentIndex.value = 0;
                   List<String> wifiList =
                       await wifiController.getTrilaterationWifi();
-                  homeController.location.value =
+                  var estimatedLocation =
                       WifiAlgorithms.getEstimatedLocation(wifiList);
+                  homeController.location.value = estimatedLocation;
+
+                  // Convert the location to a string and use Alan to announce it
+                  String locationString =
+                      "Your location is: ${homeController.location.value.x}, ${homeController.location.value.y}";
+                  AlanVoiceUtils.playText(locationString);
                 }
               },
-              child: Icon(Icons.location_pin),
               backgroundColor: AppColors.secondaryColor,
+              child: const Icon(Icons.location_pin),
             ),
           ),
         ],
@@ -98,7 +110,7 @@ class Home extends StatelessWidget {
           child: Center(
             child: Text(
               message,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 16.0,
               ),
@@ -106,11 +118,11 @@ class Home extends StatelessWidget {
             ),
           ),
         ),
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
-          side: BorderSide(
+          side: const BorderSide(
             color: Colors.transparent,
           ),
         ),
@@ -125,6 +137,7 @@ class ExploreWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeController = Get.find<HomeController>();
+    final wifiController = Get.find<WifiController>();
 
     return SafeArea(
       child: Padding(
@@ -134,6 +147,27 @@ class ExploreWidget extends StatelessWidget {
             KSearchBar(
               controller: homeController.textEditingController.value,
               hintText: "Enter here",
+              onSearchTap: (name) {
+                var destinationCell =
+                    wifiController.gridMap.findCellByName(name);
+                if (destinationCell != null) {
+                  var locationCell = wifiController.grid.value
+                      .findCellByCoordinates(homeController.location.value.x,
+                          homeController.location.value.y);
+
+                  if (locationCell != null) {
+                    var distance = wifiController.gridMap
+                        .calculateDistance(locationCell, destinationCell);
+                    AlanVoiceUtils.playText(
+                        "$name is available and it is $distance away from you");
+                    if (kDebugMode) {
+                      print("distance: $distance");
+                    }
+                  }
+                } else {
+                  //TODO: make alan say that that place is not available
+                }
+              },
             ),
             const SizedBox(
               height: kTextTabBarHeight + 30,
@@ -142,7 +176,7 @@ class ExploreWidget extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
-                        "Your location is: ${homeController.location.value.x}, ${homeController.location.value.y} "),
+                        "Your location is: ${homeController.location.value.x}, ${ homeController.location.value.y}"),
                   ),
                 ))
           ],
@@ -165,10 +199,10 @@ class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
   int currentIndex = 0;
 
   final List<String> navigationRoutes = [
-    'Explore',
-    'Bookmarks',
-    'Buildings',
-    'Notifications',
+    'Home',
+    // 'Bookmarks',
+    'Navigate',
+    'History',
   ];
 
   @override
@@ -184,12 +218,14 @@ class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
       child: BottomNavigationBar(
         currentIndex: homeController.currentIndex.value,
         showUnselectedLabels: true,
-        backgroundColor: AppColors.secondaryColor,
+        // backgroundColor: AppColors.secondaryColor,
         items: [
           const BottomNavigationBarItem(
-              icon: Icon(Icons.explore), label: "Explore"),
-          const BottomNavigationBarItem(
-              icon: Icon(Icons.bookmark_rounded), label: "Bookmarks"),
+              icon: Icon(Icons.home_filled), label: "Home"),
+
+          // const BottomNavigationBarItem(
+          //     icon: Icon(Icons.bookmark_rounded), label: "Bookmarks"),
+
           BottomNavigationBarItem(
               icon: Transform.rotate(
                 angle: 0.785398,
@@ -198,8 +234,9 @@ class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
                 ),
               ),
               label: "Navigate"),
+
           const BottomNavigationBarItem(
-              icon: Icon(Icons.notifications_rounded), label: "History"),
+              icon: Icon(Icons.history_outlined), label: "History"),
         ],
         selectedItemColor: AppColors.primaryColor,
         unselectedItemColor: AppColors.secondaryColor,
