@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Form, Button, Card } from 'react-bootstrap';
 import { firestore } from './firebaseConfig';
-import { collection, addDoc } from 'firebase/firestore'; // Import necessary Firestore methods
-import './App.css'; // Import CSS file for styling
+import { collection, addDoc } from 'firebase/firestore';
+import './App.css';
 
 const Add = () => {
   const [form, setForm] = useState({ SSID: '', BSSID: '', xCoordinate: '', yCoordinate: '' });
@@ -20,8 +20,8 @@ const Add = () => {
       // Clear the form after successful submission
       setForm({ SSID: '', BSSID: '', xCoordinate: '', yCoordinate: '' });
     } catch (error) {
-      console.error('Error adding item:', error);
-      alert('An error occurred. Please try again later.');
+      console.error('Error adding item:', error.message);
+      alert(`An error occurred: ${error.message}`);
     }
   };
 

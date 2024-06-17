@@ -5,12 +5,12 @@ import { firestore, collection, addDoc, getDocs } from './firebaseConfig';
 import './GridComponent.css';
 
 const GridComponent = () => {
-  const [rows, setRows] = useState(10); // Set default to 10 rows
-  const [cols, setCols] = useState(10); // Set default to 10 columns
+  const [rows, setRows] = useState(10);
+  const [cols, setCols] = useState(10);
   const [cellSize, setCellSize] = useState(0.01);
   const [startLatitude, setStartLatitude] = useState(37.7749);
   const [startLongitude, setStartLongitude] = useState(-122.4194);
-  const [grid, setGrid] = useState(null);
+  const [grid, setGrid] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const createGrid = () => {
@@ -40,7 +40,13 @@ const GridComponent = () => {
     try {
       const querySnapshot = await getDocs(collection(firestore, 'gridCells'));
       const retrievedGrid = querySnapshot.docs.map(doc => doc.data());
-      setGrid(retrievedGrid);
+      const maxRow = Math.max(...retrievedGrid.map(cell => cell.row));
+      const maxCol = Math.max(...retrievedGrid.map(cell => cell.col));
+      const processedGrid = Array.from({ length: maxRow + 1 }, () => Array(maxCol + 1).fill(null));
+      retrievedGrid.forEach(cell => {
+        processedGrid[cell.row][cell.col] = cell;
+      });
+      setGrid(processedGrid);
       alert('Grid retrieved from Firebase successfully!');
     } catch (error) {
       console.error('Error retrieving grid from Firebase:', error);
@@ -52,7 +58,7 @@ const GridComponent = () => {
   const handleCellEdit = (cell, newName, newIsObstacle) => {
     const updatedGrid = grid.map(row =>
       row.map(c =>
-        c.row === cell.row && c.col === cell.col
+        c && c.row === cell.row && c.col === cell.col
           ? { ...c, name: newName, isObstacle: newIsObstacle }
           : c
       )
@@ -93,7 +99,7 @@ const GridComponent = () => {
           {grid.map((row, rowIndex) => (
             <div key={rowIndex} className="grid-row">
               {row.map((cell, cellIndex) => (
-                <GridCellCard key={cellIndex} cell={cell} onCellEdit={handleCellEdit} />
+                cell ? <GridCellCard key={cellIndex} cell={cell} onCellEdit={handleCellEdit} /> : <div key={cellIndex} className="grid-cell-empty" />
               ))}
             </div>
           ))}
