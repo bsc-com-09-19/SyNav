@@ -1,17 +1,14 @@
-// firebaseConfig.js
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
 
+import { getFirestore, collection, addDoc, getDocs } from "firebase/firestore";
 const firebaseConfig = {
-    apiKey: "AIzaSyA69iRhadZxTLAW_z7nm-dS7WYOsfE8lRo",
-  authDomain: "sy-nav.firebaseapp.com",
-  databaseURL: "https://sy-nav-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "sy-nav",
-  storageBucket: "sy-nav.appspot.com",
-  messagingSenderId: "674222803730",
-  appId: "1:674222803730:web:80659d407334d92437c1cb",
-  measurementId: "G-PPRNNTKZNR"
+  apiKey: "AIzaSyC_WC9AmvUEYZ_4STk8CocQq9YI5LMuvT0",
+  authDomain: "my-applic345-22ad3.firebaseapp.com",
+  projectId: "my-applic345-22ad3",
+  storageBucket: "my-applic345-22ad3.appspot.com",
+  messagingSenderId: "1072500702130",
+  appId: "1:1072500702130:web:d97b6637eed2e4db6e02ab"
 };
 
 // Initialize Firebase
@@ -23,4 +20,7 @@ const auth = getAuth(app);
 // Initialize Cloud Firestore and get a reference to the service
 const firestore = getFirestore(app);
 
-export { auth, firestore };
+
+
+
+export { firestore, collection, addDoc, getDocs ,auth};
