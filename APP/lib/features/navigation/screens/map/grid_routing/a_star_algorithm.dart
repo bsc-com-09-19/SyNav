@@ -14,8 +14,10 @@ import 'package:sy_nav/features/navigation/screens/map/grid_map.dart';
 /// [endCol] - The column index of the destination cell.
 ///
 /// Returns a list of [PathNode]s representing the path from the start cell to the end cell.
-List<PathNode> findPath(Grid grid, int startRow, int startCol, int endRow, int endCol) {
-  final openList = PriorityQueue<PathNode>((a, b) => a.fCost.compareTo(b.fCost));
+List<PathNode> findPath(
+    Grid grid, int startRow, int startCol, int endRow, int endCol) {
+  final openList =
+      PriorityQueue<PathNode>((a, b) => a.fCost.compareTo(b.fCost));
   final closedList = <PathNode>[];
 
   final startNode = PathNode(
@@ -39,15 +41,18 @@ List<PathNode> findPath(Grid grid, int startRow, int startCol, int endRow, int e
 
     // Evaluate neighbors of the current node.
     for (var neighbor in getNeighbors(grid, currentNode)) {
-      if (closedList.contains(neighbor) || grid.getCell(neighbor.row, neighbor.col).isObstacle) {
+      if (closedList.contains(neighbor) ||
+          grid.getCell(neighbor.row, neighbor.col).isObstacle) {
         continue;
       }
 
-      final tentativeGCost = currentNode.gCost + 1; // Assuming uniform cost for each move
+      final tentativeGCost =
+          currentNode.gCost + 1; // Assuming uniform cost for each move
 
       if (tentativeGCost < neighbor.gCost) {
         neighbor.gCost = tentativeGCost;
-        neighbor.hCost = heuristic(neighbor.row, neighbor.col, endNode.row, endNode.col);
+        neighbor.hCost =
+            heuristic(neighbor.row, neighbor.col, endNode.row, endNode.col);
         neighbor.parent = currentNode;
 
         if (!openList.contains(neighbor)) {
@@ -71,7 +76,7 @@ List<PathNode> findPath(Grid grid, int startRow, int startCol, int endRow, int e
 ///
 /// Returns the heuristic distance between the two cells.
 double heuristic(int row1, int col1, int row2, int col2) {
-  return (row1 - row2).abs() + (col1 - col2).abs() as double;
+  return ((row1 - row2).abs() + (col1 - col2).abs()).toDouble();
 }
 
 /// Retrieves the neighboring cells of a given cell in the grid.
@@ -86,17 +91,20 @@ List<PathNode> getNeighbors(Grid grid, PathNode node) {
   final neighbors = <PathNode>[];
 
   final possibleMoves = [
-    [0, -1],  // left
-    [0, 1],   // right
-    [-1, 0],  // up
-    [1, 0],   // down
+    [0, -1], // left
+    [0, 1], // right
+    [-1, 0], // up
+    [1, 0], // down
   ];
 
   for (var move in possibleMoves) {
     final newRow = node.row + move[0];
     final newCol = node.col + move[1];
 
-    if (newRow >= 0 && newRow < grid.rows && newCol >= 0 && newCol < grid.cols) {
+    if (newRow >= 0 &&
+        newRow < grid.rows &&
+        newCol >= 0 &&
+        newCol < grid.cols) {
       neighbors.add(PathNode(row: newRow, col: newCol));
     }
   }

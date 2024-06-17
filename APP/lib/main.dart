@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:alan_voice/alan_voice.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:sy_nav/bindings/home_binding.dart';
 import 'package:sy_nav/features/navigation/screens/home/controllers/home_controller.dart';
 import 'package:sy_nav/features/navigation/screens/home/home.dart';
@@ -26,7 +25,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  
   /// Initializing the firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 

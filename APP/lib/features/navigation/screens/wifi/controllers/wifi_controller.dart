@@ -1,9 +1,7 @@
-import 'dart:math';
-
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
-import 'package:sy_nav/features/navigation/screens/wifi/algorithms/sensor_manager.dart';
 import 'package:sy_nav/features/navigation/screens/map/grid_map.dart';
+import 'package:sy_nav/features/navigation/screens/map/grid_routing/a_star_algorithm.dart';
 
 class WifiController extends GetxController {
   var accelerometerValues = [0.0, 0.0, 0.0].obs;
@@ -64,6 +62,7 @@ class WifiController extends GetxController {
       return [];
     }
   }
+
   //TODO: fetch data from firebase
   void createGridMap(int rows, int cols, double cellSize, double startLatitude,
       double startLongitude) {
@@ -90,6 +89,9 @@ class WifiController extends GetxController {
       if (i == 4 || i == 9) continue;
       grid.value.updateCell(5, i, isObstacle: true);
     }
+
+    var value = findPath(grid.value, 1, 1, 2, 2);
+    print(value.toString());
   }
 
   void updateGridMap() {
