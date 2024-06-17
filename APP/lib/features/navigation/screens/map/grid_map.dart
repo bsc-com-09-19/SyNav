@@ -4,7 +4,7 @@ import 'dart:math';
 class GridCell {
   final int row;
   final int col;
-  final String name;
+  String name;
   final double latitude;
   final double longitude;
   bool isObstacle;
@@ -30,8 +30,8 @@ class Grid {
       {required this.rows,
       required this.cols,
       required this.cellSize,
-      required double startLatitude,
-      required double startLongitude}) {
+      required double startLongitude,
+      required double startLatitude}) {
     grid = List.generate(
         rows,
         (r) => List.generate(cols, (c) {
@@ -58,14 +58,15 @@ class Grid {
   GridCell getCell(int row, int col) => grid[row][col];
 
   /// Updates the properties of a specific cell.
-  void updateCell(int row, int col, {bool? isObstacle}) {
+  void updateCell(int row, int col, {bool? isObstacle, String? name}) {
     if (row >= 0 && row < rows && col >= 0 && col < cols) {
       if (isObstacle != null) grid[row][col].isObstacle = isObstacle;
+      if (name != null) grid[row][col].name = name;
     }
   }
 
   /// Finds the cell containing the given latitude and longitude.
-  String findCellNameByCoordinates(double latitude, double longitude) {
+  String findCellNameByCoordinates(double longitude, double latitude) {
     for (var row in grid) {
       for (var cell in row) {
         if (latitude >= cell.latitude &&

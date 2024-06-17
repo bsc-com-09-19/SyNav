@@ -83,7 +83,7 @@ class Home extends StatelessWidget {
 
                   // Convert the location to a string and use Alan to announce it
                   String locationString =
-                      "Your location is: ${wifiController.grid.value.findCellNameByCoordinates(homeController.location.value.x, homeController.location.value.y)}";
+                      "Your location is: ${homeController.location.value.x}, ${homeController.location.value.y}";
                   AlanVoiceUtils.playText(locationString);
                 }
               },
@@ -151,7 +151,6 @@ class ExploreWidget extends StatelessWidget {
                 var destinationCell =
                     wifiController.gridMap.findCellByName(name);
                 if (destinationCell != null) {
-                  //TODO: make alan say that the place is available
                   var locationCell = wifiController.grid.value
                       .findCellByCoordinates(homeController.location.value.x,
                           homeController.location.value.y);
@@ -159,6 +158,8 @@ class ExploreWidget extends StatelessWidget {
                   if (locationCell != null) {
                     var distance = wifiController.gridMap
                         .calculateDistance(locationCell, destinationCell);
+                    AlanVoiceUtils.playText(
+                        "$name is available and it is $distance away from you");
                     if (kDebugMode) {
                       print("distance: $distance");
                     }
@@ -175,7 +176,7 @@ class ExploreWidget extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
-                        "Your location is: ${wifiController.grid.value.findCellNameByCoordinates(homeController.location.value.x, homeController.location.value.y)}"),
+                        "Your location is: ${homeController.location.value.x}, ${ homeController.location.value.y}"),
                   ),
                 ))
           ],
