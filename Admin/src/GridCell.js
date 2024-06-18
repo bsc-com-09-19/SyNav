@@ -1,43 +1,37 @@
-import React, { useState } from 'react';
+class GridCell {
+  constructor(row, col, name, latitude, longitude, isObstacle = false) {
+    this.row = row;
+    this.col = col;
+    this.name = name;
+    this.latitude = latitude;
+    this.longitude = longitude;
+    this.isObstacle = isObstacle;
+  }
+}
 
-const GridCell = ({ cell, onCellEdit }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedName, setEditedName] = useState(cell.name);
-  const [editedIsObstacle, setEditedIsObstacle] = useState(cell.isObstacle);
+class Grid {
+  constructor(rows, cols, cellSize, startLatitude, startLongitude) {
+    this.rows = rows;
+    this.cols = cols;
+    this.cellSize = cellSize;
+    this.grid = this.createGrid(startLatitude, startLongitude);
+  }
 
-  const handleNameChange = (e) => {
-    setEditedName(e.target.value);
-  };
+  createGrid(startLatitude, startLongitude) {
+    return Array.from({ length: this.rows }, (_, r) => 
+      Array.from({ length: this.cols }, (_, c) => {
+        const latitude = startLatitude + r * this.cellSize;
+        const longitude = startLongitude + c * this.cellSize;
+        const name = `Cell(${r + 1},${c + 1})`;
+        return new GridCell(r, c, name, latitude, longitude, Math.random() < 0.2);
+      })
+    );
+  }
 
-  const handleIsObstacleChange = (e) => {
-    setEditedIsObstacle(e.target.checked);
-  };
+  getGrid() {
+    return this.grid;
+  }
+}
 
-  const saveChanges = () => {
-    onCellEdit(cell, editedName, editedIsObstacle);
-    setIsEditing(false);
-  };
-
-  return (
-    <div onClick={() => setIsEditing(true)}>
-      {isEditing ? (
-        <div>
-          <input type="text" value={editedName} onChange={handleNameChange} />
-          <label>
-            Is Obstacle:
-            <input type="checkbox" checked={editedIsObstacle} onChange={handleIsObstacleChange} />
-          </label>
-          <button onClick={saveChanges}>Save</button>
-        </div>
-      ) : (
-        <div>
-          <p>Cell Name: {cell.name}</p>
-          <p>Coordinates: ({cell.row}, {cell.col})</p>
-          <p>Is Obstacle: {cell.isObstacle ? 'true' : 'false'}</p>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default GridCell;
+export default Grid;
+export { GridCell };
