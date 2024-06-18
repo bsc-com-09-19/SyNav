@@ -76,7 +76,7 @@ List<PathNode> findPath(
 ///
 /// Returns the heuristic distance between the two cells.
 double heuristic(int row1, int col1, int row2, int col2) {
-  return ((row1 - row2).abs() + (col1 - col2).abs()).toDouble();
+  return (row1 - row2).abs() + (col1 - col2).abs() as double;
 }
 
 /// Retrieves the neighboring cells of a given cell in the grid.

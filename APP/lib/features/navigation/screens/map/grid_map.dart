@@ -26,12 +26,13 @@ class Grid {
   final double cellSize;
   late List<List<GridCell>> grid;
 
-  Grid(
-      {required this.rows,
-      required this.cols,
-      required this.cellSize,
-      required double startLongitude,
-      required double startLatitude}) {
+  Grid({
+    required this.rows,
+    required this.cols,
+    required this.cellSize,
+    required double startLongitude,
+    required double startLatitude,
+  }) {
     grid = List.generate(
         rows,
         (r) => List.generate(cols, (c) {
@@ -82,6 +83,7 @@ class Grid {
     return 'Unknown';
   }
 
+  /// Finds the cell containing the given latitude and longitude.
   GridCell? findCellByCoordinates(double longitude, double latitude) {
     for (var row in grid) {
       for (var cell in row) {
@@ -96,6 +98,7 @@ class Grid {
     return null;
   }
 
+  /// Finds a cell by its name.
   GridCell? findCellByName(String name) {
     for (var row in grid) {
       for (var cell in row) {
@@ -104,8 +107,6 @@ class Grid {
         }
       }
     }
-
-    //if not found
     return null;
   }
 }
