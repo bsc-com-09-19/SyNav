@@ -13,6 +13,7 @@ import 'package:sy_nav/utils/widgets/k_snack_bar.dart';
 import 'package:alan_voice/alan_voice.dart';
 
 import '../../../../utils/alan/alanutils.dart';
+import '../map/grid_routing/path_node.dart';
 import '../wifi/algorithms/wifi_algorithms.dart';
 
 class Home extends StatelessWidget {
@@ -140,7 +141,7 @@ class ExploreWidget extends StatelessWidget {
           children: [
             KSearchBar(
               controller: homeController.textEditingController.value,
-              hintText: "Enter here",
+              hintText: "",
               onSearchTap: (name) {
                 var destinationCell =
                     wifiController.gridMap.findCellByName(name);
@@ -157,10 +158,38 @@ class ExploreWidget extends StatelessWidget {
                     if (kDebugMode) {
                       print("distance: $distance");
                     }
+
+                    // A* algorithm for finding path
+                    int startRow = locationCell.row;
+                    int startCol = locationCell.col;
+                    int endRow = destinationCell.row;
+                    int endCol = destinationCell.col;
+
+                    List<PathNode> path = wifiController.findPath(
+                      wifiController.gridMap,
+                      startRow,
+                      startCol,
+                      endRow,
+                      endCol,
+                    );
+
+                    if (path.isNotEmpty) {
+                      String pathString = "Path from $name:";
+                      for (var node in path) {
+                        pathString += " (${node.row}, ${node.col})";
+                      }
+                      AlanVoiceUtils.playText(pathString);
+                    } else {
+                      AlanVoiceUtils.playText("No path found to $name");
+                    }
                   }
                 } else {
-                  // TODO: make alan say that that place is not available
+                  AlanVoiceUtils.playText("The place $name is not available");
                 }
+              },
+              onButtonTap: () {
+                // Manipulate the button's state or behavior here
+                // For example, change button color or perform an action
               },
             ),
             const SizedBox(
@@ -176,7 +205,7 @@ class ExploreWidget extends StatelessWidget {
             const SizedBox(height: 20),
 
             // generating wifi boxes
-            
+
             Obx(() => wifiController.grid.value.rows == 0
                 ? const Text("Grid is loading...")
                 : Expanded(
@@ -270,3 +299,4 @@ class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
     );
   }
 }
+

@@ -250,7 +250,7 @@ class WifiController extends GetxController {
           newRow < grid.rows &&
           newCol >= 0 &&
           newCol < grid.cols) {
-        neighbors.add(PathNode(row: newRow, col: newCol));
+              neighbors.add(PathNode(row: newRow, col: newCol));
       }
     }
 
@@ -308,3 +308,4 @@ class WifiController extends GetxController {
     }
   }
 }
+
