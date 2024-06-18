@@ -34,27 +34,24 @@ class Grid {
     required double startLatitude,
   }) {
     grid = List.generate(
-      rows,
-      (r) => List.generate(
-        cols,
-        (c) {
-          double latitude = startLatitude + r * cellSize;
-          double longitude = startLongitude + c * cellSize;
-          String name = 'Cell(${r + 1},${c + 1})';
-          return GridCell(
-            row: r,
-            col: c,
-            name: name,
-            latitude: latitude,
-            longitude: longitude,
-          );
-        },
-      ),
-    );
+        rows,
+        (r) => List.generate(cols, (c) {
+              double latitude = startLatitude + r * cellSize;//y-value
+              double longitude = startLongitude + c * cellSize;//x-value
+              String name = 'Cell(${r + 1},${c + 1})';
+              return GridCell(
+                  row: r,
+                  col: c,
+                  name: name,
+                  latitude: latitude,
+                  longitude: longitude,
+                  isObstacle: Random.secure().nextBool());
+            }));
   }
 
   /// Calculates the Euclidean distance between two cells.
   double calculateDistance(GridCell cell1, GridCell cell2) {
+    //TODO: check if the cell is in the grid map
     double deltaX = cell1.longitude - cell2.longitude;
     double deltaY = cell1.latitude - cell2.latitude;
     return sqrt(deltaX * deltaX + deltaY * deltaY);

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:collection/collection.dart';
 import 'package:sy_nav/features/navigation/screens/map/grid_routing/path_node.dart';
 import 'package:sy_nav/features/navigation/screens/map/grid_map.dart';
+import 'package:sy_nav/features/navigation/screens/map/grid_routing/a_star_algorithm.dart';
 
 class WifiController extends GetxController {
   var accelerometerValues = [0.0, 0.0, 0.0].obs;
