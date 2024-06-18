@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import './GridCellCard.css';
 
-const GridCellCard = ({ cell, onCellEdit }) => {
-  const [isEditing, setIsEditing] = useState(false);
+const GridCellCard = ({ cell, onCellEdit, className }) => {
   const [name, setName] = useState(cell.name);
   const [isObstacle, setIsObstacle] = useState(cell.isObstacle);
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleSave = () => {
     onCellEdit(cell, name, isObstacle);
@@ -17,36 +18,33 @@ const GridCellCard = ({ cell, onCellEdit }) => {
   };
 
   return (
-    <div className="grid-cell">
+    <div className={`grid-cell-card ${isObstacle ? 'obstacle' : ''} ${className}`}>
       {isEditing ? (
-        <div>
-          <label>
-            Name:
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </label>
-          <label>
-            Is Obstacle:
+        <>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Name"
+            className="grid-cell-input"
+          />
+          <label className="grid-cell-checkbox">
+            Obstacle:
             <input
               type="checkbox"
               checked={isObstacle}
               onChange={(e) => setIsObstacle(e.target.checked)}
             />
           </label>
-          <div>
-            <button onClick={handleSave}>Save</button>
-            <button onClick={handleCancel}>Cancel</button>
+          <div className="grid-cell-buttons">
+            <button onClick={handleSave} className="grid-cell-save">Save</button>
+            <button onClick={handleCancel} className="grid-cell-cancel">Cancel</button>
           </div>
-        </div>
+        </>
       ) : (
-        <div>
-          <div>Cell Name: {cell.name}</div>
-          <div>Coordinates: ({cell.latitude}, {cell.longitude})</div>
-          <div>Is Obstacle: {cell.isObstacle ? 'True' : 'False'}</div>
-          <button onClick={() => setIsEditing(true)}>Edit</button>
+        <div onClick={() => setIsEditing(true)}>
+          <div>{name}</div>
+          <div>{isObstacle ? 'Obstacle' : 'Passable'}</div>
         </div>
       )}
     </div>

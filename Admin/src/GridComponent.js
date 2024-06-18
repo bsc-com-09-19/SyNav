@@ -1,31 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Grid from './Grid';
 import GridCellCard from './GridCellCard';
 import { firestore, collection, addDoc, getDocs } from './firebaseConfig';
+import { aStarAlgorithm } from './aStarAlgorithm';
 import './GridComponent.css';
 
 const GridComponent = () => {
-  const [rows, setRows] = useState(10);
-  const [cols, setCols] = useState(10);
-  const [cellSize, setCellSize] = useState(0.01);
+  const [rows, setRows] = useState(5);
+  const [cols, setCols] = useState(5);
+  const [cellSize, setCellSize] = useState(5);
   const [startLatitude, setStartLatitude] = useState(37.7749);
   const [startLongitude, setStartLongitude] = useState(-122.4194);
   const [grid, setGrid] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [startName, setStartName] = useState('');
+  const [endName, setEndName] = useState('');
+  const [distance, setDistance] = useState(null);
+  const [path, setPath] = useState([]);
 
   const createGrid = () => {
     const newGrid = new Grid(rows, cols, cellSize, startLatitude, startLongitude);
-    setGrid(newGrid.getGrid());
+    const gridData = newGrid.getGrid();
+    console.log('New Grid:', gridData);
+    setGrid(gridData);
   };
 
   const saveGridToFirebase = async () => {
-    if (!grid) return;
+    if (!grid || grid.length === 0) return;
 
     setLoading(true);
-    const gridCells = grid.flat();
     try {
-      for (const cell of gridCells) {
-        await addDoc(collection(firestore, 'gridCells'), { ...cell });
+      for (let i = 0; i < grid.length; i++) {
+        const row = grid[i];
+        const rowData = row.map(cell => ({
+          row: cell.row,
+          col: cell.col,
+          name: cell.name,
+          latitude: cell.latitude,
+          longitude: cell.longitude,
+          isObstacle: cell.isObstacle,
+        }));
+        await addDoc(collection(firestore, 'gridCells'), { cells: rowData });
       }
       alert('Grid saved to Firebase successfully!');
     } catch (error) {
@@ -39,13 +54,19 @@ const GridComponent = () => {
     setLoading(true);
     try {
       const querySnapshot = await getDocs(collection(firestore, 'gridCells'));
-      const retrievedGrid = querySnapshot.docs.map(doc => doc.data());
-      const maxRow = Math.max(...retrievedGrid.map(cell => cell.row));
-      const maxCol = Math.max(...retrievedGrid.map(cell => cell.col));
+      const rowsData = querySnapshot.docs.map(doc => doc.data().cells);
+
+      const maxRow = rowsData.length - 1;
+      const maxCol = Math.max(...rowsData.map(row => row.length - 1));
       const processedGrid = Array.from({ length: maxRow + 1 }, () => Array(maxCol + 1).fill(null));
-      retrievedGrid.forEach(cell => {
-        processedGrid[cell.row][cell.col] = cell;
+
+      rowsData.forEach((row, rowIndex) => {
+        row.forEach(cell => {
+          processedGrid[cell.row][cell.col] = cell;
+        });
       });
+
+      console.log('Retrieved Grid:', processedGrid);
       setGrid(processedGrid);
       alert('Grid retrieved from Firebase successfully!');
     } catch (error) {
@@ -63,30 +84,73 @@ const GridComponent = () => {
           : c
       )
     );
+    console.log('Updated Grid:', updatedGrid);
     setGrid(updatedGrid);
   };
 
+  const calculateDistance = () => {
+    const startCell = grid.flat().find(cell => cell && cell.name === startName);
+    const endCell = grid.flat().find(cell => cell && cell.name === endName);
+
+    console.log('Start Cell:', startCell);
+    console.log('End Cell:', endCell);
+
+    if (startCell && endCell) {
+      const dx = startCell.latitude - endCell.latitude;
+      const dy = startCell.longitude - endCell.longitude;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      console.log('Distance:', dist);
+      setDistance(dist);
+    } else {
+      alert('One or both of the cell names are invalid.');
+    }
+  };
+
+  const findBestPath = () => {
+    const startCell = grid.flat().find(cell => cell && cell.name === startName);
+    const endCell = grid.flat().find(cell => cell && cell.name === endName);
+
+    console.log('Start Cell:', startCell);
+    console.log('End Cell:', endCell);
+
+    if (startCell && endCell) {
+      const bestPath = aStarAlgorithm(grid, startCell, endCell);
+      console.log('Best Path:', bestPath);
+      setPath(bestPath);
+    } else {
+      alert('One or both of the cell names are invalid.');
+    }
+  };
+
+  useEffect(() => {
+    console.log('Updated Distance:', distance);
+  }, [distance]);
+
+  useEffect(() => {
+    console.log('Updated Path:', path);
+  }, [path]);
+
   return (
-    <div>
+    <div className="grid-component">
       <h1>Grid Map</h1>
       <div>
-        <label>
+        <label className="label-black">
           Rows:
           <input type="number" value={rows} onChange={(e) => setRows(parseInt(e.target.value, 10))} />
         </label>
-        <label>
+        <label className="label-black">
           Columns:
           <input type="number" value={cols} onChange={(e) => setCols(parseInt(e.target.value, 10))} />
         </label>
-        <label>
+        <label className="label-black">
           Cell Size:
           <input type="number" step="0.001" value={cellSize} onChange={(e) => setCellSize(parseFloat(e.target.value))} />
         </label>
-        <label>
+        <label className="label-black">
           Start Latitude:
           <input type="number" step="0.0001" value={startLatitude} onChange={(e) => setStartLatitude(parseFloat(e.target.value))} />
         </label>
-        <label>
+        <label className="label-black">
           Start Longitude:
           <input type="number" step="0.0001" value={startLongitude} onChange={(e) => setStartLongitude(parseFloat(e.target.value))} />
         </label>
@@ -94,13 +158,36 @@ const GridComponent = () => {
       <button onClick={createGrid}>Create Grid</button>
       <button onClick={saveGridToFirebase} disabled={loading}>Save Grid to Firebase</button>
       <button onClick={retrieveGridFromFirebase} disabled={loading}>Retrieve Grid from Firebase</button>
+      <div>
+        <label className="label-black">
+          Start Cell Name:
+          <input type="text" value={startName} onChange={(e) => setStartName(e.target.value)} />
+        </label>
+        <label className="label-black">
+          End Cell Name:
+          <input type="text" value={endName} onChange={(e) => setEndName(e.target.value)} />
+        </label>
+        <button onClick={calculateDistance}>Calculate Distance</button>
+        <button onClick={findBestPath}>Find Best Path</button>
+        {distance !== null && <div style={{ color: 'red' }}>Distance: {distance.toFixed(4)} units</div>}
+      </div>
       {grid && (
         <div className="grid-container">
           {grid.map((row, rowIndex) => (
             <div key={rowIndex} className="grid-row">
-              {row.map((cell, cellIndex) => (
-                cell ? <GridCellCard key={cellIndex} cell={cell} onCellEdit={handleCellEdit} /> : <div key={cellIndex} className="grid-cell-empty" />
-              ))}
+              {row.map((cell, cellIndex) => {
+                const isPathCell = path && path.includes(cell);
+                return cell ? (
+                  <GridCellCard
+                    key={cellIndex}
+                    cell={cell}
+                    onCellEdit={handleCellEdit}
+                    className={isPathCell ? 'path-cell' : ''}
+                  />
+                ) : (
+                  <div key={cellIndex} className="grid-cell-empty" />
+                );
+              })}
             </div>
           ))}
         </div>
