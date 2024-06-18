@@ -60,6 +60,7 @@ class KSearchBar extends StatelessWidget {
                       child: IconButton(
                         onPressed: () {
                           onSearchTap!(controller.value.text);
+                          
                         },
                         icon: const Icon(
                           Icons.location_searching,

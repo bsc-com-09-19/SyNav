@@ -20,6 +20,10 @@ class HomeController extends GetxController {
 
   var currentIndex = 0.obs;
 
+  get fromCellName => null;
+
+  get toCellName => null;
+
   void clearValue() {
     textEditingController.value.dispose();
   }
