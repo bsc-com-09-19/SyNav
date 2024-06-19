@@ -8,7 +8,7 @@ import './GridComponent.css';
 const GridComponent = () => {
   const [rows, setRows] = useState(5);
   const [cols, setCols] = useState(5);
-  const [cellSize, setCellSize] = useState(5);
+  const [cellSize, setCellSize] = useState(5.0);
   const [startLatitude, setStartLatitude] = useState(37.7749);
   const [startLongitude, setStartLongitude] = useState(-122.4194);
   const [grid, setGrid] = useState([]);
@@ -30,6 +30,7 @@ const GridComponent = () => {
 
     setLoading(true);
     try {
+      // Save grid cells
       for (let i = 0; i < grid.length; i++) {
         const row = grid[i];
         const rowData = row.map(cell => ({
@@ -40,8 +41,21 @@ const GridComponent = () => {
           longitude: cell.longitude,
           isObstacle: cell.isObstacle,
         }));
-        await addDoc(collection(firestore, 'gridCells'), { cells: rowData });
+        await addDoc(collection(firestore, 'GridCells'), { cells: rowData });
       }
+
+      // Save grid map properties
+      const lastLatitude = startLatitude + (rows - 1) * cellSize;
+      const gridMapProperties = {
+        cellSize: parseFloat(cellSize),
+        startLatitude,
+        startLongitude,
+        lastLatitude,
+        numberOfRows: rows,
+        numberOfCols: cols,
+      };
+      await addDoc(collection(firestore, 'GridCellMetadata'), gridMapProperties);
+
       alert('Grid saved to Firebase successfully!');
     } catch (error) {
       console.error('Error saving grid to Firebase:', error);
@@ -53,7 +67,7 @@ const GridComponent = () => {
   const retrieveGridFromFirebase = async () => {
     setLoading(true);
     try {
-      const querySnapshot = await getDocs(collection(firestore, 'gridCells'));
+      const querySnapshot = await getDocs(collection(firestore, 'GridCells'));
       const rowsData = querySnapshot.docs.map(doc => doc.data().cells);
 
       const maxRow = rowsData.length - 1;
@@ -144,7 +158,7 @@ const GridComponent = () => {
         </label>
         <label className="label-black">
           Cell Size:
-          <input type="number" step="0.001" value={cellSize} onChange={(e) => setCellSize(parseFloat(e.target.value))} />
+          <input type="number" step="0.1" value={cellSize} onChange={(e) => setCellSize(parseFloat(e.target.value))} />
         </label>
         <label className="label-black">
           Start Latitude:
