@@ -165,13 +165,17 @@ class ExploreWidget extends StatelessWidget {
                     int endRow = destinationCell.row;
                     int endCol = destinationCell.col;
 
-                    List<PathNode> path = wifiController.findPath(
-                      wifiController.gridMap,
-                      startRow,
-                      startCol,
-                      endRow,
-                      endCol,
-                    );
+                    // List<PathNode> path = wifiController.findPath(
+                    //   wifiController.gridMap,
+                    //   startRow,
+                    //   startCol,
+                    //   endRow,
+                    //   endCol,
+                    // );
+                    List<PathNode> path = wifiController.findPathUsingCells(
+                        wifiController.grid.value,
+                        wifiController.grid.value.findCellByName("Room A")!,
+                        wifiController.grid.value.findCellByName("Room X")!);
 
                     if (path.isNotEmpty) {
                       String pathString = "Path from $name:";
@@ -299,4 +303,3 @@ class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
     );
   }
 }
-
