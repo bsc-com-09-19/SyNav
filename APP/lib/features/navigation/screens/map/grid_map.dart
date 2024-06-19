@@ -36,8 +36,8 @@ class Grid {
     grid = List.generate(
         rows,
         (r) => List.generate(cols, (c) {
-              double latitude = startLatitude + r * cellSize;//y-value
-              double longitude = startLongitude + c * cellSize;//x-value
+              double latitude = startLatitude + r * cellSize; //y-value
+              double longitude = startLongitude + c * cellSize; //x-value
               String name = 'Cell(${r + 1},${c + 1})';
               return GridCell(
                   row: r,
@@ -51,7 +51,6 @@ class Grid {
 
   /// Calculates the Euclidean distance between two cells.
   double calculateDistance(GridCell cell1, GridCell cell2) {
-    //TODO: check if the cell is in the grid map
     double deltaX = cell1.longitude - cell2.longitude;
     double deltaY = cell1.latitude - cell2.latitude;
     return sqrt(deltaX * deltaX + deltaY * deltaY);
@@ -59,6 +58,11 @@ class Grid {
 
   /// Retrieves a specific cell from the grid.
   GridCell getCell(int row, int col) => grid[row][col];
+
+  /// Retrieves the grid map
+  List<List<GridCell>> getGrid() {
+    return grid;
+  }
 
   /// Updates the properties of a specific cell.
   void updateCell(int row, int col, {bool? isObstacle, String? name}) {
