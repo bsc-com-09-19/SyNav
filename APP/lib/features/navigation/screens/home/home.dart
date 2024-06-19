@@ -8,11 +8,11 @@ import 'package:sy_nav/features/navigation/screens/wifi/controllers/wifi_control
 import 'package:sy_nav/utils/constants/colors.dart';
 import 'package:sy_nav/utils/widgets/k_snack_bar.dart';
 import 'package:alan_voice/alan_voice.dart';
-import '../../../../utils/alan/alanutils.dart';
 import '../map/grid_map.dart';
 import '../map/grid_routing/path_node.dart';
 import '../navigation/navigationScreen.dart';
 import '../wifi/algorithms/wifi_algorithms.dart';
+import '../../../../utils/alan/alanutils.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -224,6 +224,14 @@ class ExploreWidget extends StatelessWidget {
                 ),
               )),
           SizedBox(height: 20),
+          Obx(() => Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                      "Your location is: ${homeController.location.value.x}, ${homeController.location.value.y}"),
+                ),
+              )),
+          SizedBox(height: 10),
           Obx(() => wifiController.grid.value.rows == 0
               ? Text("Grid is loading...")
               : Expanded(
@@ -315,7 +323,7 @@ class ExploreWidget extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
           margin: const EdgeInsets.symmetric(horizontal: 20.0),
           decoration: BoxDecoration(
             color: Colors.red,
@@ -408,4 +416,3 @@ class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
     );
   }
 }
-
