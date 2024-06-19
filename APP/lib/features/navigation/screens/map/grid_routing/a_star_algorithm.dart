@@ -26,15 +26,14 @@ List<PathNode> aStarAlgorithm(Grid grid, GridCell start, GridCell goal) {
     }
 
     for (var neighbor in getNeighbors(grid, currentNode)) {
-      if (closedList.contains(neighbor) ||
-          grid.getCell(neighbor.row, neighbor.col).isObstacle) {
+      if (closedList.contains(neighbor)) {
         continue;
       }
 
       final tentativeGCost =
           currentNode.gCost + 1; // Assuming uniform cost for each move
 
-      if (tentativeGCost < neighbor.gCost) {
+      if (!openList.contains(neighbor) || tentativeGCost < neighbor.gCost) {
         neighbor.gCost = tentativeGCost;
         neighbor.hCost =
             heuristic(neighbor.row, neighbor.col, goalNode.row, goalNode.col);
@@ -59,9 +58,9 @@ List<PathNode> getNeighbors(Grid grid, PathNode node) {
 
   final possibleMoves = [
     [0, -1], // left
-    [0, 1], // right
+    [0, 1],  // right
     [-1, 0], // up
-    [1, 0], // down
+    [1, 0],  // down
   ];
 
   for (var move in possibleMoves) {
@@ -71,7 +70,8 @@ List<PathNode> getNeighbors(Grid grid, PathNode node) {
     if (newRow >= 0 &&
         newRow < grid.rows &&
         newCol >= 0 &&
-        newCol < grid.cols) {
+        newCol < grid.cols &&
+        !grid.getCell(newRow, newCol).isObstacle) {
       neighbors.add(PathNode(row: newRow, col: newCol));
     }
   }

@@ -130,40 +130,47 @@ class WifiController extends GetxController {
       createGridMap(cellsData);
 
       definePath("Room A", "Room X");
-    } catch (e) {
+    } catch (e, stackTrace) {
       print('Failed to fetch grid cells from Firestore: $e');
+      print(stackTrace);
     }
   }
 
   void definePath(String startName, String endName) {
-    try {
-      if (grid.value != null) {
-        final startCell = grid.value.findCellByName(startName);
-        final endCell = grid.value.findCellByName(endName);
+  try {
+    if (grid.value != null && grid.value.grid.isNotEmpty) {
+      final startCell = grid.value.findCellByName(startName);
+      final endCell = grid.value.findCellByName(endName);
 
-        if (startCell != null && endCell != null) {
-          List<PathNode> path =
-              findPathUsingCells(grid.value, startCell, endCell);
+      if (startCell != null && endCell != null) {
+        List<PathNode> path = findPathUsingCells(grid.value, startCell, endCell);
 
-          if (path.isNotEmpty) {
-            String pathString = "Path:";
-            for (var node in path) {
-              pathString += " (${node.row}, ${node.col})";
-            }
-            print(pathString);
-          } else {
-            print("No path found.");
+        print('Start cell: ${startCell.name}, ${startCell.row}, ${startCell.col}');
+        print('End cell: ${endCell.name}, ${endCell.row}, ${endCell.col}');
+
+        if (path.isNotEmpty) {
+          String pathString = "Path:";
+          for (var node in path) {
+            pathString += " (${node.row}, ${node.col})";
           }
+          print(pathString);
+
+          double distance = grid.value.calculateDistance(startCell, endCell);
+          print('Distance between start and end cells: $distance');
         } else {
-          print("Failed to find start or end cell.");
+          print("No path found.");
         }
       } else {
-        print("Grid is not initialized.");
+        print("Failed to find start or end cell.");
       }
-    } catch (e) {
-      print('Error defining path: $e');
+    } else {
+      print("Grid is not initialized or empty.");
     }
+  } catch (e, stackTrace) {
+    print('Error defining path: $e');
+    print(stackTrace);
   }
+}
 
   List<PathNode> findPathUsingCells(
       Grid grid, GridCell startCell, GridCell endCell) {
