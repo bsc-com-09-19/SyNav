@@ -1,20 +1,17 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sy_nav/common/widgets/drawer/drawer_manager.dart';
 import 'package:sy_nav/common/widgets/drawer/k_drawer.dart';
-import 'package:sy_nav/common/widgets/k_search_bar.dart';
 import 'package:sy_nav/features/navigation/screens/home/controllers/home_controller.dart';
-import 'package:sy_nav/features/navigation/screens/navigation/navigationScreen.dart';
 import 'package:sy_nav/features/navigation/screens/nofications/notifications_screen.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/controllers/wifi_controller.dart';
 import 'package:sy_nav/utils/constants/colors.dart';
 import 'package:sy_nav/utils/widgets/k_snack_bar.dart';
 import 'package:alan_voice/alan_voice.dart';
-
 import '../../../../utils/alan/alanutils.dart';
 import '../map/grid_map.dart';
 import '../map/grid_routing/path_node.dart';
+import '../navigation/navigationScreen.dart';
 import '../wifi/algorithms/wifi_algorithms.dart';
 
 class Home extends StatelessWidget {
@@ -126,6 +123,7 @@ class Home extends StatelessWidget {
     );
   }
 }
+
 class ExploreWidget extends StatelessWidget {
   final HomeController homeController = Get.find();
   final WifiController wifiController = Get.find();
@@ -133,7 +131,6 @@ class ExploreWidget extends StatelessWidget {
   final TextEditingController startRoomController = TextEditingController();
   final TextEditingController endRoomController = TextEditingController();
 
-  // Variable to hold the currently highlighted path
   List<PathNode>? highlightedPath;
 
   @override
@@ -142,14 +139,6 @@ class ExploreWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // KSearchBar(
-          //   controller: homeController.textEditingController.value,
-          //   hintText: "Search...",
-          //   onSearchTap: (name) => handleSearchTap(context, name),
-          //   onButtonTap: () {
-          //     // Handle button tap if needed
-          //   },
-          // ),
           SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -196,15 +185,14 @@ class ExploreWidget extends StatelessWidget {
                 String startRoom = startRoomController.text.trim();
                 String endRoom = endRoomController.text.trim();
                 if (startRoom.isNotEmpty && endRoom.isNotEmpty) {
-                  definePath(context, startRoom, endRoom);
+                  wifiController.definePath(startRoom, endRoom);
                 } else {
-                  // Handle empty fields error
                   showErrorSnackBar(
                       context, 'Please enter start and end rooms.');
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue, // Background color
+                backgroundColor: Colors.blue,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -219,8 +207,20 @@ class ExploreWidget extends StatelessWidget {
           Obx(() => Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                      "Your location is: ${homeController.location.value.x}, ${homeController.location.value.y}"),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Path Information:",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 10),
+                      Text(wifiController.pathString.value),
+                      SizedBox(height: 10),
+                      Text(wifiController.distanceString.value),
+                    ],
+                  ),
                 ),
               )),
           SizedBox(height: 20),
@@ -239,7 +239,6 @@ class ExploreWidget extends StatelessWidget {
                       int col = index % wifiController.grid.value.cols;
                       var cell = wifiController.grid.value.getCell(row, col);
 
-                      // Check if the current cell is part of the highlighted path
                       bool isHighlighted = highlightedPath != null &&
                           highlightedPath!.any(
                               (node) => node.row == row && node.col == col);
@@ -251,7 +250,6 @@ class ExploreWidget extends StatelessWidget {
                         child: Container(
                           alignment: Alignment.center,
                           margin: const EdgeInsets.all(2.0),
-                          // Set color based on whether the cell is highlighted
                           color: isHighlighted
                               ? Colors.blue
                               : (cell.isObstacle ? Colors.red : Colors.green),
@@ -286,7 +284,6 @@ class ExploreWidget extends StatelessWidget {
           destinationCell,
         );
 
-        // Highlight the computed path
         highlightedPath = path;
 
         if (path.isNotEmpty) {
@@ -299,7 +296,6 @@ class ExploreWidget extends StatelessWidget {
           AlanVoiceUtils.playText("No path found to $name");
         }
 
-        // Force rebuild the UI to reflect changes
         Get.forceAppUpdate();
       }
     } else {
@@ -348,9 +344,6 @@ class ExploreWidget extends StatelessWidget {
     );
   }
 }
-
-
-
 
 class KBottomNavigationBar extends StatefulWidget {
   KBottomNavigationBar({Key? key}) : super(key: key);
@@ -415,3 +408,4 @@ class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
     );
   }
 }
+
