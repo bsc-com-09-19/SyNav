@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
+import 'package:alan_voice/alan_voice.dart';
 import 'package:sy_nav/features/navigation/screens/map/grid_routing/a_star_algorithm.dart';
 import 'package:sy_nav/features/navigation/screens/map/grid_routing/path_node.dart';
 import 'package:sy_nav/features/navigation/screens/map/grid_map.dart';
@@ -11,6 +12,9 @@ class WifiController extends GetxController {
   var accelerometerValues = [0.0, 0.0, 0.0].obs;
   var gyroscopeValues = [0.0, 0.0, 0.0].obs;
   var wifiList = <String>[].obs;
+  var pathString = ''.obs;
+  var distanceString = ''.obs;
+  var highlightedPath = <PathNode>[].obs;
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -128,8 +132,6 @@ class WifiController extends GetxController {
       }
 
       createGridMap(cellsData);
-
-      definePath("Room A", "Room X");
     } catch (e, stackTrace) {
       print('Failed to fetch grid cells from Firestore: $e');
       print(stackTrace);
@@ -137,40 +139,37 @@ class WifiController extends GetxController {
   }
 
   void definePath(String startName, String endName) {
-  try {
-    if (grid.value != null && grid.value.grid.isNotEmpty) {
-      final startCell = grid.value.findCellByName(startName);
-      final endCell = grid.value.findCellByName(endName);
+    try {
+      if (grid.value != null && grid.value.grid.isNotEmpty) {
+        final startCell = grid.value.findCellByName(startName);
+        final endCell = grid.value.findCellByName(endName);
 
-      if (startCell != null && endCell != null) {
-        List<PathNode> path = findPathUsingCells(grid.value, startCell, endCell);
+        if (startCell != null && endCell != null) {
+          List<PathNode> path =
+              findPathUsingCells(grid.value, startCell, endCell);
 
-        print('Start cell: ${startCell.name}, ${startCell.row}, ${startCell.col}');
-        print('End cell: ${endCell.name}, ${endCell.row}, ${endCell.col}');
-
-        if (path.isNotEmpty) {
-          String pathString = "Path:";
+          pathString.value = 'Path:';
           for (var node in path) {
-            pathString += " (${node.row}, ${node.col})";
+            pathString.value += " (${node.row}, ${node.col})";
           }
-          print(pathString);
+
+          highlightedPath.assignAll(path);
 
           double distance = grid.value.calculateDistance(startCell, endCell);
-          print('Distance between start and end cells: $distance');
+          distanceString.value =
+              'Distance between start and end cells: $distance';
         } else {
-          print("No path found.");
+          pathString.value = "Failed to find start or end cell.";
         }
       } else {
-        print("Failed to find start or end cell.");
+        pathString.value = "Grid is not initialized or empty.";
       }
-    } else {
-      print("Grid is not initialized or empty.");
+    } catch (e, stackTrace) {
+      print('Error defining path: $e');
+      print(stackTrace);
+      pathString.value = "Error defining path: $e";
     }
-  } catch (e, stackTrace) {
-    print('Error defining path: $e');
-    print(stackTrace);
   }
-}
 
   List<PathNode> findPathUsingCells(
       Grid grid, GridCell startCell, GridCell endCell) {
