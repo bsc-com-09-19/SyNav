@@ -42,7 +42,7 @@ class SensorManager {
     }
 
     // Call the location update method
-    _updateLocation();
+    // _updateLocation();
   }
 
   ///Updates the user's location based on sensor data and WI-FI trilateration
