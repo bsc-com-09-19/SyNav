@@ -231,7 +231,7 @@ class ExploreWidget extends StatelessWidget {
                       "Your location is: ${homeController.location.value.x}, ${homeController.location.value.y}"),
                 ),
               )),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Obx(() => wifiController.grid.value.rows == 0
               ? Text("Grid is loading...")
               : Expanded(
