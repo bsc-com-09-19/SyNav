@@ -22,8 +22,7 @@ import 'package:sy_nav/utils/widgets/k_snack_bar.dart';
 import 'features/navigation/screens/nofications/notifications_screen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
-void main() async {
+ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   /// Initializing the firebase
