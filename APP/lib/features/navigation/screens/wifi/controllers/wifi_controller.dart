@@ -157,8 +157,11 @@ class WifiController extends GetxController {
 
           pathString.value = 'Path:';
           for (var node in path) {
-            pathString.value += " (${node.row + 1}, ${node.col + 1})";
+            var gridName = grid.value.getCell(node.row, node.col).name;
+            // pathString.value += " (${node.row + 1}, ${node.col + 1})";
+            pathString.value += "$gridName -> ";
           }
+          pathString.value += " End";
 
           highlightedPath.assignAll(path);
 
