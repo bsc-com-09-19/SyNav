@@ -131,7 +131,7 @@ class ExploreWidget extends StatelessWidget {
   final TextEditingController startRoomController = TextEditingController();
   final TextEditingController endRoomController = TextEditingController();
 
-  List<PathNode>? highlightedPath;
+  // List<PathNode>? highlightedPath;
 
   @override
   Widget build(BuildContext context) {
@@ -247,8 +247,8 @@ class ExploreWidget extends StatelessWidget {
                       int col = index % wifiController.grid.value.cols;
                       var cell = wifiController.grid.value.getCell(row, col);
 
-                      bool isHighlighted = highlightedPath != null &&
-                          highlightedPath!.any(
+                      bool isHighlighted = wifiController.highlightedPath.isNotEmpty &&
+                          wifiController.highlightedPath!.any(
                               (node) => node.row == row && node.col == col);
 
                       return GestureDetector(
@@ -292,7 +292,7 @@ class ExploreWidget extends StatelessWidget {
           destinationCell,
         );
 
-        highlightedPath = path;
+        wifiController.highlightedPath.assignAll(path);
 
         if (path.isNotEmpty) {
           String pathString = "Path from $name:";
