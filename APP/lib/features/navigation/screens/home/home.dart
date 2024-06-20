@@ -50,7 +50,7 @@ class Home extends StatelessWidget {
               onPressed: () {
                 // Add your action here
               },
-              backgroundColor: Colors.blue,
+              backgroundColor: AppColors.primaryColor,
               child: const Icon(Icons.add),
             ),
           ),
@@ -192,7 +192,7 @@ class ExploreWidget extends StatelessWidget {
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
+                backgroundColor: AppColors.primaryColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -259,7 +259,7 @@ class ExploreWidget extends StatelessWidget {
                           alignment: Alignment.center,
                           margin: const EdgeInsets.all(2.0),
                           color: isHighlighted
-                              ? Colors.blue
+                              ? AppColors.primaryColor
                               : (cell.isObstacle ? Colors.red : Colors.green),
                           child: Text(cell.name),
                         ),

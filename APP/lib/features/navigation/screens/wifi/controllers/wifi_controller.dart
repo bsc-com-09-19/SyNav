@@ -12,9 +12,11 @@ class WifiController extends GetxController {
   var accelerometerValues = [0.0, 0.0, 0.0].obs;
   var gyroscopeValues = [0.0, 0.0, 0.0].obs;
   var wifiList = <String>[].obs;
+
   var pathString = ''.obs;
   var distanceString = ''.obs;
   var highlightedPath = <PathNode>[].obs;
+  var pathDirections = <String>[].obs;
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -138,19 +140,24 @@ class WifiController extends GetxController {
     }
   }
 
+  ///Finds the path from [startName] to the [endName] if they names exists in the grid map
   void definePath(String startName, String endName) {
+    ///Clears the previous calculated path and distance
+    clearPathDetails();
+
     try {
+      //Checks if the gridMap exists and hads values
       if (grid.value != null && grid.value.grid.isNotEmpty) {
         final startCell = grid.value.findCellByName(startName);
         final endCell = grid.value.findCellByName(endName);
-
+        //if the start and end have been found look for a path
         if (startCell != null && endCell != null) {
           List<PathNode> path =
               findPathUsingCells(grid.value, startCell, endCell);
 
           pathString.value = 'Path:';
           for (var node in path) {
-            pathString.value += " (${node.row}, ${node.col})";  
+            pathString.value += " (${node.row + 1}, ${node.col + 1})";
           }
 
           highlightedPath.assignAll(path);
@@ -158,6 +165,9 @@ class WifiController extends GetxController {
           double distance = grid.value.calculateDistance(startCell, endCell);
           distanceString.value =
               'Distance between start and end cells: $distance';
+
+          pathDirections.value = generateDirections(path, cellSize.value);
+          print("");
         } else {
           pathString.value = "Failed to find start or end cell.";
         }
@@ -174,6 +184,36 @@ class WifiController extends GetxController {
   List<PathNode> findPathUsingCells(
       Grid grid, GridCell startCell, GridCell endCell) {
     return aStarAlgorithm(grid, startCell, endCell);
+  }
+
+  void clearPathDetails() {
+    ///Clears the previous calculated path and distance
+    pathString.value = distanceString.value = "";
+    pathDirections.clear();
+    highlightedPath.clear();
+  }
+
+  List<String> generateDirections(List<PathNode> path, double cellSize) {
+    if (path.isEmpty) return [];
+
+    final directions = <String>[];
+
+    for (var i = 1; i < path.length; i++) {
+      final current = path[i - 1];
+      final next = path[i];
+      final dx = next.row - current.row;
+      final dy = next.col - current.col;
+      final distance = (dx.abs() + dy.abs()) * cellSize;
+
+      if (dx == 0 && dy != 0) {
+        directions.add('Move forward ${distance} meters');
+      } else if (dy == 0 && dx != 0) {
+        directions.add(
+            'Turn ${dx > 0 ? 'right' : 'left'} and move forward ${distance} meters');
+      }
+    }
+
+    return directions;
   }
 
   @override
