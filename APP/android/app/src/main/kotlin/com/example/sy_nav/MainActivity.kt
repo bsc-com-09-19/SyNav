@@ -1,5 +1,6 @@
 package com.example.sy_nav
 
+import androidx.multidex.MultiDexApplication;
 import io.flutter.embedding.android.FlutterActivity
 import androidx.annotation.NonNull
 import io.flutter.embedding.engine.FlutterEngine
