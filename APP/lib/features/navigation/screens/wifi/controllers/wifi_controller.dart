@@ -10,11 +10,11 @@ class WifiController extends GetxController {
   var accelerometerValues = [0.0, 0.0, 0.0].obs;
   var gyroscopeValues = [0.0, 0.0, 0.0].obs;
   var wifiList = <String>[].obs;
-
   var pathString = ''.obs;
   var distanceString = ''.obs;
   var highlightedPath = <PathNode>[].obs;
-  var pathDirections = <String>[].obs;
+
+  var directionsString = "".obs;
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -24,17 +24,23 @@ class WifiController extends GetxController {
   final numberOfRows = 3.obs;
   final numberOfCols = 3.obs;
 
-  late Rx<Grid> grid;
+  var grid = Grid(
+          rows: 1,
+          cols: 1,
+          cellSize: 1.3,
+          startLongitude: 1.0,
+          startLatitude: 1.3)
+      .obs;
 
   static const platform = MethodChannel('com.example.sy_nav/wifi');
 
   get gridMap => grid.value;
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
+    await fetchGridCellsFromFirestore();
     getWifiList();
-    fetchGridCellsFromFirestore();
     listenForWifiUpdates();
   }
 
@@ -74,14 +80,13 @@ class WifiController extends GetxController {
     maxRow++;
     maxCol++;
 
-    grid = Grid(
+    grid.value = Grid(
       rows: maxRow,
       cols: maxCol,
       cellSize: cellSize.value,
       startLatitude: startLatitude.value,
       startLongitude: startLongitude.value,
-    ).obs;
-
+    );
     for (var data in cellsData) {
       int row = data['row'];
       int col = data['col'];
@@ -98,7 +103,7 @@ class WifiController extends GetxController {
     return name;
   }
 
-  void fetchGridCellsFromFirestore() async {
+  Future<void> fetchGridCellsFromFirestore() async {
     try {
       CollectionReference gridDataCollection =
           _firestore.collection('GridCellMetadata');
@@ -107,8 +112,8 @@ class WifiController extends GetxController {
       if (metadataSnapshot.docs.isNotEmpty) {
         var data = metadataSnapshot.docs.first.data() as Map<String, dynamic>;
         cellSize.value = data["cellSize"];
-        startLatitude.value = data["startLatitude"];
-        startLongitude.value = data["startLongitude"];
+        startLatitude.value = (data["startLatitude"] as num).toDouble();
+        startLongitude.value = (data["startLongitude"] as num).toDouble();
       }
 
       CollectionReference gridCellsCollection =
@@ -140,17 +145,15 @@ class WifiController extends GetxController {
     }
   }
 
-  ///Finds the path from [startName] to the [endName] if they names exists in the grid map
-  void definePath(String startName, String endName) {
+  Future<void> definePath(String startName, String endName) async {
     ///Clears the previous calculated path and distance
     clearPathDetails();
-
     try {
       //Checks if the gridMap exists and hads values
       if ( grid.value.grid.isNotEmpty) {
         final startCell = grid.value.findCellByName(startName);
         final endCell = grid.value.findCellByName(endName);
-        //if the start and end have been found look for a path
+
         if (startCell != null && endCell != null) {
           List<PathNode> path =
               findPathUsingCells(grid.value, startCell, endCell);
@@ -158,18 +161,19 @@ class WifiController extends GetxController {
           pathString.value = 'Path:';
           for (var node in path) {
             var gridName = grid.value.getCell(node.row, node.col).name;
-            // pathString.value += " (${node.row + 1}, ${node.col + 1})";
             pathString.value += "$gridName -> ";
+            // pathString.value += " (${node.row}, ${node.col})";
           }
           pathString.value += " End";
 
           highlightedPath.assignAll(path);
-
           double distance = grid.value.calculateDistance(startCell, endCell);
           distanceString.value =
-              'Distance between start and end cells: $distance';
+              'Distance between start and end cells: ${distance.toPrecision(1)}';
 
-          pathDirections.value = generateDirections(path, cellSize.value);
+          for (var direction in generateDirections(path, cellSize.value)) {
+            directionsString.value += "$direction ";
+          }
         } else {
           pathString.value = "Failed to find start or end cell.";
         }
@@ -190,34 +194,71 @@ class WifiController extends GetxController {
     return aStarAlgorithm(grid, startCell, endCell);
   }
 
-  void clearPathDetails() {
-    ///Clears the previous calculated path and distance
-    pathString.value = distanceString.value = "";
-    pathDirections.clear();
-    highlightedPath.clear();
-  }
-
+  /// Generates a list of directions from the given path, aggregating consecutive
+  /// movements in the same direction into a single command.
+  ///
+  /// - Parameters:
+  ///   - path: A list of PathNode objects representing the path.
+  ///   - cellSize: The size of each cell in meters.
+  ///
+  /// - Returns: A list of direction commands as strings.
   List<String> generateDirections(List<PathNode> path, double cellSize) {
     if (path.isEmpty) return [];
 
     final directions = <String>[];
 
+    int dx = 0, dy = 0; // Variables to track direction
+    double aggregatedDistance = 0; // Variable to accumulate distance
+
+    // Iterate through the path
     for (var i = 1; i < path.length; i++) {
       final current = path[i - 1];
       final next = path[i];
-      final dx = next.row - current.row;
-      final dy = next.col - current.col;
-      final distance = (dx.abs() + dy.abs()) * cellSize;
+      final currentDx = next.row - current.row;
+      final currentDy = next.col - current.col;
 
+      // Calculate the distance for the current move
+      final distance = (currentDx.abs() + currentDy.abs()) * cellSize;
+
+      // Check if the direction has changed
+      if (currentDx != dx || currentDy != dy) {
+        // Add the aggregated direction if there was a previous direction
+        if (aggregatedDistance > 0) {
+          if (dx == 0 && dy != 0) {
+            directions.add(
+                'Move forward ${aggregatedDistance.toStringAsFixed(2)} meters');
+          } else if (dy == 0 && dx != 0) {
+            directions.add(
+                'Turn ${dx > 0 ? 'right' : 'left'} and move forward ${aggregatedDistance.toStringAsFixed(2)} meters');
+          }
+        }
+        // Reset the aggregation
+        dx = currentDx;
+        dy = currentDy;
+        aggregatedDistance = 0;
+      }
+      // Accumulate the distance
+      aggregatedDistance += distance;
+    }
+
+    // Add the last aggregated direction
+    if (aggregatedDistance > 0) {
       if (dx == 0 && dy != 0) {
-        directions.add('Move forward $distance meters');
+        directions.add(
+            'Move forward ${aggregatedDistance.toStringAsFixed(2)} meters');
       } else if (dy == 0 && dx != 0) {
         directions.add(
-            'Turn ${dx > 0 ? 'right' : 'left'} and move forward $distance meters');
+            'Turn ${dx > 0 ? 'right' : 'left'} and move forward ${aggregatedDistance.toStringAsFixed(2)} meters');
       }
     }
 
     return directions;
+  }
+
+  void clearPathDetails() {
+    ///Clears the previous calculated path and distance
+    pathString.value = distanceString.value = directionsString.value = "";
+    highlightedPath.clear();
   }
 
   @override

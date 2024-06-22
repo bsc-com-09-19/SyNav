@@ -9,13 +9,32 @@ import 'package:sy_nav/utils/dummy/dummy.dart';
 class WifiAlgorithms {
   // Function to estimate distance based on signal strength using path loss model
   static double estimateDistance(double signalStrength) {
+    double A;
+    double n;
+
+    // Determine the appropriate A and n values based on the RSSI range
+    if (signalStrength >= -40) {
+      A = WifiConstants.referenceSignalStrengths[0];
+      n = WifiConstants.pathLossExponents[0];
+    } else if (signalStrength >= -60) {
+      A = WifiConstants.referenceSignalStrengths[1];
+      n = WifiConstants.pathLossExponents[1];
+    } else {
+      A = WifiConstants.referenceSignalStrengths[2];
+      n = WifiConstants.pathLossExponents[2];
+    }
+
     return WifiConstants.referenceDistance *
-        pow(
-            10,
-            ((WifiConstants.referenceSignalStrength - signalStrength) /
-                (10 * WifiConstants.pathLossExponent)));
+        pow(10, ((A - signalStrength) / (10 * n)));
   }
 
+  //   return WifiConstants.referenceDistance *
+  //       pow(
+  //           10,
+  //           ((WifiConstants.referenceSignalStrength - signalStrength) /
+  //               (10 * WifiConstants.pathLossExponent)));
+  // }
+// -------------------------------
   /// Estimates the user's location based on a list of scanned WiFi access points.
 
   /// This function takes a list of WiFi access points in a specific format as input
@@ -36,7 +55,6 @@ class WifiAlgorithms {
       throw Exception("Please provide a valid list");
     }
 
-
     /// Generate a list of APs with their locations
     // Map BSSID to AccessPoint object (BSSID is unique)
     final accessPointMap = {for (var ap in Dummy.accessPoints) ap.bssid: ap};
@@ -50,8 +68,7 @@ class WifiAlgorithms {
 
     final kalmanFilters = <String, KalmanFilter>{};
 
-
-    //extracting values 
+    //extracting values
     for (var wifi in wifiList) {
       final bssid = wifi.split("#")[0];
       final level = double.parse(wifi.split("#")[1]);
@@ -59,12 +76,11 @@ class WifiAlgorithms {
         kalmanFilters[bssid] = KalmanFilter();
       }
       kalmanFilters[bssid]!.filter(level);
-      
 
       //will run if the user has also provided the sensor details
-      if (sensorManager != null){
-              kalmanFilters[bssid]!.updateWithSensorData(sensorManager.accelerometerValues, sensorManager.gyroscopeValues);
-
+      if (sensorManager != null) {
+        kalmanFilters[bssid]!.updateWithSensorData(
+            sensorManager.accelerometerValues, sensorManager.gyroscopeValues);
       }
     }
 
