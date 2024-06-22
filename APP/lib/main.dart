@@ -22,10 +22,9 @@ import 'package:sy_nav/utils/widgets/k_snack_bar.dart';
 import 'features/navigation/screens/nofications/notifications_screen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   /// Initializing the firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
@@ -68,6 +67,7 @@ void _initWifi() async {
   await wifiController.getWifiList();
 
   Timer.periodic(const Duration(seconds: 1), (timer) async {
+    print("Your location is: ${wifiController.getLocationName(1.5, 1.5)}");
     await wifiController.getWifiList();
     List<String> wifiList = wifiController.getTrilaterationWifi();
 

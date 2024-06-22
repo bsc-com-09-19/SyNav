@@ -1,5 +1,6 @@
 package com.example.sy_nav
 
+import androidx.multidex.MultiDexApplication;
 import io.flutter.embedding.android.FlutterActivity
 import androidx.annotation.NonNull
 import io.flutter.embedding.engine.FlutterEngine
@@ -118,7 +119,10 @@ class MainActivity: FlutterActivity(), SensorEventListener {
             "78:d2:94:9a:b1:53",
             "3c:fa:d3:96:99:63",
             "5c:ba:ef:98:0f:fb",
-            "98:a9:42:57:71:f0"
+            "98:a9:42:57:71:f0",
+            "98:a9:42:85:ce:74",
+            "98:a9:42:85:cc:d5",
+            "98:a9:42:85:ce:5f"
 
 
             )
@@ -161,7 +165,10 @@ class MainActivity: FlutterActivity(), SensorEventListener {
             "78:d2:94:9a:b1:53",
             "3c:fa:d3:96:99:63",
             "5c:ba:ef:98:0f:fb",
-            "98:a9:42:57:71:f0"
+            "98:a9:42:57:71:f0",
+            "98:a9:42:85:ce:74",
+            "98:a9:42:85:cc:d5",
+            "98:a9:42:85:ce:5f"
 
 
             )

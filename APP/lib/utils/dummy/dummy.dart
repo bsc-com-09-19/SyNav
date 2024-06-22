@@ -40,8 +40,8 @@ class Dummy {
     // Isulu mifi
     AccessPoint(
       bssid: "98:a9:42:3b:29:57",
-      latitude: 9.6,
-      longitude: 11.2,
+      latitude: 12.7,
+      longitude: 1,
       frequency: "2.4 GHz",
     ),
 
@@ -77,8 +77,8 @@ class Dummy {
     // NETGEAR
     AccessPoint(
       bssid: "78:d2:94:9a:b1:53",
-      longitude: 2.6,
-      latitude: 11.0,
+      longitude: 4.2,
+      latitude: 9,
       frequency: "2.4 GHz",
     ),
 
@@ -97,8 +97,27 @@ class Dummy {
       latitude: 1.2,
       frequency: "2.4 GHz",
     ),
-
-
+    // ce74
+    AccessPoint(
+      bssid: "98:a9:42:85:ce:74",
+      longitude: 12.7,
+      latitude: 15.3,
+      frequency: "2.4 GHz",
+    ),
+    // ced5
+    AccessPoint(
+      bssid: "98:a9:42:85:cc:d5",
+      longitude: 1,
+      latitude: 1,
+      frequency: "2.4 GHz",
+    ),
+    // ce5f
+    AccessPoint(
+      bssid: "98:a9:42:85:ce:5f",
+      longitude: 1,
+      latitude: 15.3,
+      frequency: "2.4 GHz",
+    ),
   ];
 }
 //98:a9:42:85:ce:74  ce74

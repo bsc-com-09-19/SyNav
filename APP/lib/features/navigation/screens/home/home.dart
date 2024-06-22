@@ -1,20 +1,19 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sy_nav/common/widgets/drawer/drawer_manager.dart';
 import 'package:sy_nav/common/widgets/drawer/k_drawer.dart';
-import 'package:sy_nav/common/widgets/k_search_bar.dart';
+import 'package:sy_nav/common/widgets/k_height.dart';
 import 'package:sy_nav/features/navigation/screens/home/controllers/home_controller.dart';
-import 'package:sy_nav/features/navigation/screens/navigation/navigationScreen.dart';
 import 'package:sy_nav/features/navigation/screens/nofications/notifications_screen.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/controllers/wifi_controller.dart';
 import 'package:sy_nav/utils/constants/colors.dart';
 import 'package:sy_nav/utils/widgets/k_snack_bar.dart';
 import 'package:alan_voice/alan_voice.dart';
-
-import '../../../../utils/alan/alanutils.dart';
+import '../map/grid_map.dart';
 import '../map/grid_routing/path_node.dart';
+import '../navigation/navigationScreen.dart';
 import '../wifi/algorithms/wifi_algorithms.dart';
+import '../../../../utils/alan/alanutils.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -25,9 +24,9 @@ class Home extends StatelessWidget {
     final wifiController = Get.find<WifiController>();
 
     final pages = [
-      const ExploreWidget(),
-      const NavigationScreen(),
-      const NotificationsScreen(),
+      ExploreWidget(),
+      NavigationScreen(),
+      NotificationsScreen(),
     ];
 
     return Scaffold(
@@ -49,6 +48,7 @@ class Home extends StatelessWidget {
             bottom: 16.0,
             right: 16.0,
             child: FloatingActionButton(
+              heroTag: "add",
               onPressed: () {
                 // Add your action here
               },
@@ -60,6 +60,7 @@ class Home extends StatelessWidget {
             bottom: 80.0,
             right: 16.0,
             child: FloatingActionButton(
+              heroTag: "location",
               onPressed: () async {
                 homeController.currentIndex.value = 0;
                 if (wifiController.wifiList.length < 3) {
@@ -127,109 +128,190 @@ class Home extends StatelessWidget {
 }
 
 class ExploreWidget extends StatelessWidget {
-  const ExploreWidget({Key? key}) : super(key: key);
+  final HomeController homeController = Get.find();
+  final WifiController wifiController = Get.find();
+
+  final TextEditingController startRoomController = TextEditingController();
+  final TextEditingController endRoomController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final homeController = Get.find<HomeController>();
-    final wifiController = Get.find<WifiController>();
-
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            KSearchBar(
-              controller: homeController.textEditingController.value,
-              hintText: "",
-              onSearchTap: (name) {
-                var destinationCell =
-                    wifiController.gridMap.findCellByName(name);
-                if (destinationCell != null) {
-                  var locationCell = wifiController.grid.value
-                      .findCellByCoordinates(homeController.location.value.x,
-                          homeController.location.value.y);
-
-                  if (locationCell != null) {
-                    var distance = wifiController.gridMap
-                        .calculateDistance(locationCell, destinationCell);
-                    AlanVoiceUtils.playText(
-                        "$name is available and it is $distance away from you");
-                    if (kDebugMode) {
-                      print("distance: $distance");
-                    }
-
-                    // A* algorithm for finding path
-                    int startRow = locationCell.row;
-                    int startCol = locationCell.col;
-                    int endRow = destinationCell.row;
-                    int endCol = destinationCell.col;
-
-                    List<PathNode> path = wifiController.findPath(
-                      wifiController.gridMap,
-                      startRow,
-                      startCol,
-                      endRow,
-                      endCol,
-                    );
-
-                    if (path.isNotEmpty) {
-                      String pathString = "Path from $name:";
-                      for (var node in path) {
-                        pathString += " (${node.row}, ${node.col})";
-                      }
-                      AlanVoiceUtils.playText(pathString);
-                    } else {
-                      AlanVoiceUtils.playText("No path found to $name");
-                    }
-                  }
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: Container(
+                  height: 50,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: TextField(
+                      controller: startRoomController,
+                      decoration: InputDecoration(
+                        labelText: 'Start Room',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 16),
+              Expanded(
+                child: Container(
+                  height: 50,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: TextField(
+                      controller: endRoomController,
+                      decoration: InputDecoration(
+                        labelText: 'End Room',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
+          Container(
+            height: 50,
+            margin: EdgeInsets.symmetric(horizontal: 20.0),
+            child: ElevatedButton(
+              onPressed: () {
+                String startRoom = startRoomController.text.trim();
+                String endRoom = endRoomController.text.trim();
+                if (startRoom.isNotEmpty && endRoom.isNotEmpty) {
+                  wifiController.definePath(startRoom, endRoom);
                 } else {
-                  AlanVoiceUtils.playText("The place $name is not available");
+                  showErrorSnackBar(
+                      context, 'Please enter start and end rooms.');
                 }
               },
-              onButtonTap: () {
-                // Manipulate the button's state or behavior here
-                // For example, change button color or perform an action
-              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              child: Text(
+                'Get Route',
+                style: TextStyle(fontSize: 18),
+              ),
             ),
-            const SizedBox(
-              height: kTextTabBarHeight + 30,
-            ),
-            Obx(() => Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                        "Your location is: ${homeController.location.value.x}, ${homeController.location.value.y}"),
-                  ),
-                )),
-            const SizedBox(height: 20),
-
-            // generating wifi boxes
-
-            Obx(() => wifiController.grid.value.rows == 0
-                ? const Text("Grid is loading...")
-                : Expanded(
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: wifiController.grid.value.cols,
-                        childAspectRatio: 1.0,
+          ),
+          SizedBox(height: 10),
+          Obx(() => Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Path Information:",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
-                      itemCount: wifiController.grid.value.rows *
-                          wifiController.grid.value.cols,
-                      itemBuilder: (context, index) {
-                        int row = index ~/ wifiController.grid.value.cols;
-                        int col = index % wifiController.grid.value.cols;
-                        var cell = wifiController.grid.value.getCell(row, col);
-                        return Container(
+                      SizedBox(height: 5),
+                      Text(wifiController.pathString.value),
+                      SizedBox(height: 5),
+                      Text(wifiController.distanceString.value),
+                      KHeight(height: 4),
+                      Text(
+                        "Directions: ${wifiController.directionsString.value}",
+                        style: TextStyle(color: AppColors.primaryColor),
+                      )
+                    ],
+                  ),
+                ),
+              )),
+          SizedBox(height: 10),
+          Obx(() => Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                      "Your location is: ${wifiController.getLocationName(homeController.location.value.x, homeController.location.value.y)}"
+                      " (${homeController.location.value.x.toPrecision(1)}, ${homeController.location.value.y.toPrecision(1)})"),
+                ),
+              )),
+          const SizedBox(height: 5),
+          Obx(() => wifiController.grid.value.rows == 0
+              ? Text("Grid is loading...")
+              : Expanded(
+                  child: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: wifiController.grid.value.cols,
+                      childAspectRatio: 1.0,
+                    ),
+                    itemCount: wifiController.grid.value.rows *
+                        wifiController.grid.value.cols,
+                    itemBuilder: (context, index) {
+                      int row = index ~/ wifiController.grid.value.cols;
+                      int col = index % wifiController.grid.value.cols;
+                      var cell = wifiController.grid.value.getCell(row, col);
+
+                      bool isHighlighted =
+                          wifiController.highlightedPath.isNotEmpty &&
+                              wifiController.highlightedPath!.any(
+                                  (node) => node.row == row && node.col == col);
+
+                      return GestureDetector(
+                        onTap: () {
+                          handleGridCellTap(context, cell);
+                        },
+                        child: Container(
                           alignment: Alignment.center,
                           margin: const EdgeInsets.all(2.0),
-                          color: cell.isObstacle ? Colors.red : Colors.green,
+                          color: isHighlighted
+                              ? Colors.blue
+                              : (cell.isObstacle ? Colors.red : Colors.green),
                           child: Text(cell.name),
-                        );
-                      },
-                    ),
-                  )),
-          ],
+                        ),
+                      );
+                    },
+                  ),
+                )),
+        ],
+      ),
+    );
+  }
+
+  void handleGridCellTap(BuildContext context, GridCell cell) {
+    // Handle grid cell tap if needed
+  }
+
+  void showErrorSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+          margin: const EdgeInsets.symmetric(horizontal: 20.0),
+          decoration: BoxDecoration(
+            color: Colors.red,
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: Center(
+            child: Text(
+              message,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16.0,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+        duration: Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          side: BorderSide(
+            color: Colors.transparent,
+          ),
         ),
       ),
     );
@@ -299,4 +381,3 @@ class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
     );
   }
 }
-

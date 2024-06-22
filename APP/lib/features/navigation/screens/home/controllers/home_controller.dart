@@ -38,9 +38,10 @@ class HomeController extends GetxController {
   }
 
   void updateLocation(Point<double> location) {
-    var modifiedLocation = Point(
-        ((location.x > 10.1) ? location.x % 10.0 : location.x),
-        ((location.y > 10.1) ? location.y % 19.0 : location.y));
-    this.location.value = modifiedLocation;
+    this.location.value = location;
+    // var modifiedLocation = Point(
+    //     ((location.x > 10.1) ? location.x % 10.0 : location.x),
+    //     ((location.y > 10.1) ? location.y % 19.0 : location.y));
+    // this.location.value = modifiedLocation;
   }
 }
