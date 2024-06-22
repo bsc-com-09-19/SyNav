@@ -6,11 +6,11 @@ import { aStarAlgorithm } from './aStarAlgorithm';
 import './GridComponent.css';
 
 const GridComponent = () => {
-  const [rows, setRows] = useState(5);
-  const [cols, setCols] = useState(5);
-  const [cellSize, setCellSize] = useState(5.0);
-  const [startLatitude, setStartLatitude] = useState(37.7749);
-  const [startLongitude, setStartLongitude] = useState(-122.4194);
+  const [rows, setRows] = useState(11);
+  const [cols, setCols] = useState(8);
+  const [cellSize, setCellSize] = useState(1.3);
+  const [startLatitude, setStartLatitude] = useState(1.0);
+  const [startLongitude, setStartLongitude] = useState(1.0);
   const [grid, setGrid] = useState([]);
   const [loading, setLoading] = useState(false);
   const [startName, setStartName] = useState('');
