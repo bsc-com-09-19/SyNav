@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sy_nav/common/widgets/drawer/drawer_manager.dart';
 import 'package:sy_nav/common/widgets/drawer/k_drawer.dart';
+import 'package:sy_nav/common/widgets/k_height.dart';
 import 'package:sy_nav/features/navigation/screens/home/controllers/home_controller.dart';
 import 'package:sy_nav/features/navigation/screens/nofications/notifications_screen.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/controllers/wifi_controller.dart';
@@ -47,10 +48,11 @@ class Home extends StatelessWidget {
             bottom: 16.0,
             right: 16.0,
             child: FloatingActionButton(
+              heroTag: "add",
               onPressed: () {
                 // Add your action here
               },
-              backgroundColor: AppColors.primaryColor,
+              backgroundColor: Colors.blue,
               child: const Icon(Icons.add),
             ),
           ),
@@ -58,6 +60,7 @@ class Home extends StatelessWidget {
             bottom: 80.0,
             right: 16.0,
             child: FloatingActionButton(
+              heroTag: "location",
               onPressed: () async {
                 homeController.currentIndex.value = 0;
                 if (wifiController.wifiList.length < 3) {
@@ -131,8 +134,6 @@ class ExploreWidget extends StatelessWidget {
   final TextEditingController startRoomController = TextEditingController();
   final TextEditingController endRoomController = TextEditingController();
 
-  // List<PathNode>? highlightedPath;
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -192,7 +193,7 @@ class ExploreWidget extends StatelessWidget {
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryColor,
+                backgroundColor: Colors.blue,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -215,23 +216,29 @@ class ExploreWidget extends StatelessWidget {
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 5),
                       Text(wifiController.pathString.value),
-                      SizedBox(height: 10),
+                      SizedBox(height: 5),
                       Text(wifiController.distanceString.value),
+                      KHeight(height: 4),
+                      Text(
+                        "Directions: ${wifiController.directionsString.value}",
+                        style: TextStyle(color: AppColors.primaryColor),
+                      )
                     ],
                   ),
                 ),
               )),
-          SizedBox(height: 20),
+          SizedBox(height: 10),
           Obx(() => Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                      "Your location is: ${homeController.location.value.x}, ${homeController.location.value.y}"),
+                      "Your location is: ${wifiController.getLocationName(homeController.location.value.x, homeController.location.value.y)}"
+                      " (${homeController.location.value.x.toPrecision(1)}, ${homeController.location.value.y.toPrecision(1)})"),
                 ),
               )),
-          const SizedBox(height: 10),
+          const SizedBox(height: 5),
           Obx(() => wifiController.grid.value.rows == 0
               ? Text("Grid is loading...")
               : Expanded(
@@ -247,9 +254,10 @@ class ExploreWidget extends StatelessWidget {
                       int col = index % wifiController.grid.value.cols;
                       var cell = wifiController.grid.value.getCell(row, col);
 
-                      bool isHighlighted = wifiController.highlightedPath.isNotEmpty &&
-                          wifiController.highlightedPath!.any(
-                              (node) => node.row == row && node.col == col);
+                      bool isHighlighted =
+                          wifiController.highlightedPath.isNotEmpty &&
+                              wifiController.highlightedPath!.any(
+                                  (node) => node.row == row && node.col == col);
 
                       return GestureDetector(
                         onTap: () {
@@ -259,7 +267,7 @@ class ExploreWidget extends StatelessWidget {
                           alignment: Alignment.center,
                           margin: const EdgeInsets.all(2.0),
                           color: isHighlighted
-                              ? AppColors.primaryColor
+                              ? Colors.blue
                               : (cell.isObstacle ? Colors.red : Colors.green),
                           child: Text(cell.name),
                         ),
@@ -272,51 +280,8 @@ class ExploreWidget extends StatelessWidget {
     );
   }
 
-  void handleSearchTap(BuildContext context, String name) {
-    var destinationCell = wifiController.gridMap.findCellByName(name);
-    if (destinationCell != null) {
-      var locationCell = wifiController.grid.value.findCellByCoordinates(
-        homeController.location.value.x,
-        homeController.location.value.y,
-      );
-
-      if (locationCell != null) {
-        var distance = wifiController.gridMap
-            .calculateDistance(locationCell, destinationCell);
-        AlanVoiceUtils.playText(
-            "$name is available and it is $distance away from you");
-
-        List<PathNode> path = wifiController.findPathUsingCells(
-          wifiController.grid.value,
-          locationCell,
-          destinationCell,
-        );
-
-        wifiController.highlightedPath.assignAll(path);
-
-        if (path.isNotEmpty) {
-          String pathString = "Path from $name:";
-          for (var node in path) {
-            pathString += " (${node.row}, ${node.col})";
-          }
-          AlanVoiceUtils.playText(pathString);
-        } else {
-          AlanVoiceUtils.playText("No path found to $name");
-        }
-
-        Get.forceAppUpdate();
-      }
-    } else {
-      AlanVoiceUtils.playText("The place $name is not available");
-    }
-  }
-
   void handleGridCellTap(BuildContext context, GridCell cell) {
     // Handle grid cell tap if needed
-  }
-
-  void definePath(BuildContext context, String startRoom, String endRoom) {
-    wifiController.definePath(startRoom, endRoom);
   }
 
   void showErrorSnackBar(BuildContext context, String message) {
