@@ -26,24 +26,26 @@ class Grid {
   final double cellSize;
   late List<List<GridCell>> grid;
 
-  Grid(
-      {required this.rows,
-      required this.cols,
-      required this.cellSize,
-      required double startLongitude,
-      required double startLatitude}) {
+  Grid({
+    required this.rows,
+    required this.cols,
+    required this.cellSize,
+    required double startLongitude,
+    required double startLatitude,
+  }) {
     grid = List.generate(
         rows,
         (r) => List.generate(cols, (c) {
-              double latitude = startLatitude + r * cellSize;
-              double longitude = startLongitude + c * cellSize;
+              double latitude = startLatitude + r * cellSize; //y-value
+              double longitude = startLongitude + c * cellSize; //x-value
               String name = 'Cell(${r + 1},${c + 1})';
               return GridCell(
                   row: r,
                   col: c,
                   name: name,
                   latitude: latitude,
-                  longitude: longitude);
+                  longitude: longitude,
+                  isObstacle: Random.secure().nextBool());
             }));
   }
 
@@ -56,6 +58,11 @@ class Grid {
 
   /// Retrieves a specific cell from the grid.
   GridCell getCell(int row, int col) => grid[row][col];
+
+  /// Retrieves the grid map
+  List<List<GridCell>> getGrid() {
+    return grid;
+  }
 
   /// Updates the properties of a specific cell.
   void updateCell(int row, int col, {bool? isObstacle, String? name}) {
@@ -80,6 +87,7 @@ class Grid {
     return 'Unknown';
   }
 
+  /// Finds the cell containing the given latitude and longitude.
   GridCell? findCellByCoordinates(double longitude, double latitude) {
     for (var row in grid) {
       for (var cell in row) {
@@ -94,6 +102,7 @@ class Grid {
     return null;
   }
 
+  /// Finds a cell by its name.
   GridCell? findCellByName(String name) {
     for (var row in grid) {
       for (var cell in row) {
@@ -102,8 +111,6 @@ class Grid {
         }
       }
     }
-
-    //if not found
     return null;
   }
 }

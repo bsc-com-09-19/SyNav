@@ -3,23 +3,31 @@ import 'package:get/get.dart';
 import 'package:sy_nav/features/navigation/screens/home/controllers/home_controller.dart';
 import 'package:sy_nav/utils/constants/k_sizes.dart';
 
-class KSearchBar extends StatelessWidget {
+class KSearchBar extends StatefulWidget {
   final TextEditingController controller;
   final VoidCallback? onMenuTap;
   final void Function(String value)? onSearchTap;
-
   final String hintText;
+  final VoidCallback? onButtonTap; // New callback for button tap
+
   const KSearchBar({
     Key? key,
     required this.controller,
     required this.hintText,
     this.onMenuTap,
     this.onSearchTap,
+    this.onButtonTap, // Initialize the callback
   }) : super(key: key);
 
   @override
+  _KSearchBarState createState() => _KSearchBarState();
+}
+
+class _KSearchBarState extends State<KSearchBar> {
+  bool isButtonTapped = false;
+
+  @override
   Widget build(BuildContext context) {
-    //dependency injection for the home controller
     final homeController = Get.find<HomeController>();
 
     return Padding(
@@ -41,27 +49,46 @@ class KSearchBar extends StatelessWidget {
                 height: 50.0,
                 padding: const EdgeInsets.all(5),
                 child: TextField(
-                  controller: controller,
+                  controller: widget.controller,
                   style: const TextStyle(fontSize: 18.0),
                   textAlignVertical: TextAlignVertical.center,
                   decoration: InputDecoration(
-                    hintText: "Where do you want to go",
-                    semanticCounterText: hintText,
+                    hintText: widget.hintText,
                     border: InputBorder.none,
-                    // contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
-                    suffixIcon: Container(
-                      decoration: const BoxDecoration(
-                        color: Color.fromARGB(97, 23, 18, 152),
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(10.0),
-                          bottomRight: Radius.circular(10.0),
+                    suffixIcon: GestureDetector(
+                      onTapDown: (_) {
+                        setState(() {
+                          isButtonTapped = true;
+                        });
+                        // Call the callback when button is tapped
+                        widget.onButtonTap?.call();
+                      },
+                      onTapUp: (_) {
+                        setState(() {
+                          isButtonTapped = false;
+                        });
+                        if (widget.onSearchTap != null) {
+                          widget.onSearchTap!(widget.controller.value.text);
+                        }
+                      },
+                      onTapCancel: () {
+                        setState(() {
+                          isButtonTapped = false;
+                        });
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(seconds: 3),
+                        decoration: BoxDecoration(
+                          color: isButtonTapped
+                              ? Colors.green
+                              : const Color.fromARGB(97, 23, 18, 152),
+                          borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(10.0),
+                            bottomRight: Radius.circular(10.0),
+                          ),
                         ),
-                      ),
-                      child: IconButton(
-                        onPressed: () {
-                          onSearchTap!(controller.value.text);
-                        },
-                        icon: const Icon(
+                        padding: const EdgeInsets.all(8.0),
+                        child: const Icon(
                           Icons.location_searching,
                           color: Colors.white,
                         ),

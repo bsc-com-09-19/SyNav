@@ -1,20 +1,17 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:sy_nav/common/widgets/drawer/drawer_manager.dart';
 import 'package:sy_nav/common/widgets/drawer/k_drawer.dart';
-import 'package:sy_nav/common/widgets/k_search_bar.dart';
 import 'package:sy_nav/features/navigation/screens/home/controllers/home_controller.dart';
-import 'package:sy_nav/features/navigation/screens/navigation/navigationScreen.dart';
 import 'package:sy_nav/features/navigation/screens/nofications/notifications_screen.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/controllers/wifi_controller.dart';
-import 'package:sy_nav/features/navigation/screens/wifi/wifi_screen.dart';
 import 'package:sy_nav/utils/constants/colors.dart';
-import 'package:sy_nav/features/navigation/screens/wifi/algorithms/wifi_algorithms.dart';
 import 'package:sy_nav/utils/widgets/k_snack_bar.dart';
 import 'package:alan_voice/alan_voice.dart';
-
+import '../map/grid_map.dart';
+import '../map/grid_routing/path_node.dart';
+import '../navigation/navigationScreen.dart';
+import '../wifi/algorithms/wifi_algorithms.dart';
 import '../../../../utils/alan/alanutils.dart';
 
 class Home extends StatelessWidget {
@@ -24,12 +21,11 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     final homeController = Get.find<HomeController>();
     final wifiController = Get.find<WifiController>();
-//route definition
+
     final pages = [
       ExploreWidget(),
-      // WifiScreen(),
-      const NavigationScreen(),
-      const NotificationsScreen(),
+      NavigationScreen(),
+      NotificationsScreen(),
     ];
 
     return Scaffold(
@@ -39,9 +35,7 @@ class Home extends StatelessWidget {
           icon: const Icon(Icons.menu),
           onPressed: homeController.handleOpenDrawer,
         ),
-        title: Obx(
-          () => Text(homeController.appBarTitle.value),
-        ),
+        title: Obx(() => Text(homeController.appBarTitle.value)),
         centerTitle: true,
         actions: [Obx(() => homeController.iconButton.value)],
       ),
@@ -50,19 +44,19 @@ class Home extends StatelessWidget {
         children: [
           Obx(() => pages[homeController.currentIndex.value]),
           Positioned(
-            bottom: 16.0, // Adjust position as needed
-            right: 16.0, // Adjust position as needed
+            bottom: 16.0,
+            right: 16.0,
             child: FloatingActionButton(
               onPressed: () {
                 // Add your action here
               },
-              backgroundColor: Colors.blue,
+              backgroundColor: AppColors.primaryColor,
               child: const Icon(Icons.add),
             ),
           ),
           Positioned(
-            bottom: 80.0, // Adjust position as needed
-            right: 16.0, // Adjust position as needed
+            bottom: 80.0,
+            right: 16.0,
             child: FloatingActionButton(
               onPressed: () async {
                 homeController.currentIndex.value = 0;
@@ -81,7 +75,6 @@ class Home extends StatelessWidget {
                       WifiAlgorithms.getEstimatedLocation(wifiList);
                   homeController.location.value = estimatedLocation;
 
-                  // Convert the location to a string and use Alan to announce it
                   String locationString =
                       "Your location is: ${homeController.location.value.x}, ${homeController.location.value.y}";
                   AlanVoiceUtils.playText(locationString);
@@ -132,54 +125,228 @@ class Home extends StatelessWidget {
 }
 
 class ExploreWidget extends StatelessWidget {
-  const ExploreWidget({Key? key}) : super(key: key);
+  final HomeController homeController = Get.find();
+  final WifiController wifiController = Get.find();
+
+  final TextEditingController startRoomController = TextEditingController();
+  final TextEditingController endRoomController = TextEditingController();
+
+  // List<PathNode>? highlightedPath;
 
   @override
   Widget build(BuildContext context) {
-    final homeController = Get.find<HomeController>();
-    final wifiController = Get.find<WifiController>();
-
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            KSearchBar(
-              controller: homeController.textEditingController.value,
-              hintText: "Enter here",
-              onSearchTap: (name) {
-                var destinationCell =
-                    wifiController.gridMap.findCellByName(name);
-                if (destinationCell != null) {
-                  var locationCell = wifiController.grid.value
-                      .findCellByCoordinates(homeController.location.value.x,
-                          homeController.location.value.y);
-
-                  if (locationCell != null) {
-                    var distance = wifiController.gridMap
-                        .calculateDistance(locationCell, destinationCell);
-                    AlanVoiceUtils.playText(
-                        "$name is available and it is $distance away from you");
-                    if (kDebugMode) {
-                      print("distance: $distance");
-                    }
-                  }
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: Container(
+                  height: 50,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: TextField(
+                      controller: startRoomController,
+                      decoration: InputDecoration(
+                        labelText: 'Start Room',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 16),
+              Expanded(
+                child: Container(
+                  height: 50,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: TextField(
+                      controller: endRoomController,
+                      decoration: InputDecoration(
+                        labelText: 'End Room',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
+          Container(
+            height: 50,
+            margin: EdgeInsets.symmetric(horizontal: 20.0),
+            child: ElevatedButton(
+              onPressed: () {
+                String startRoom = startRoomController.text.trim();
+                String endRoom = endRoomController.text.trim();
+                if (startRoom.isNotEmpty && endRoom.isNotEmpty) {
+                  wifiController.definePath(startRoom, endRoom);
                 } else {
-                  //TODO: make alan say that that place is not available
+                  showErrorSnackBar(
+                      context, 'Please enter start and end rooms.');
                 }
               },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              child: Text(
+                'Get Route',
+                style: TextStyle(fontSize: 18),
+              ),
             ),
-            const SizedBox(
-              height: kTextTabBarHeight + 30,
-            ),
-            Obx(() => Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                        "Your location is: ${homeController.location.value.x}, ${ homeController.location.value.y}"),
+          ),
+          SizedBox(height: 10),
+          Obx(() => Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Path Information:",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 10),
+                      Text(wifiController.pathString.value),
+                      SizedBox(height: 10),
+                      Text(wifiController.distanceString.value),
+                    ],
                   ),
-                ))
-          ],
+                ),
+              )),
+          SizedBox(height: 20),
+          Obx(() => Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                      "Your location is: ${homeController.location.value.x}, ${homeController.location.value.y}"),
+                ),
+              )),
+          const SizedBox(height: 10),
+          Obx(() => wifiController.grid.value.rows == 0
+              ? Text("Grid is loading...")
+              : Expanded(
+                  child: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: wifiController.grid.value.cols,
+                      childAspectRatio: 1.0,
+                    ),
+                    itemCount: wifiController.grid.value.rows *
+                        wifiController.grid.value.cols,
+                    itemBuilder: (context, index) {
+                      int row = index ~/ wifiController.grid.value.cols;
+                      int col = index % wifiController.grid.value.cols;
+                      var cell = wifiController.grid.value.getCell(row, col);
+
+                      bool isHighlighted = wifiController.highlightedPath.isNotEmpty &&
+                          wifiController.highlightedPath!.any(
+                              (node) => node.row == row && node.col == col);
+
+                      return GestureDetector(
+                        onTap: () {
+                          handleGridCellTap(context, cell);
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.all(2.0),
+                          color: isHighlighted
+                              ? AppColors.primaryColor
+                              : (cell.isObstacle ? Colors.red : Colors.green),
+                          child: Text(cell.name),
+                        ),
+                      );
+                    },
+                  ),
+                )),
+        ],
+      ),
+    );
+  }
+
+  void handleSearchTap(BuildContext context, String name) {
+    var destinationCell = wifiController.gridMap.findCellByName(name);
+    if (destinationCell != null) {
+      var locationCell = wifiController.grid.value.findCellByCoordinates(
+        homeController.location.value.x,
+        homeController.location.value.y,
+      );
+
+      if (locationCell != null) {
+        var distance = wifiController.gridMap
+            .calculateDistance(locationCell, destinationCell);
+        AlanVoiceUtils.playText(
+            "$name is available and it is $distance away from you");
+
+        List<PathNode> path = wifiController.findPathUsingCells(
+          wifiController.grid.value,
+          locationCell,
+          destinationCell,
+        );
+
+        wifiController.highlightedPath.assignAll(path);
+
+        if (path.isNotEmpty) {
+          String pathString = "Path from $name:";
+          for (var node in path) {
+            pathString += " (${node.row}, ${node.col})";
+          }
+          AlanVoiceUtils.playText(pathString);
+        } else {
+          AlanVoiceUtils.playText("No path found to $name");
+        }
+
+        Get.forceAppUpdate();
+      }
+    } else {
+      AlanVoiceUtils.playText("The place $name is not available");
+    }
+  }
+
+  void handleGridCellTap(BuildContext context, GridCell cell) {
+    // Handle grid cell tap if needed
+  }
+
+  void definePath(BuildContext context, String startRoom, String endRoom) {
+    wifiController.definePath(startRoom, endRoom);
+  }
+
+  void showErrorSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+          margin: const EdgeInsets.symmetric(horizontal: 20.0),
+          decoration: BoxDecoration(
+            color: Colors.red,
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: Center(
+            child: Text(
+              message,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16.0,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+        duration: Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          side: BorderSide(
+            color: Colors.transparent,
+          ),
         ),
       ),
     );
@@ -195,12 +362,11 @@ class KBottomNavigationBar extends StatefulWidget {
 
 class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
   final homeController = Get.find<HomeController>();
-  final wificontroller = Get.find<WifiController>();
+  final wifiController = Get.find<WifiController>();
   int currentIndex = 0;
 
   final List<String> navigationRoutes = [
     'Home',
-    // 'Bookmarks',
     'Navigate',
     'History',
   ];
@@ -218,23 +384,16 @@ class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
       child: BottomNavigationBar(
         currentIndex: homeController.currentIndex.value,
         showUnselectedLabels: true,
-        // backgroundColor: AppColors.secondaryColor,
         items: [
           const BottomNavigationBarItem(
               icon: Icon(Icons.home_filled), label: "Home"),
-
-          // const BottomNavigationBarItem(
-          //     icon: Icon(Icons.bookmark_rounded), label: "Bookmarks"),
-
           BottomNavigationBarItem(
-              icon: Transform.rotate(
-                angle: 0.785398,
-                child: const Icon(
-                  Icons.navigation,
-                ),
-              ),
-              label: "Navigate"),
-
+            icon: Transform.rotate(
+              angle: 0.785398,
+              child: const Icon(Icons.navigation),
+            ),
+            label: "Navigate",
+          ),
           const BottomNavigationBarItem(
               icon: Icon(Icons.history_outlined), label: "History"),
         ],
@@ -249,7 +408,7 @@ class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
           homeController.appBarTitle.value = navigationRoutes[index];
           if (index == 1) {
             homeController.iconButton.value = IconButton(
-                onPressed: wificontroller.getWifiList,
+                onPressed: wifiController.getWifiList,
                 icon: const Icon(Icons.refresh));
           }
         },
