@@ -3,6 +3,11 @@ import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import { auth } from './firebaseConfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
+/**
+ * SignUp component provides a form for user registration.
+ *
+ * @component
+ */
 const SignUp = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -11,6 +16,12 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState(null);
 
+  /**
+   * Handles form submission for user sign-up.
+   *
+   * @param {Object} e - The event object.
+   * @async
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
 

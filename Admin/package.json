@@ -41,6 +41,9 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "docz": "^2.4.0",
+    "docz-core": "^2.4.0",
+    "docz-theme-default": "^1.2.0"
   }
 }

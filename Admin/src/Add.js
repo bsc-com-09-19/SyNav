@@ -4,12 +4,32 @@ import { firestore } from './firebaseConfig';
 import { collection, addDoc } from 'firebase/firestore';
 import './App.css';
 
-const Add = () => {
-  const [form, setForm] = useState({ SSID: '', BSSID: '', xCoordinate: '', yCoordinate: '' });
 
+
+/**
+ * Add component provides a form to add a new access point to Firebase.
+ *
+ * @component
+ */
+const Add = () => {
+  /**
+   * State to manage the form data.
+   * @type {[{SSID: string, BSSID: string, xCoordinate: string, yCoordinate: string}, function]}
+   */
+  const [form, setForm] = useState({ SSID: '', BSSID: '', xCoordinate: '', yCoordinate: '' });
+/**
+   * Handles the change event for the form inputs.
+   *
+   * @param {Object} e - The event object.
+   */
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+   /**
+   * Handles the form submission.
+   *
+   * @param {Object} e - The event object.
+   */
 
   const handleSubmit = async (e) => {
     e.preventDefault();
