@@ -10,15 +10,24 @@ import Update from './Update';
 import SignIn from './signIn';
 import Logout from './Logout';
 import GridComponent from './GridComponent';
+/**
+ * Main App component that handles routing and authentication.
+ *
+ * @component
+ */
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+   /**
+   * Sets up an authentication state observer and updates the authentication state.
+   * @function
+   */
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsAuthenticated(!!user);
     });
-
+ // Cleanup subscription on unmount
     return () => unsubscribe();
   }, []);
 
