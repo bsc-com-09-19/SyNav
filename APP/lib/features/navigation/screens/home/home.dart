@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sy_nav/common/widgets/drawer/drawer_manager.dart';
 import 'package:sy_nav/common/widgets/drawer/k_drawer.dart';
+import 'package:sy_nav/common/widgets/k_height.dart';
 import 'package:sy_nav/features/navigation/screens/home/controllers/home_controller.dart';
 import 'package:sy_nav/features/navigation/screens/nofications/notifications_screen.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/controllers/wifi_controller.dart';
 import 'package:sy_nav/utils/constants/colors.dart';
-import 'package:sy_nav/utils/widgets/k_snack_bar.dart';
-import 'package:alan_voice/alan_voice.dart';
 import '../map/grid_map.dart';
 import '../map/grid_routing/path_node.dart';
-import '../navigation/navigationScreen.dart';
+import '../navigation/navigation_screen.dart';
 import '../wifi/algorithms/wifi_algorithms.dart';
 import '../../../../utils/alan/alanutils.dart';
 
@@ -24,8 +23,8 @@ class Home extends StatelessWidget {
 
     final pages = [
       ExploreWidget(),
-      NavigationScreen(),
-      NotificationsScreen(),
+      const NavigationScreen(),
+      const NotificationsScreen(),
     ];
 
     return Scaffold(
@@ -70,7 +69,7 @@ class Home extends StatelessWidget {
                 } else {
                   homeController.currentIndex.value = 0;
                   List<String> wifiList =
-                      await wifiController.getTrilaterationWifi();
+                      wifiController.getTrilaterationWifi();
                   var estimatedLocation =
                       WifiAlgorithms.getEstimatedLocation(wifiList);
                   homeController.location.value = estimatedLocation;
@@ -86,7 +85,7 @@ class Home extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: KBottomNavigationBar(),
+      bottomNavigationBar: const KBottomNavigationBar(),
     );
   }
 
@@ -131,6 +130,8 @@ class ExploreWidget extends StatelessWidget {
   final TextEditingController startRoomController = TextEditingController();
   final TextEditingController endRoomController = TextEditingController();
 
+  ExploreWidget({super.key});
+
   // List<PathNode>? highlightedPath;
 
   @override
@@ -139,7 +140,7 @@ class ExploreWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(height: 20),
+          const KHeight(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -150,7 +151,7 @@ class ExploreWidget extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: TextField(
                       controller: startRoomController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Start Room',
                         border: OutlineInputBorder(),
                       ),
@@ -158,7 +159,7 @@ class ExploreWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               Expanded(
                 child: Container(
                   height: 50,
@@ -166,7 +167,7 @@ class ExploreWidget extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: TextField(
                       controller: endRoomController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'End Room',
                         border: OutlineInputBorder(),
                       ),
@@ -176,10 +177,10 @@ class ExploreWidget extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 10),
+          const KHeight(height: 10),
           Container(
             height: 50,
-            margin: EdgeInsets.symmetric(horizontal: 20.0),
+            margin: const EdgeInsets.symmetric(horizontal: 20.0),
             child: ElevatedButton(
               onPressed: () {
                 String startRoom = startRoomController.text.trim();
@@ -197,33 +198,33 @@ class ExploreWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8.0),
                 ),
               ),
-              child: Text(
+              child: const Text(
                 'Get Route',
                 style: TextStyle(fontSize: 18),
               ),
             ),
           ),
-          SizedBox(height: 10),
+          const KHeight(height: 10),
           Obx(() => Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         "Path Information:",
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 10),
+                      const KHeight(height: 10),
                       Text(wifiController.pathString.value),
-                      SizedBox(height: 10),
+                      const KHeight(height: 10),
                       Text(wifiController.distanceString.value),
                     ],
                   ),
                 ),
               )),
-          SizedBox(height: 20),
+          const KHeight(height: 20),
           Obx(() => Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -233,7 +234,7 @@ class ExploreWidget extends StatelessWidget {
               )),
           const SizedBox(height: 10),
           Obx(() => wifiController.grid.value.rows == 0
-              ? Text("Grid is loading...")
+              ? const Text("Grid is loading...")
               : Expanded(
                   child: GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -248,7 +249,7 @@ class ExploreWidget extends StatelessWidget {
                       var cell = wifiController.grid.value.getCell(row, col);
 
                       bool isHighlighted = wifiController.highlightedPath.isNotEmpty &&
-                          wifiController.highlightedPath!.any(
+                          wifiController.highlightedPath.any(
                               (node) => node.row == row && node.col == col);
 
                       return GestureDetector(
@@ -332,7 +333,7 @@ class ExploreWidget extends StatelessWidget {
           child: Center(
             child: Text(
               message,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 16.0,
               ),
@@ -340,11 +341,11 @@ class ExploreWidget extends StatelessWidget {
             ),
           ),
         ),
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
-          side: BorderSide(
+          side: const BorderSide(
             color: Colors.transparent,
           ),
         ),
@@ -354,7 +355,7 @@ class ExploreWidget extends StatelessWidget {
 }
 
 class KBottomNavigationBar extends StatefulWidget {
-  KBottomNavigationBar({Key? key}) : super(key: key);
+  const KBottomNavigationBar({Key? key}) : super(key: key);
 
   @override
   State<KBottomNavigationBar> createState() => _KBottomNavigationBarState();

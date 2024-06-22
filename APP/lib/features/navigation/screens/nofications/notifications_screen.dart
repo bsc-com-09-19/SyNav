@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sy_nav/utils/widgets/k_un_implemented_page.dart';
-import 'package:sy_nav/utils/widgets/k_un_implemented_widget.dart';
 
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});

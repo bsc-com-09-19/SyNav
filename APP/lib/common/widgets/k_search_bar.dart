@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:sy_nav/features/navigation/screens/home/controllers/home_controller.dart';
 import 'package:sy_nav/utils/constants/k_sizes.dart';
 
 class KSearchBar extends StatefulWidget {
@@ -20,7 +18,7 @@ class KSearchBar extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _KSearchBarState createState() => _KSearchBarState();
+  State<KSearchBar>  createState() => _KSearchBarState();
 }
 
 class _KSearchBarState extends State<KSearchBar> {
@@ -28,7 +26,6 @@ class _KSearchBarState extends State<KSearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    final homeController = Get.find<HomeController>();
 
     return Padding(
       padding: const EdgeInsets.all(KSizes.defaultSpace),

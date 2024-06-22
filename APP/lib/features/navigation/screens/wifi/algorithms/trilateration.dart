@@ -84,9 +84,9 @@ Map<String, double> trilaterate(
     A[A.length - 1] * W[1],
   );
 
-  var BVector = vec.Vector2(B[0] * W[0], B[1] * W[1]);
+  var vectorB = vec.Vector2(B[0] * W[0], B[1] * W[1]);
 
-  var X = AtW.transposed() * AtW.invert() * (AtW.transposed() * BVector);
+  var X = AtW.transposed() * AtW.invert() * (AtW.transposed() * vectorB);
 
   return {'x': X.x, 'y': X.y};
 }

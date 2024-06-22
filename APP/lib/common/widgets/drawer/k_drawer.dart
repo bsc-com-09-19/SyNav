@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sy_nav/common/widgets/drawer/k_drawer_item.dart';
-import 'package:sy_nav/features/navigation/screens/bookmarks/bookmarks.dart';
-import 'package:sy_nav/features/navigation/screens/nofications/notifications_screen.dart';
-import 'package:sy_nav/features/navigation/screens/wifi/temp_accesspoints_screen.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/wifi_screen.dart';
 import 'package:sy_nav/utils/constants/colors.dart';
 
@@ -24,7 +21,7 @@ class KDrawer extends StatelessWidget {
             accountName: Text(profileName),
             accountEmail: Text(email),
           ),
-          KDrawerItem(
+          const KDrawerItem(
             leadingIcon: Icons.person,
             title: profileName,
             // onTap: () {
@@ -48,7 +45,7 @@ class KDrawer extends StatelessWidget {
             onTap: () => Navigator.push(
                 context, MaterialPageRoute(builder: (_) => WifiScreen())),
           ),
-          KDrawerItem(
+          const KDrawerItem(
             leadingIcon: Icons.logout_outlined,
             title: "History",
             // onTap: () {

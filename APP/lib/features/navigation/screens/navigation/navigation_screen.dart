@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:sy_nav/data/buildings/building.dart';
 import 'package:sy_nav/features/navigation/screens/buildings/building_section.dart';
-import 'package:sy_nav/utils/constants/colors.dart';
 import 'package:sy_nav/utils/constants/k_sizes.dart';
 
 class NavigationScreen extends StatelessWidget {

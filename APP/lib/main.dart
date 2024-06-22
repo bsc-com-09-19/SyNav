@@ -7,15 +7,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:alan_voice/alan_voice.dart';
 import 'package:sy_nav/bindings/home_binding.dart';
+import 'package:sy_nav/common/widgets/splash_screen.dart';
 import 'package:sy_nav/features/navigation/screens/home/controllers/home_controller.dart';
 import 'package:sy_nav/features/navigation/screens/home/home.dart';
-import 'package:sy_nav/features/navigation/screens/navigation/navigationScreen.dart';
+import 'package:sy_nav/features/navigation/screens/navigation/navigation_screen.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/controllers/wifi_controller.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/algorithms/sensor_manager.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/algorithms/wifi_algorithms.dart';
 import 'package:sy_nav/firebase_options.dart';
 import 'package:sy_nav/utils/alan/alanutils.dart';
-import 'package:sy_nav/utils/constants/colors.dart';
 import 'package:sy_nav/utils/themes/theme.dart';
 import 'package:sy_nav/utils/widgets/k_snack_bar.dart';
 
@@ -67,7 +67,7 @@ void _initWifi() async {
   await wifiController.getWifiList();
 
   Timer.periodic(const Duration(seconds: 1), (timer) async {
-    print("Your location is: ${wifiController.getLocationName(1.5, 1.5)}");
+    // print("Your location is: ${wifiController.getLocationName(1.5, 1.5)}");
     await wifiController.getWifiList();
     List<String> wifiList = wifiController.getTrilaterationWifi();
 
@@ -159,7 +159,6 @@ void _handleCommand(Map<String, dynamic> commandData) async {
         showErrorSnackBAr(context!,
             "You don't have enough registered access points around you (${wifiController.wifiList.length} APs)");
       } else {
-        List<String> wifiList = await wifiController.getTrilaterationWifi();
         Point<double> estimatedLocation = homeController.location.value;
         homeController.location.value = estimatedLocation;
         // Convert the location to a string and use Alan to announce it
@@ -227,57 +226,3 @@ class SyNavApp extends StatelessWidget {
   }
 }
 
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
-
-  @override
-  _SplashScreenState createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    super.initState();
-    Timer(const Duration(seconds: 3), () {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const Home()),
-      );
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: AppColors.primaryColor,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "SYNAV",
-              style: TextStyle(
-                color: Color.fromARGB(255, 248, 190, 1),
-                fontSize: 50,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 10),
-            Text(
-              "navigate with ease",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-              ),
-            ),
-            SizedBox(height: 16),
-            Icon(
-              Icons.accessibility_new_outlined,
-              color: Color.fromARGB(255, 248, 190, 1),
-              size: 48,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

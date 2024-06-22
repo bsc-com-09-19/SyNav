@@ -3,8 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/state_manager.dart';
 import 'package:sy_nav/common/widgets/drawer/drawer_manager.dart';
-import 'package:sy_nav/features/navigation/screens/map/grid_map.dart';
-import 'package:sy_nav/features/navigation/screens/wifi/algorithms/sensor_manager.dart';
 import 'package:sy_nav/utils/constants/k_strings.dart';
 
 class HomeController extends GetxController {

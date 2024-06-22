@@ -1,9 +1,7 @@
-import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
-import 'package:alan_voice/alan_voice.dart';
 import 'package:sy_nav/features/navigation/screens/map/grid_routing/a_star_algorithm.dart';
 import 'package:sy_nav/features/navigation/screens/map/grid_routing/path_node.dart';
 import 'package:sy_nav/features/navigation/screens/map/grid_map.dart';
@@ -96,7 +94,7 @@ class WifiController extends GetxController {
 
   String getLocationName(double longitude, double latitude) {
     String name =
-        grid.value.findCellNameByCoordinates(longitude, latitude) ?? 'Unknown';
+        grid.value.findCellNameByCoordinates(longitude, latitude);
     return name;
   }
 
@@ -135,8 +133,10 @@ class WifiController extends GetxController {
 
       createGridMap(cellsData);
     } catch (e, stackTrace) {
-      print('Failed to fetch grid cells from Firestore: $e');
-      print(stackTrace);
+      if(kDebugMode){
+        print('Failed to fetch grid cells from Firestore: $e');
+        print(stackTrace);
+      }
     }
   }
 
@@ -147,7 +147,7 @@ class WifiController extends GetxController {
 
     try {
       //Checks if the gridMap exists and hads values
-      if (grid.value != null && grid.value.grid.isNotEmpty) {
+      if ( grid.value.grid.isNotEmpty) {
         final startCell = grid.value.findCellByName(startName);
         final endCell = grid.value.findCellByName(endName);
         //if the start and end have been found look for a path
@@ -170,7 +170,6 @@ class WifiController extends GetxController {
               'Distance between start and end cells: $distance';
 
           pathDirections.value = generateDirections(path, cellSize.value);
-          print("");
         } else {
           pathString.value = "Failed to find start or end cell.";
         }
@@ -178,8 +177,10 @@ class WifiController extends GetxController {
         pathString.value = "Grid is not initialized or empty.";
       }
     } catch (e, stackTrace) {
-      print('Error defining path: $e');
-      print(stackTrace);
+      if(kDebugMode){
+        print('Error defining path: $e');
+        print(stackTrace);
+      }
       pathString.value = "Error defining path: $e";
     }
   }
@@ -209,10 +210,10 @@ class WifiController extends GetxController {
       final distance = (dx.abs() + dy.abs()) * cellSize;
 
       if (dx == 0 && dy != 0) {
-        directions.add('Move forward ${distance} meters');
+        directions.add('Move forward $distance meters');
       } else if (dy == 0 && dx != 0) {
         directions.add(
-            'Turn ${dx > 0 ? 'right' : 'left'} and move forward ${distance} meters');
+            'Turn ${dx > 0 ? 'right' : 'left'} and move forward $distance meters');
       }
     }
 

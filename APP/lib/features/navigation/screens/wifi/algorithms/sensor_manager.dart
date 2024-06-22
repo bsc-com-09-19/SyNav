@@ -2,7 +2,6 @@
 import 'dart:math';
 
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:sy_nav/features/navigation/screens/home/controllers/home_controller.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/algorithms/wifi_algorithms.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/controllers/wifi_controller.dart';
@@ -21,8 +20,8 @@ class SensorManager {
 
   final List<double> _accelerometerValues = [0, 0, 0];
   final List<double> _gyroscopeValues = [0, 0, 0];
-  List<double> _previousAccelerometerValues = [0, 0, 0];
-  List<double> _previousGyroscopeValues = [0, 0, 0];
+  final List<double> _previousAccelerometerValues = [0, 0, 0];
+  final List<double> _previousGyroscopeValues = [0, 0, 0];
 
   Future<void> _sensorHandler(MethodCall call) async {
     if (call.method == "sensorData") {

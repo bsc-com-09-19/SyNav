@@ -103,6 +103,7 @@ class WifiAlgorithms {
           "Number of access points is supposed to be 3 and/or has to be of same size with the distances array!!!");
     }
     // Constants they can be adjusted
+    // ignore: unused_local_variable
     const double weight2_4GHz = 0.7; // Weight for 2.4 GHz band
     const double weight5GHz = 0.3; // Weight for 5 GHz band
 
@@ -113,7 +114,7 @@ class WifiAlgorithms {
 
     for (int i = 0; i < apList.length; i++) {
       // final weight = apList[i].frequency == '5GHz' ? weight5GHz : weight2_4GHz;
-      final weight = weight5GHz;
+      const weight = weight5GHz;
       totalX += distances[i] * weight * apList[i].longitude;
       totalY += distances[i] * weight * apList[i].latitude;
       totalWeight += weight;

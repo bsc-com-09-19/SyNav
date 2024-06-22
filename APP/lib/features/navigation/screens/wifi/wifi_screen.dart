@@ -41,7 +41,7 @@ class WifiScreen extends StatelessWidget {
                     wifiController.wifiList[index].split('#');
                 if (kDebugMode) {
                   print(
-                      "Number: ${itemCount}, ${wifiDetails[0]}, ${wifiDetails[1]}");
+                      "Number: $itemCount, ${wifiDetails[0]}, ${wifiDetails[1]}");
                 }
 
                 String macAddress = wifiDetails[0];
