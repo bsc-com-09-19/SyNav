@@ -5,18 +5,29 @@ import { firestore, collection, addDoc, getDocs } from './firebaseConfig';
 import { aStarAlgorithm } from './aStarAlgorithm';
 import './GridComponent.css';
 
+
+/**
+ * GridComponent is responsible for creating, displaying, and managing a grid.
+ *
+ * @component
+ */
+
 const GridComponent = () => {
-  const [rows, setRows] = useState(5);
-  const [cols, setCols] = useState(5);
-  const [cellSize, setCellSize] = useState(5.0);
-  const [startLatitude, setStartLatitude] = useState(37.7749);
-  const [startLongitude, setStartLongitude] = useState(-122.4194);
+  const [rows, setRows] = useState(11);
+  const [cols, setCols] = useState(8);
+  const [cellSize, setCellSize] = useState(1.3);
+  const [startLatitude, setStartLatitude] = useState(1.0);
+  const [startLongitude, setStartLongitude] = useState(1.0);
   const [grid, setGrid] = useState([]);
   const [loading, setLoading] = useState(false);
   const [startName, setStartName] = useState('');
   const [endName, setEndName] = useState('');
   const [distance, setDistance] = useState(null);
   const [path, setPath] = useState([]);
+
+   /**
+   * Creates a new grid based on the current state.
+   */
 
   const createGrid = () => {
     const newGrid = new Grid(rows, cols, cellSize, startLatitude, startLongitude);
@@ -25,6 +36,13 @@ const GridComponent = () => {
     setGrid(gridData);
   };
 
+
+
+
+  /**
+   * Saves the current grid to Firebase.
+   * @async
+   */
   const saveGridToFirebase = async () => {
     if (!grid || grid.length === 0) return;
 
@@ -64,6 +82,11 @@ const GridComponent = () => {
     setLoading(false);
   };
 
+    /**
+   * Retrieves the grid from Firebase.
+   * @async
+   */
+
   const retrieveGridFromFirebase = async () => {
     setLoading(true);
     try {
@@ -90,6 +113,14 @@ const GridComponent = () => {
     setLoading(false);
   };
 
+   /**
+   * Handles editing of a cell.
+   *
+   * @param {Object} cell - The cell object.
+   * @param {string} newName - The new name for the cell.
+   * @param {boolean} newIsObstacle - Whether the cell is an obstacle.
+   */
+
   const handleCellEdit = (cell, newName, newIsObstacle) => {
     const updatedGrid = grid.map(row =>
       row.map(c =>
@@ -101,6 +132,10 @@ const GridComponent = () => {
     console.log('Updated Grid:', updatedGrid);
     setGrid(updatedGrid);
   };
+
+  /**
+   * Calculates the distance between the start cell and the end cell.
+   */
 
   const calculateDistance = () => {
     const startCell = grid.flat().find(cell => cell && cell.name === startName);
@@ -119,6 +154,9 @@ const GridComponent = () => {
       alert('One or both of the cell names are invalid.');
     }
   };
+  /**
+   * Finds the best path between the start cell and the end cell using A* algorithm.
+   */
 
   const findBestPath = () => {
     const startCell = grid.flat().find(cell => cell && cell.name === startName);

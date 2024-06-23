@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sy_nav/utils/constants/colors.dart';
 
+///Constant reusable text field
 class KTextField extends StatelessWidget {
   const KTextField({
     super.key,

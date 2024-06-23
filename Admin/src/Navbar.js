@@ -1,9 +1,15 @@
-// src/CustomNavbar.js
 import React from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import './App.css'
+import './App.css';
 
+/**
+ * CustomNavbar component provides a responsive navigation bar.
+ *
+ * @component
+ * @param {Object} props - The component's props.
+ * @param {boolean} props.isAuthenticated - Indicates if the user is authenticated.
+ */
 const CustomNavbar = ({ isAuthenticated }) => {
   return (
     <Navbar className="custom-navbar" variant="dark" expand="lg">
@@ -17,23 +23,19 @@ const CustomNavbar = ({ isAuthenticated }) => {
                 <Nav.Link>Home</Nav.Link>
               </LinkContainer>
               <LinkContainer to="/gride">
-              <Nav.Link>GridComponent</Nav.Link>
-            </LinkContainer>
-            <LinkContainer to="/add">
-              <Nav.Link>Add</Nav.Link>
-            </LinkContainer>
+                <Nav.Link>GridComponent</Nav.Link>
+              </LinkContainer>
+              <LinkContainer to="/add">
+                <Nav.Link>Add</Nav.Link>
+              </LinkContainer>
               <LinkContainer to="/logout">
                 <Nav.Link>Logout</Nav.Link>
               </LinkContainer>
             </>
           ) : (
-            <>
             <LinkContainer to="/signin">
               <Nav.Link>Sign In</Nav.Link>
             </LinkContainer>
-           
-            </>
-            
           )}
         </Nav>
       </Navbar.Collapse>

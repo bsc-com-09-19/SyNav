@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Add.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Add.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState } from 'react';
+import { Form, Button, Card } from 'react-bootstrap';
+import { firestore } from './firebaseConfig';
+import { collection, addDoc } from 'firebase/firestore';
+import './App.css';
+
+
+
+/**
+ * Add component provides a form to add a new access point to Firebase.
+ *
+ * @component
+ */
+const Add = () => {
+  /**
+   * State to manage the form data.
+   * @type {[{SSID: string, BSSID: string, xCoordinate: string, yCoordinate: string}, function]}
+   */
+  const [form, setForm] = useState({ SSID: '', BSSID: '', xCoordinate: '', yCoordinate: '' });
+/**
+   * Handles the change event for the form inputs.
+   *
+   * @param {Object} e - The event object.
+   */
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+   /**
+   * Handles the form submission.
+   *
+   * @param {Object} e - The event object.
+   */
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await addDoc(collection(firestore, 'AccessPoints'), form);
+      console.log('Item added successfully!');
+      // Clear the form after successful submission
+      setForm({ SSID: '', BSSID: '', xCoordinate: '', yCoordinate: '' });
+    } catch (error) {
+      console.error('Error adding item:', error.message);
+      alert(`An error occurred: ${error.message}`);
+    }
+  };
+
+  return (
+    &lt;div className="d-flex align-items-center justify-content-center vh-100">
+      &lt;Card className="shadow p-4" style={{ width: '100%', maxWidth: '500px' }}>
+        &lt;Card.Body>
+          &lt;h2 className="text-center">Add Access Point&lt;/h2>
+          &lt;Form onSubmit={handleSubmit}>
+            &lt;Form.Group controlId="formSSID">
+              &lt;Form.Label>Name&lt;/Form.Label>
+              &lt;Form.Control
+                type="text"
+                name="SSID"
+                value={form.SSID}
+                onChange={handleChange}
+                placeholder="Enter access point SSID"
+              />
+            &lt;/Form.Group>
+
+            &lt;Form.Group controlId="formBSSID" className="mt-3">
+              &lt;Form.Label>MAC Address&lt;/Form.Label>
+              &lt;Form.Control
+                type="text"
+                name="BSSID"
+                value={form.BSSID}
+                onChange={handleChange}
+                placeholder="Enter access point MAC address"
+              />
+            &lt;/Form.Group>
+
+            &lt;Form.Group controlId="formXCoordinate" className="mt-3">
+              &lt;Form.Label>x-Coordinate&lt;/Form.Label>
+              &lt;Form.Control
+                type="text"
+                name="xCoordinate"
+                value={form.xCoordinate}
+                onChange={handleChange}
+              />
+            &lt;/Form.Group>
+
+            &lt;Form.Group controlId="formYCoordinate" className="mt-3">
+              &lt;Form.Label>y-Coordinate&lt;/Form.Label>
+              &lt;Form.Control
+                type="text"
+                name="yCoordinate"
+                value={form.yCoordinate}
+                onChange={handleChange}
+              />
+            &lt;/Form.Group>
+
+            &lt;Button variant="primary" type="submit" className="mt-4 w-100">
+              Add
+            &lt;/Button>
+          &lt;/Form>
+        &lt;/Card.Body>
+      &lt;/Card>
+    &lt;/div>
+  );
+};
+
+export default Add;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Grid.html">Grid</a></li><li><a href="GridCell.html">GridCell</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Add">Add</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#CustomNavbar">CustomNavbar</a></li><li><a href="global.html#GridComponent">GridComponent</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#SignIn">SignIn</a></li><li><a href="global.html#SignUp">SignUp</a></li><li><a href="global.html#aStarAlgorithm">aStarAlgorithm</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#auth">auth</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li><li><a href="global.html#firestore">firestore</a></li><li><a href="global.html#getNeighbors">getNeighbors</a></li><li><a href="global.html#heuristic">heuristic</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Sat Jun 22 2024 18:13:13 GMT+0200 (South Africa Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

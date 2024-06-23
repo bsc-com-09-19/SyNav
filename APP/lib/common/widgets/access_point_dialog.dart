@@ -4,6 +4,7 @@ import 'package:sy_nav/common/widgets/k_height.dart';
 import 'package:sy_nav/utils/constants/colors.dart';
 import 'package:sy_nav/utils/constants/k_sizes.dart';
 
+///A form for editing accesspoints values. This has been ignored by the way
 class AddAccessPointDialog extends StatefulWidget {
   final String macAddress;
   const AddAccessPointDialog({super.key, required this.macAddress});

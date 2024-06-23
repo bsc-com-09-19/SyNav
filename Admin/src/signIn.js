@@ -1,17 +1,27 @@
-// src/SignIn.js
 import React, { useState } from 'react';
 import { Form, Button, Card } from 'react-bootstrap';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from './firebaseConfig'; // Ensure this import is correct
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import './App.css'; // Import CSS file for styling
+import { auth } from './firebaseConfig';
+import { useNavigate } from 'react-router-dom';
+import './App.css';
 
+/**
+ * SignIn component provides a form for user authentication.
+ *
+ * @component
+ */
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Get the navigate function
+  const navigate = useNavigate();
 
+  /**
+   * Handles form submission for user sign-in.
+   *
+   * @param {Object} e - The event object.
+   * @async
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
 

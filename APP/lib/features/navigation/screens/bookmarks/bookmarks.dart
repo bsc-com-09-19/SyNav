@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sy_nav/utils/constants/colors.dart';
 
+///Displays the booksmarks made by the user
 class BookMarksScreen extends StatelessWidget {
   const BookMarksScreen({super.key});
 

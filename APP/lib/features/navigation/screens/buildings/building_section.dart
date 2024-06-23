@@ -6,8 +6,7 @@ import 'package:sy_nav/utils/constants/colors.dart';
 import 'package:sy_nav/utils/constants/k_sizes.dart';
 import 'package:sy_nav/utils/helpers/helper_functions.dart';
 
-// Assuming KSizes and AppColors are defined elsewhere
-
+///Displays the available building in the map of context
 class BuildingSectionController extends GetxController {
   final RxBool showAll = false.obs;
 
