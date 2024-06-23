@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+///Handles the side bar actoin
 class DrawerManager {
   // this key will be used when accessing the state of the scaffold.
   // is static so that it can be accessed anywhere

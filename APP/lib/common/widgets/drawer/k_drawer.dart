@@ -3,6 +3,7 @@ import 'package:sy_nav/common/widgets/drawer/k_drawer_item.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/wifi_screen.dart';
 import 'package:sy_nav/utils/constants/colors.dart';
 
+///The sidebar
 class KDrawer extends StatelessWidget {
   const KDrawer({super.key});
 
