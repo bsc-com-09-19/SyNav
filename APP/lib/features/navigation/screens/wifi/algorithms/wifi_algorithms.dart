@@ -7,12 +7,13 @@ import 'package:sy_nav/utils/constants/wifi_constants.dart';
 import 'package:sy_nav/utils/dummy/dummy.dart';
 
 class WifiAlgorithms {
-  // Function to estimate distance based on signal strength using path loss model
+  /// Estimates distance based on [signalStrength] using path loss model
+  /// [A] reference Signal Strengths for specific distances defined in [wifiConstants]
   static double estimateDistance(double signalStrength) {
-    double A;
+    double A; 
     double n;
 
-    // Determine the appropriate A and n values based on the RSSI range
+    /// Determine the appropriate A and n values based on the RSSI range
     if (signalStrength >= -40) {
       A = WifiConstants.referenceSignalStrengths[0];
       n = WifiConstants.pathLossExponents[0];

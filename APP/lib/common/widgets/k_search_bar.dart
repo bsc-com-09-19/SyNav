@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sy_nav/utils/constants/k_sizes.dart';
 
+///Constant reusable search bar
 class KSearchBar extends StatefulWidget {
   final TextEditingController controller;
   final VoidCallback? onMenuTap;

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:sy_nav/features/navigation/screens/home/home.dart';
 import 'package:sy_nav/utils/constants/colors.dart';
 
-
+///SyNav onboarding screen
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
