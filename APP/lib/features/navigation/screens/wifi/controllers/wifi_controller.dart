@@ -7,43 +7,49 @@ import 'package:sy_nav/features/navigation/screens/map/grid_routing/path_node.da
 import 'package:sy_nav/features/navigation/screens/map/grid_map.dart';
 
 class WifiController extends GetxController {
+  // Observable variables for sensor data and Wi-Fi list
   var accelerometerValues = [0.0, 0.0, 0.0].obs;
   var gyroscopeValues = [0.0, 0.0, 0.0].obs;
   var wifiList = <String>[].obs;
   var pathString = ''.obs;
   var distanceString = ''.obs;
   var highlightedPath = <PathNode>[].obs;
-
   var directionsString = "".obs;
 
+  // Firestore instance for database interactions
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  // Observable variables for grid properties
   final cellSize = 1.3.obs;
   final startLatitude = 1.0.obs;
   final startLongitude = 1.0.obs;
   final numberOfRows = 3.obs;
   final numberOfCols = 3.obs;
 
+  // Observable grid object
   var grid = Grid(
-          rows: 1,
-          cols: 1,
-          cellSize: 1.3,
-          startLongitude: 1.0,
-          startLatitude: 1.3)
-      .obs;
+    rows: 1,
+    cols: 1,
+    cellSize: 1.3,
+    startLongitude: 1.0,
+    startLatitude: 1.3,
+  ).obs;
 
+  // Platform channel for native method calls
   static const platform = MethodChannel('com.example.sy_nav/wifi');
 
+  // Getter for grid map
   get gridMap => grid.value;
 
   @override
   void onInit() async {
     super.onInit();
-    await fetchGridCellsFromFirestore();
-    getWifiList();
-    listenForWifiUpdates();
+    await fetchGridCellsFromFirestore(); // Fetch grid cells from Firestore on initialization
+    getWifiList(); // Get Wi-Fi list
+    listenForWifiUpdates(); // Listen for Wi-Fi updates
   }
 
+  // Method to get the Wi-Fi list
   Future<void> getWifiList() async {
     try {
       final List<dynamic> result = await platform.invokeMethod('getWifiList');
@@ -53,6 +59,7 @@ class WifiController extends GetxController {
     }
   }
 
+  // Method to listen for Wi-Fi updates
   void listenForWifiUpdates() {
     platform.setMethodCallHandler((call) async {
       if (call.method == 'updateWifiList') {
@@ -62,6 +69,7 @@ class WifiController extends GetxController {
     });
   }
 
+  // Method to get Wi-Fi list for trilateration
   List<String> getTrilaterationWifi() {
     if (wifiList.isNotEmpty && wifiList.length >= 3) {
       return wifiList.take(5).toList();
@@ -70,6 +78,7 @@ class WifiController extends GetxController {
     }
   }
 
+  // Method to create a grid map
   void createGridMap(List<Map<String, dynamic>> cellsData) {
     int maxRow = 0;
     int maxCol = 0;
@@ -97,14 +106,16 @@ class WifiController extends GetxController {
     }
   }
 
+  // Method to get location name based on coordinates
   String getLocationName(double longitude, double latitude) {
-    String name =
-        grid.value.findCellNameByCoordinates(longitude, latitude);
+    String name = grid.value.findCellNameByCoordinates(longitude, latitude);
     return name;
   }
 
+  // Method to fetch grid cells from Firestore
   Future<void> fetchGridCellsFromFirestore() async {
     try {
+      // Fetch grid metadata
       CollectionReference gridDataCollection =
           _firestore.collection('GridCellMetadata');
       QuerySnapshot metadataSnapshot = await gridDataCollection.get();
@@ -116,6 +127,7 @@ class WifiController extends GetxController {
         startLongitude.value = (data["startLongitude"] as num).toDouble();
       }
 
+      // Fetch grid cells
       CollectionReference gridCellsCollection =
           _firestore.collection('GridCells');
       QuerySnapshot querySnapshot = await gridCellsCollection.get();
@@ -138,19 +150,19 @@ class WifiController extends GetxController {
 
       createGridMap(cellsData);
     } catch (e, stackTrace) {
-      if(kDebugMode){
+      if (kDebugMode) {
         print('Failed to fetch grid cells from Firestore: $e');
         print(stackTrace);
       }
     }
   }
 
+  // Method to define a path from startName to endName
   Future<void> definePath(String startName, String endName) async {
-    ///Clears the previous calculated path and distance
-    clearPathDetails();
+    clearPathDetails(); // Clear previous path details
     try {
-      //Checks if the gridMap exists and hads values
-      if ( grid.value.grid.isNotEmpty) {
+      await fetchGridCellsFromFirestore(); // Fetch latest grid data
+      if (grid.value.grid.isNotEmpty) {
         final startCell = grid.value.findCellByName(startName);
         final endCell = grid.value.findCellByName(endName);
 
@@ -162,7 +174,6 @@ class WifiController extends GetxController {
           for (var node in path) {
             var gridName = grid.value.getCell(node.row, node.col).name;
             pathString.value += "$gridName -> ";
-            // pathString.value += " (${node.row}, ${node.col})";
           }
           pathString.value += " End";
 
@@ -181,7 +192,7 @@ class WifiController extends GetxController {
         pathString.value = "Grid is not initialized or empty.";
       }
     } catch (e, stackTrace) {
-      if(kDebugMode){
+      if (kDebugMode) {
         print('Error defining path: $e');
         print(stackTrace);
       }
@@ -189,19 +200,13 @@ class WifiController extends GetxController {
     }
   }
 
+  // Method to find a path using A* algorithm
   List<PathNode> findPathUsingCells(
       Grid grid, GridCell startCell, GridCell endCell) {
     return aStarAlgorithm(grid, startCell, endCell);
   }
 
-  /// Generates a list of directions from the given path, aggregating consecutive
-  /// movements in the same direction into a single command.
-  ///
-  /// - Parameters:
-  ///   - path: A list of PathNode objects representing the path.
-  ///   - cellSize: The size of each cell in meters.
-  ///
-  /// - Returns: A list of direction commands as strings.
+  // Method to generate directions from a path
   List<String> generateDirections(List<PathNode> path, double cellSize) {
     if (path.isEmpty) return [];
 
@@ -255,8 +260,8 @@ class WifiController extends GetxController {
     return directions;
   }
 
+  // Method to clear path details
   void clearPathDetails() {
-    ///Clears the previous calculated path and distance
     pathString.value = distanceString.value = directionsString.value = "";
     highlightedPath.clear();
   }
