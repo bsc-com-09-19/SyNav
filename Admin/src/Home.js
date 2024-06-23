@@ -4,6 +4,13 @@ import { firestore } from './firebaseConfig';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { Link, useNavigate } from 'react-router-dom';
 
+
+/**
+ * Home component displays a list of access points and allows managing them.
+ *
+ * @component
+ */
+
 const Home = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
