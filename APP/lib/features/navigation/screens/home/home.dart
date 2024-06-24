@@ -18,9 +18,12 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeController = Get.find<HomeController>();
-    final wifiController = Get.find<WifiController>();
+    final homeController =
+        Get.find<HomeController>(); // Get the HomeController instance
+    final wifiController =
+        Get.find<WifiController>(); // Get the WifiController instance
 
+    // List of pages for navigation
     final pages = [
       ExploreWidget(),
       const NavigationScreen(),
@@ -28,20 +31,25 @@ class Home extends StatelessWidget {
     ];
 
     return Scaffold(
-      key: DrawerManager.drawerKey,
+      key: DrawerManager
+          .drawerKey, // Set the key for the scaffold to manage the drawer
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: homeController.handleOpenDrawer,
+          icon: const Icon(Icons.menu), // Menu icon
+          onPressed: homeController.handleOpenDrawer, // Open drawer on press
         ),
-        title: Obx(() => Text(homeController.appBarTitle.value)),
+        title: Obx(() => Text(homeController
+            .appBarTitle.value)), // App bar title with reactive state
         centerTitle: true,
-        actions: [Obx(() => homeController.iconButton.value)],
+        actions: [
+          Obx(() => homeController.iconButton.value)
+        ], // App bar actions with reactive state
       ),
-      drawer: const KDrawer(),
+      drawer: const KDrawer(), // Custom drawer widget
       body: Stack(
         children: [
-          Obx(() => pages[homeController.currentIndex.value]),
+          Obx(() => pages[
+              homeController.currentIndex.value]), // Display the current page
           Positioned(
             bottom: 16.0,
             right: 16.0,
@@ -51,7 +59,7 @@ class Home extends StatelessWidget {
                 // Add your action here
               },
               backgroundColor: Colors.blue,
-              child: const Icon(Icons.add),
+              child: const Icon(Icons.add), // Floating action button for add
             ),
           ),
           Positioned(
@@ -70,8 +78,7 @@ class Home extends StatelessWidget {
                       "You don't have enough registered access points around you");
                 } else {
                   homeController.currentIndex.value = 0;
-                  List<String> wifiList =
-                      wifiController.getTrilaterationWifi();
+                  List<String> wifiList = wifiController.getTrilaterationWifi();
                   var estimatedLocation =
                       WifiAlgorithms.getEstimatedLocation(wifiList);
                   homeController.location.value = estimatedLocation;
@@ -82,16 +89,19 @@ class Home extends StatelessWidget {
                 }
               },
               backgroundColor: AppColors.secondaryColor,
-              child: const Icon(Icons.location_pin),
+              child: const Icon(
+                  Icons.location_pin), // Floating action button for location
             ),
           ),
         ],
       ),
-      bottomNavigationBar: const KBottomNavigationBar(),
+      bottomNavigationBar:
+          const KBottomNavigationBar(), // Custom bottom navigation bar
     );
   }
 
   void showErrorSnackBar(BuildContext context, String message) {
+    // Function to show error snack bar
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Container(
@@ -126,15 +136,17 @@ class Home extends StatelessWidget {
 }
 
 class ExploreWidget extends StatelessWidget {
-  final HomeController homeController = Get.find();
-  final WifiController wifiController = Get.find();
+  final HomeController homeController =
+      Get.find(); // Get the HomeController instance
+  final WifiController wifiController =
+      Get.find(); // Get the WifiController instance
 
-  final TextEditingController startRoomController = TextEditingController();
-  final TextEditingController endRoomController = TextEditingController();
+  final TextEditingController startRoomController =
+      TextEditingController(); // Controller for start room text field
+  final TextEditingController endRoomController =
+      TextEditingController(); // Controller for end room text field
 
   ExploreWidget({super.key});
-
-  // List<PathNode>? highlightedPath;
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +154,7 @@ class ExploreWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const KHeight(height: 20),
+          const KHeight(height: 20), // Custom height widget
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -185,6 +197,7 @@ class ExploreWidget extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 20.0),
             child: ElevatedButton(
               onPressed: () {
+                // Handle button press
                 String startRoom = startRoomController.text.trim();
                 String endRoom = endRoomController.text.trim();
                 if (startRoom.isNotEmpty && endRoom.isNotEmpty) {
@@ -219,9 +232,11 @@ class ExploreWidget extends StatelessWidget {
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       const KHeight(height: 10),
-                      Text(wifiController.pathString.value),
+                      Text(wifiController
+                          .pathString.value), // Display path information
                       const KHeight(height: 10),
-                      Text(wifiController.distanceString.value),
+                      Text(wifiController.distanceString
+                          .value), // Display distance information
                       KHeight(height: 4),
                       Text(
                         "Directions: ${wifiController.directionsString.value}",
@@ -256,13 +271,15 @@ class ExploreWidget extends StatelessWidget {
                       int col = index % wifiController.grid.value.cols;
                       var cell = wifiController.grid.value.getCell(row, col);
 
-                      bool isHighlighted = wifiController.highlightedPath.isNotEmpty &&
-                          wifiController.highlightedPath.any(
-                              (node) => node.row == row && node.col == col);
+                      bool isHighlighted =
+                          wifiController.highlightedPath.isNotEmpty &&
+                              wifiController.highlightedPath.any(
+                                  (node) => node.row == row && node.col == col);
 
                       return GestureDetector(
                         onTap: () {
-                          handleGridCellTap(context, cell);
+                          handleGridCellTap(
+                              context, cell); // Handle grid cell tap
                         },
                         child: Container(
                           alignment: Alignment.center,
@@ -286,6 +303,7 @@ class ExploreWidget extends StatelessWidget {
   }
 
   void showErrorSnackBar(BuildContext context, String message) {
+    // Function to show error snack bar
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Container(
@@ -327,10 +345,13 @@ class KBottomNavigationBar extends StatefulWidget {
 }
 
 class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
-  final homeController = Get.find<HomeController>();
-  final wifiController = Get.find<WifiController>();
-  int currentIndex = 0;
+  final homeController =
+      Get.find<HomeController>(); // Get the HomeController instance
+  final wifiController =
+      Get.find<WifiController>(); // Get the WifiController instance
+  int currentIndex = 0; // Current index of the bottom navigation bar
 
+  // List of navigation routes
   final List<String> navigationRoutes = [
     'Home',
     'Navigate',
@@ -339,7 +360,8 @@ class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
 
   @override
   Widget build(BuildContext context) {
-    currentIndex = homeController.currentIndex.value;
+    currentIndex = homeController
+        .currentIndex.value; // Get the current index from the controller
     return ClipRRect(
       borderRadius: const BorderRadius.only(
         topLeft: Radius.circular(0),
@@ -348,34 +370,39 @@ class _KBottomNavigationBarState extends State<KBottomNavigationBar> {
         bottomRight: Radius.circular(30.0),
       ),
       child: BottomNavigationBar(
-        currentIndex: homeController.currentIndex.value,
+        currentIndex:
+            homeController.currentIndex.value, // Set the current index
         showUnselectedLabels: true,
         items: [
           const BottomNavigationBarItem(
-              icon: Icon(Icons.home_filled), label: "Home"),
+              icon: Icon(Icons.home_filled), label: "Home"), // Home item
           BottomNavigationBarItem(
             icon: Transform.rotate(
               angle: 0.785398,
-              child: const Icon(Icons.navigation),
+              child: const Icon(Icons.navigation), // Rotate the navigation icon
             ),
             label: "Navigate",
           ),
           const BottomNavigationBarItem(
-              icon: Icon(Icons.history_outlined), label: "History"),
+              icon: Icon(Icons.history_outlined),
+              label: "History"), // History item
         ],
-        selectedItemColor: AppColors.primaryColor,
-        unselectedItemColor: AppColors.secondaryColor,
+        selectedItemColor: AppColors.primaryColor, // Selected item color
+        unselectedItemColor: AppColors.secondaryColor, // Unselected item color
         elevation: 12.0,
         onTap: (index) {
           setState(() {
-            currentIndex = index;
+            currentIndex = index; // Update the current index
           });
-          homeController.currentIndex.value = index;
-          homeController.appBarTitle.value = navigationRoutes[index];
+          homeController.currentIndex.value =
+              index; // Update the controller's current index
+          homeController.appBarTitle.value =
+              navigationRoutes[index]; // Update the app bar title
           if (index == 1) {
             homeController.iconButton.value = IconButton(
                 onPressed: wifiController.getWifiList,
-                icon: const Icon(Icons.refresh));
+                icon: const Icon(
+                    Icons.refresh)); // Set refresh icon for navigation screen
           }
         },
       ),
