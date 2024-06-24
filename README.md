@@ -1,5 +1,5 @@
 # sy_nav
-#project_description
+## project_description
 
 Ever since the advent of smartphones, the development of location-based services has been revolutionised. 
 These services allow users to navigate to specific addresses or points of interest, such as universities 
@@ -12,7 +12,7 @@ have been explored for indoor positioning systems. Each technology has its advan
 with WiFi access points being chosen for their widespread availability and low implementation costs
 despite the variability in network strength.
 
-#Developers
+## Developers
 Oliver Nyirongo
 Peter Isulu
 Petros Manyeka 
