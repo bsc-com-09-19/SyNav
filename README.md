@@ -1,5 +1,5 @@
-# sy_nav
-## project_description
+# SyNav
+## Project Description
 
 Ever since the advent of smartphones, the development of location-based services has been revolutionised. 
 These services allow users to navigate to specific addresses or points of interest, such as universities 
@@ -13,7 +13,7 @@ with WiFi access points being chosen for their widespread availability and low i
 despite the variability in network strength.
 
 ## Developers
-Oliver Nyirongo
-Peter Isulu
-Petros Manyeka 
+- Oliver Nyirongo
+- Peter Isulu
+- Petros Manyeka 
 
