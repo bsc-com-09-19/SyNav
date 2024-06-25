@@ -4,14 +4,13 @@ import 'package:sy_nav/common/widgets/drawer/drawer_manager.dart';
 import 'package:sy_nav/common/widgets/drawer/k_drawer.dart';
 import 'package:sy_nav/common/widgets/k_height.dart';
 import 'package:sy_nav/features/navigation/screens/home/controllers/home_controller.dart';
+import 'package:sy_nav/features/navigation/screens/navigation/navigation_screen.dart';
 import 'package:sy_nav/features/navigation/screens/nofications/notifications_screen.dart';
+import 'package:sy_nav/features/navigation/screens/wifi/algorithms/wifi_algorithms.dart';
 import 'package:sy_nav/features/navigation/screens/wifi/controllers/wifi_controller.dart';
+import 'package:sy_nav/utils/alan/alanutils.dart';
 import 'package:sy_nav/utils/constants/colors.dart';
 import '../map/grid_map.dart';
-import '../map/grid_routing/path_node.dart';
-import '../navigation/navigation_screen.dart';
-import '../wifi/algorithms/wifi_algorithms.dart';
-import '../../../../utils/alan/alanutils.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
