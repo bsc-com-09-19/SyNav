@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: GridComponent.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: GridComponent.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from 'react';
+import Grid from './Grid';
+import GridCellCard from './GridCellCard';
+import { firestore, collection, addDoc, getDocs } from './firebaseConfig';
+import { aStarAlgorithm } from './aStarAlgorithm';
+import './GridComponent.css';
+
+
+/**
+ * GridComponent is responsible for creating, displaying, and managing a grid.
+ *
+ * @component
+ */
+
+const GridComponent = () => {
+  const [rows, setRows] = useState(11);
+  const [cols, setCols] = useState(8);
+  const [cellSize, setCellSize] = useState(1.3);
+  const [startLatitude, setStartLatitude] = useState(1.0);
+  const [startLongitude, setStartLongitude] = useState(1.0);
+  const [grid, setGrid] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [startName, setStartName] = useState('');
+  const [endName, setEndName] = useState('');
+  const [distance, setDistance] = useState(null);
+  const [path, setPath] = useState([]);
+
+   /**
+   * Creates a new grid based on the current state.
+   */
+
+  const createGrid = () => {
+    const newGrid = new Grid(rows, cols, cellSize, startLatitude, startLongitude);
+    const gridData = newGrid.getGrid();
+    console.log('New Grid:', gridData);
+    setGrid(gridData);
+  };
+
+
+
+
+  /**
+   * Saves the current grid to Firebase.
+   * @async
+   */
+  const saveGridToFirebase = async () => {
+    if (!grid || grid.length === 0) return;
+
+    setLoading(true);
+    try {
+      // Save grid cells
+      for (let i = 0; i &lt; grid.length; i++) {
+        const row = grid[i];
+        const rowData = row.map(cell => ({
+          row: cell.row,
+          col: cell.col,
+          name: cell.name,
+          latitude: cell.latitude,
+          longitude: cell.longitude,
+          isObstacle: cell.isObstacle,
+        }));
+        await addDoc(collection(firestore, 'GridCells'), { cells: rowData });
+      }
+
+      // Save grid map properties
+      const lastLatitude = startLatitude + (rows - 1) * cellSize;
+      const gridMapProperties = {
+        cellSize: parseFloat(cellSize),
+        startLatitude,
+        startLongitude,
+        lastLatitude,
+        numberOfRows: rows,
+        numberOfCols: cols,
+      };
+      await addDoc(collection(firestore, 'GridCellMetadata'), gridMapProperties);
+
+      alert('Grid saved to Firebase successfully!');
+    } catch (error) {
+      console.error('Error saving grid to Firebase:', error);
+      alert('Error saving grid to Firebase.');
+    }
+    setLoading(false);
+  };
+
+    /**
+   * Retrieves the grid from Firebase.
+   * @async
+   */
+
+  const retrieveGridFromFirebase = async () => {
+    setLoading(true);
+    try {
+      const querySnapshot = await getDocs(collection(firestore, 'GridCells'));
+      const rowsData = querySnapshot.docs.map(doc => doc.data().cells);
+
+      const maxRow = rowsData.length - 1;
+      const maxCol = Math.max(...rowsData.map(row => row.length - 1));
+      const processedGrid = Array.from({ length: maxRow + 1 }, () => Array(maxCol + 1).fill(null));
+
+      rowsData.forEach((row, rowIndex) => {
+        row.forEach(cell => {
+          processedGrid[cell.row][cell.col] = cell;
+        });
+      });
+
+      console.log('Retrieved Grid:', processedGrid);
+      setGrid(processedGrid);
+      alert('Grid retrieved from Firebase successfully!');
+    } catch (error) {
+      console.error('Error retrieving grid from Firebase:', error);
+      alert('Error retrieving grid from Firebase.');
+    }
+    setLoading(false);
+  };
+
+   /**
+   * Handles editing of a cell.
+   *
+   * @param {Object} cell - The cell object.
+   * @param {string} newName - The new name for the cell.
+   * @param {boolean} newIsObstacle - Whether the cell is an obstacle.
+   */
+
+  const handleCellEdit = (cell, newName, newIsObstacle) => {
+    const updatedGrid = grid.map(row =>
+      row.map(c =>
+        c &amp;&amp; c.row === cell.row &amp;&amp; c.col === cell.col
+          ? { ...c, name: newName, isObstacle: newIsObstacle }
+          : c
+      )
+    );
+    console.log('Updated Grid:', updatedGrid);
+    setGrid(updatedGrid);
+  };
+
+  /**
+   * Calculates the distance between the start cell and the end cell.
+   */
+
+  const calculateDistance = () => {
+    const startCell = grid.flat().find(cell => cell &amp;&amp; cell.name === startName);
+    const endCell = grid.flat().find(cell => cell &amp;&amp; cell.name === endName);
+
+    console.log('Start Cell:', startCell);
+    console.log('End Cell:', endCell);
+
+    if (startCell &amp;&amp; endCell) {
+      const dx = startCell.latitude - endCell.latitude;
+      const dy = startCell.longitude - endCell.longitude;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      console.log('Distance:', dist);
+      setDistance(dist);
+    } else {
+      alert('One or both of the cell names are invalid.');
+    }
+  };
+  /**
+   * Finds the best path between the start cell and the end cell using A* algorithm.
+   */
+
+  const findBestPath = () => {
+    const startCell = grid.flat().find(cell => cell &amp;&amp; cell.name === startName);
+    const endCell = grid.flat().find(cell => cell &amp;&amp; cell.name === endName);
+
+    console.log('Start Cell:', startCell);
+    console.log('End Cell:', endCell);
+
+    if (startCell &amp;&amp; endCell) {
+      const bestPath = aStarAlgorithm(grid, startCell, endCell);
+      console.log('Best Path:', bestPath);
+      setPath(bestPath);
+    } else {
+      alert('One or both of the cell names are invalid.');
+    }
+  };
+
+  useEffect(() => {
+    console.log('Updated Distance:', distance);
+  }, [distance]);
+
+  useEffect(() => {
+    console.log('Updated Path:', path);
+  }, [path]);
+
+  return (
+    &lt;div className="grid-component">
+      &lt;h1>Grid Map&lt;/h1>
+      &lt;div>
+        &lt;label className="label-black">
+          Rows:
+          &lt;input type="number" value={rows} onChange={(e) => setRows(parseInt(e.target.value, 10))} />
+        &lt;/label>
+        &lt;label className="label-black">
+          Columns:
+          &lt;input type="number" value={cols} onChange={(e) => setCols(parseInt(e.target.value, 10))} />
+        &lt;/label>
+        &lt;label className="label-black">
+          Cell Size:
+          &lt;input type="number" step="0.1" value={cellSize} onChange={(e) => setCellSize(parseFloat(e.target.value))} />
+        &lt;/label>
+        &lt;label className="label-black">
+          Start Latitude:
+          &lt;input type="number" step="0.0001" value={startLatitude} onChange={(e) => setStartLatitude(parseFloat(e.target.value))} />
+        &lt;/label>
+        &lt;label className="label-black">
+          Start Longitude:
+          &lt;input type="number" step="0.0001" value={startLongitude} onChange={(e) => setStartLongitude(parseFloat(e.target.value))} />
+        &lt;/label>
+      &lt;/div>
+      &lt;button onClick={createGrid}>Create Grid&lt;/button>
+      &lt;button onClick={saveGridToFirebase} disabled={loading}>Save Grid to Firebase&lt;/button>
+      &lt;button onClick={retrieveGridFromFirebase} disabled={loading}>Retrieve Grid from Firebase&lt;/button>
+      &lt;div>
+        &lt;label className="label-black">
+          Start Cell Name:
+          &lt;input type="text" value={startName} onChange={(e) => setStartName(e.target.value)} />
+        &lt;/label>
+        &lt;label className="label-black">
+          End Cell Name:
+          &lt;input type="text" value={endName} onChange={(e) => setEndName(e.target.value)} />
+        &lt;/label>
+        &lt;button onClick={calculateDistance}>Calculate Distance&lt;/button>
+        &lt;button onClick={findBestPath}>Find Best Path&lt;/button>
+        {distance !== null &amp;&amp; &lt;div style={{ color: 'red' }}>Distance: {distance.toFixed(4)} units&lt;/div>}
+      &lt;/div>
+      {grid &amp;&amp; (
+        &lt;div className="grid-container">
+          {grid.map((row, rowIndex) => (
+            &lt;div key={rowIndex} className="grid-row">
+              {row.map((cell, cellIndex) => {
+                const isPathCell = path &amp;&amp; path.includes(cell);
+                return cell ? (
+                  &lt;GridCellCard
+                    key={cellIndex}
+                    cell={cell}
+                    onCellEdit={handleCellEdit}
+                    className={isPathCell ? 'path-cell' : ''}
+                  />
+                ) : (
+                  &lt;div key={cellIndex} className="grid-cell-empty" />
+                );
+              })}
+            &lt;/div>
+          ))}
+        &lt;/div>
+      )}
+    &lt;/div>
+  );
+};
+
+export default GridComponent;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Grid.html">Grid</a></li><li><a href="GridCell.html">GridCell</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Add">Add</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#CustomNavbar">CustomNavbar</a></li><li><a href="global.html#GridComponent">GridComponent</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#SignIn">SignIn</a></li><li><a href="global.html#SignUp">SignUp</a></li><li><a href="global.html#aStarAlgorithm">aStarAlgorithm</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#auth">auth</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li><li><a href="global.html#firestore">firestore</a></li><li><a href="global.html#getNeighbors">getNeighbors</a></li><li><a href="global.html#heuristic">heuristic</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Sat Jun 22 2024 18:13:13 GMT+0200 (South Africa Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

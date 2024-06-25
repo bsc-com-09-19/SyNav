@@ -1,17 +1,19 @@
-# sy_nav
+# SyNav
+## Project Description
 
-A new Flutter project.
+Ever since the advent of smartphones, the development of location-based services has been revolutionised. 
+These services allow users to navigate to specific addresses or points of interest, such as universities 
+or restaurants, by integrating the Global Positioning System (GPS) into various applications. GPS, a
+satellite-based navigation system, provides a three-dimensional position, including longitude, latitude, 
+and altitude, by utilising a network of 24 satellites, ground control stations, and user receivers.
+While GPS offers high accuracy in open spaces, its reliability diminishes indoors due to weak or obstructed signals.
+Therefore, alternative technologies such as WiFi access points, Bluetooth Low Energy (BLE) beacons, and Ultra-Wideband (UWB)
+have been explored for indoor positioning systems. Each technology has its advantages and limitations, 
+with WiFi access points being chosen for their widespread availability and low implementation costs
+despite the variability in network strength.
 
-## Getting Started
+## Developers
+- Oliver Nyirongo
+- Peter Isulu
+- Petros Manyeka 
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-#SyNav, campus navigation for the visual impaired

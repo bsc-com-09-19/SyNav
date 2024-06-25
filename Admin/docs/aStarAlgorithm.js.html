@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: aStarAlgorithm.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: aStarAlgorithm.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Utility function to get the neighbors of a cell in the grid.
+ *
+ * @param {Array} grid - The grid represented as a 2D array.
+ * @param {Object} cell - The current cell.
+ * @param {number} cell.row - The row index of the cell.
+ * @param {number} cell.col - The column index of the cell.
+ * @returns {Array} - An array of neighboring cells that are not obstacles.
+ */
+const getNeighbors = (grid, cell) => {
+  const { row, col } = cell;
+  const neighbors = [];
+
+  if (row > 0) neighbors.push(grid[row - 1][col]); // Top
+  if (row &lt; grid.length - 1) neighbors.push(grid[row + 1][col]); // Bottom
+  if (col > 0) neighbors.push(grid[row][col - 1]); // Left
+  if (col &lt; grid[0].length - 1) neighbors.push(grid[row][col + 1]); // Right
+
+  return neighbors.filter(neighbor => neighbor &amp;&amp; !neighbor.isObstacle);
+};
+
+/**
+ * Heuristic function for A* algorithm (Euclidean distance).
+ *
+ * @param {Object} cell - The current cell.
+ * @param {number} cell.row - The row index of the cell.
+ * @param {number} cell.col - The column index of the cell.
+ * @param {Object} endCell - The target cell.
+ * @param {number} endCell.row - The row index of the target cell.
+ * @param {number} endCell.col - The column index of the target cell.
+ * @returns {number} - The heuristic cost estimate (Euclidean distance) to reach the end cell from the current cell.
+ */
+const heuristic = (cell, endCell) => {
+  return Math.sqrt((cell.row - endCell.row) ** 2 + (cell.col - endCell.col) ** 2);
+};
+
+/**
+ * A* Algorithm implementation to find the shortest path in a grid.
+ *
+ * @param {Array} grid - The grid represented as a 2D array.
+ * @param {Object} startCell - The starting cell.
+ * @param {number} startCell.row - The row index of the starting cell.
+ * @param {number} startCell.col - The column index of the starting cell.
+ * @param {Object} endCell - The target cell.
+ * @param {number} endCell.row - The row index of the target cell.
+ * @param {number} endCell.col - The column index of the target cell.
+ * @returns {Array|null} - The shortest path from startCell to endCell as an array of cells, or null if no path is found.
+ */
+export const aStarAlgorithm = (grid, startCell, endCell) => {
+  const openSet = [];
+  const cameFrom = new Map();
+  const gScore = new Map();
+  const fScore = new Map();
+
+  // Initialize gScore and fScore
+  grid.flat().forEach(cell => {
+    gScore.set(cell, Infinity);
+    fScore.set(cell, Infinity);
+  });
+
+  gScore.set(startCell, 0);
+  fScore.set(startCell, heuristic(startCell, endCell));
+  openSet.push(startCell);
+
+  while (openSet.length > 0) {
+    // Get the cell with the lowest fScore
+    const current = openSet.reduce((acc, cell) => (fScore.get(cell) &lt; fScore.get(acc) ? cell : acc));
+
+    if (current === endCell) {
+      // Reconstruct the path
+      const path = [];
+      let temp = current;
+      while (temp) {
+        path.push(temp);
+        temp = cameFrom.get(temp);
+      }
+      return path.reverse();
+    }
+
+    openSet.splice(openSet.indexOf(current), 1);
+
+    getNeighbors(grid, current).forEach(neighbor => {
+      const tentativeGScore = gScore.get(current) + 1;
+
+      if (tentativeGScore &lt; gScore.get(neighbor)) {
+        cameFrom.set(neighbor, current);
+        gScore.set(neighbor, tentativeGScore);
+        fScore.set(neighbor, gScore.get(neighbor) + heuristic(neighbor, endCell));
+
+        if (!openSet.includes(neighbor)) {
+          openSet.push(neighbor);
+        }
+      }
+    });
+  }
+
+  return null; // Return null if no path found
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Grid.html">Grid</a></li><li><a href="GridCell.html">GridCell</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Add">Add</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#CustomNavbar">CustomNavbar</a></li><li><a href="global.html#GridComponent">GridComponent</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#SignIn">SignIn</a></li><li><a href="global.html#SignUp">SignUp</a></li><li><a href="global.html#aStarAlgorithm">aStarAlgorithm</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#auth">auth</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li><li><a href="global.html#firestore">firestore</a></li><li><a href="global.html#getNeighbors">getNeighbors</a></li><li><a href="global.html#heuristic">heuristic</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Sat Jun 22 2024 18:13:13 GMT+0200 (South Africa Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

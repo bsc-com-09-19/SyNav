@@ -1,0 +1,82 @@
+/* GridComponent.css */
+
+/* Style for the main container of the GridComponent */
+.grid-component {
+  padding: 20px; /* Add some padding */
+  color: white; /* Set text color to white for contrast */
+}
+
+/* Style for the grid container */
+.grid-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+/* Style for each row in the grid */
+.grid-row {
+  display: flex;
+}
+
+/* Style for each grid cell card */
+.grid-cell-card {
+  border: 1px solid white; /* Add a white border for visibility */
+  padding: 10px;
+  margin: 5px;
+  background-color: blue; /* Set the background color to blue */
+  color: white; /* Set text color to white for contrast */
+  text-align: center; /* Center text within the cell */
+}
+
+/* Style for path cells */
+.path-cell {
+  background-color: green; /* Highlight path cells in green */
+}
+
+/* Style for empty grid cells */
+.grid-cell-empty {
+  border: 1px solid white;
+  padding: 10px;
+  margin: 5px;
+  width: 100px;
+  height: 100px;
+  background-color: blue; /* Set the background color to blue */
+}
+
+/* Additional styles for input labels and buttons */
+label {
+  display: block;
+  margin-top: 10px;
+}
+
+input[type="text"], input[type="number"] {
+  margin-left: 10px;
+}
+
+button {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: white;
+  color: blue;
+  border: none;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: grey;
+  cursor: not-allowed;
+}
+/* GridComponent.css */
+.label-black {
+  color: black;
+}
+.he{
+  color: green;
+}
+
+.distance-red {
+  color: red;
+}
+
+
+
